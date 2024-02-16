@@ -4,6 +4,8 @@ namespace BookRate.DAL.DTO
 {
     public class Contributor
     {
+        public int Id { get; set; }
+
         public string LastName { get; set; }
 
         public string FirstName { get; set; }

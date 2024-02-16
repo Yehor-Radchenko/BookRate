@@ -2,6 +2,8 @@
 {
     public class NarrativeRevardDTO
     {
+        public int Id { get; set; }
+
         public int NarrativeId { get; set; }
 
         public int RevardId { get; set; }

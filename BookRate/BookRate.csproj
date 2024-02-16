@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BLL\Services\" />
+    <Folder Include="BLL\ViewModels\" />
     <Folder Include="Controllers\" />
   </ItemGroup>
 
