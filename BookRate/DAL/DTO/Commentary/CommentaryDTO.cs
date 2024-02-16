@@ -1,7 +1,7 @@
 ﻿using BookRate.DAL.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BookRate.DAL.DTO.Commentary
+namespace BookRate.DAL.DTO
 {
     public class CommentaryDTO
     {

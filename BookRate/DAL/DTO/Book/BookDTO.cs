@@ -1,6 +1,6 @@
 ﻿using BookRate.DAL.Models;
 
-namespace BookRate.DAL.DTO.Book
+namespace BookRate.DAL.DTO
 {
     public class BookDTO
     {

@@ -1,4 +1,4 @@
-﻿namespace BookRate.DAL.DTO.Revard
+﻿namespace BookRate.DAL.DTO
 {
     public class RevardDTO
     {

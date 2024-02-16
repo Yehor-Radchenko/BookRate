@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookRate.DAL.DTO.ReviewLike
+namespace BookRate.DAL.DTO
 {
     public class ReviewLikeDTO
     {

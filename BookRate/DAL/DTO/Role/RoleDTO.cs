@@ -1,4 +1,4 @@
-﻿namespace BookRate.DAL.DTO.Role
+﻿namespace BookRate.DAL.DTO
 {
     public class RoleDTO
     {

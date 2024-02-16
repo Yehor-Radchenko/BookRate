@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookRate.DAL.DTO.CommentaryLike
+namespace BookRate.DAL.DTO
 {
     public class CommentaryLikeDTO
     {

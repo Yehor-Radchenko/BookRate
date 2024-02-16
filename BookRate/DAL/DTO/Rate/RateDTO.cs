@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BookRate.DAL.DTO.Rate
+namespace BookRate.DAL.DTO
 {
     public class RateDTO
     {
