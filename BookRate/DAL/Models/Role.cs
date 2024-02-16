@@ -9,5 +9,5 @@ public partial class Role
 
     public string? Name { get; set; }
 
-    public virtual ICollection<Contributor> Contributors { get; set; } = new List<Contributor>();
+    public virtual ICollection<Contributor> Contributors { get; set; }
 }

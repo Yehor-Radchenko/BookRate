@@ -20,23 +20,6 @@
   <ItemGroup>
     <Folder Include="BLL\Services\" />
     <Folder Include="Controllers\" />
-    <Folder Include="DAL\DTO\Book\" />
-    <Folder Include="DAL\DTO\BookEdition\" />
-    <Folder Include="DAL\DTO\Commentary\" />
-    <Folder Include="DAL\DTO\CommentaryLike\" />
-    <Folder Include="DAL\DTO\Contributor\" />
-    <Folder Include="DAL\DTO\Edition\" />
-    <Folder Include="DAL\DTO\Genre\" />
-    <Folder Include="DAL\DTO\Narrative\" />
-    <Folder Include="DAL\DTO\NarrativeRevard\" />
-    <Folder Include="DAL\DTO\User\" />
-    <Folder Include="DAL\DTO\Setting\" />
-    <Folder Include="DAL\DTO\Serie\" />
-    <Folder Include="DAL\DTO\Role\" />
-    <Folder Include="DAL\DTO\ReviewLike\" />
-    <Folder Include="DAL\DTO\Review\" />
-    <Folder Include="DAL\DTO\Revard\" />
-    <Folder Include="DAL\DTO\Rate\" />
   </ItemGroup>
 
 </Project>
