@@ -2,7 +2,7 @@
 
 namespace BookRate.DAL.DTO
 {
-    public class Contributor
+    public class ContributorDTO
     {
         public int Id { get; set; }
 
