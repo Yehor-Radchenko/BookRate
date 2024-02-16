@@ -84,5 +84,12 @@ public partial class BookRateDbContext : DbContext
             .HasForeignKey(cl => cl.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Username)
+            .IsUnique(true);
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique(true);
     }
 }

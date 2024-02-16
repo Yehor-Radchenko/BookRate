@@ -1,9 +1,9 @@
 ﻿namespace BookRate.BLL.ViewModels
 {
-    public class RoleViewModel
+    public class GenreListModel
     {
         public int Id { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
     }
 }
