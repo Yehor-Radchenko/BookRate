@@ -11,6 +11,8 @@ public partial class Book
 
     public DateTime FirstPublished { get; set; }
 
+    public string Title { get; set; }
+
     public virtual ICollection<BookEdition> BookEditions { get; set; }
 
     public virtual ICollection<Rate>? Rates { get; set; }

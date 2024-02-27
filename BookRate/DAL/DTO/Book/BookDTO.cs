@@ -8,6 +8,8 @@ namespace BookRate.DAL.DTO
 
         public int? SerieId { get; set; }
 
+        public string Title { get; set; }
+
         public DateTime FirstPublished { get; set; }
 
         public virtual IEnumerable<Narrative> Narratives { get; set; }

@@ -1,11 +1,23 @@
-﻿using BookRate.BLL.Services.IService;
+﻿using AutoMapper;
+using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
 using BookRate.DAL.DTO;
+using BookRate.DAL.Models;
+using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class GenreService : IGenreService
     {
+        private readonly Repository<Genre> _genreRepository;
+        private readonly IMapper _mapper;
+
+        public GenreService(Repository<Genre> genreRepository, IMapper mapper)
+        {
+            _genreRepository = genreRepository;
+            _mapper = mapper;
+        }
+
         public Task<bool> Create(GenreDTO model)
         {
             throw new NotImplementedException();
