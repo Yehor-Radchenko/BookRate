@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
-using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class ContributorService : IContributorService
     {
-        private readonly Repository<Contributor> _contributorRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public ContributorService(Repository<Contributor> contributorRepository, IMapper mapper)
+        public ContributorService(BookRateDbContext context, IMapper mapper)
         {
-            _contributorRepository = contributorRepository;
+            _context = context;
             _mapper = mapper;
         }
 

@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
-using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class CommentaryService : ICommentaryService
     {
-        private readonly Repository<Commentary> _bookRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
-        public CommentaryService(Repository<Commentary> commentaryRepository, IMapper mapper)
+        public CommentaryService(BookRateDbContext context, IMapper mapper)
         {
-            _bookRepository = commentaryRepository;
+            _context = context;
             _mapper = mapper;
         }
 

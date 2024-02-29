@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
-using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class GenreService : IGenreService
     {
-        private readonly Repository<Genre> _genreRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public GenreService(Repository<Genre> genreRepository, IMapper mapper)
+        public GenreService(BookRateDbContext context, IMapper mapper)
         {
-            _genreRepository = genreRepository;
+            _context = context;
             _mapper = mapper;
         }
 

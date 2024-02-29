@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class ReviewService : IReviewService
     {
-        private readonly Repository<Review> _reviewRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public ReviewService(Repository<Review> reviewRepository, IMapper mapper)
+        public ReviewService(BookRateDbContext context, IMapper mapper)
         {
-            _reviewRepository = reviewRepository;
+            _context = context;
             _mapper = mapper;
         }
 

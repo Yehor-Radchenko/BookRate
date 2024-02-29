@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories;
@@ -9,12 +10,12 @@ namespace BookRate.BLL.Services
 {
     public class RoleService : IRoleService
     {
-        private readonly Repository<Role> _roleRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public RoleService(Repository<Role> roleRepository, IMapper mapper)
+        public RoleService(BookRateDbContext context, IMapper mapper)
         {
-            _roleRepository = roleRepository;
+            _context = context;
             _mapper = mapper;
         }
 

@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly Repository<User> _userRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public UserService(Repository<User> userRepository, IMapper mapper)
+        public UserService(BookRateDbContext context, IMapper mapper)
         {
-            _userRepository = userRepository;
+            _context = context;
             _mapper = mapper;
         }
 

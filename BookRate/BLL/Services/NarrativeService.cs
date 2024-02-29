@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class NarrativeService : INarrativeService
     {
-        private readonly Repository<Narrative> _narrativeRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public NarrativeService(Repository<Narrative> narrativeRepository, IMapper mapper)
+        public NarrativeService(BookRateDbContext context, IMapper mapper)
         {
-            _narrativeRepository = narrativeRepository;
+            _context = context;
             _mapper = mapper;
         }
 

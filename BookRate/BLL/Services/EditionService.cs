@@ -1,20 +1,19 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
-using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 
 namespace BookRate.BLL.Services
 {
     public class EditionService : IEditionService
     {
-        private readonly Repository<Edition> _editionRepository;
+        private readonly BookRateDbContext _context;
         private readonly IMapper _mapper;
 
-        public EditionService(Repository<Edition> editionRepository, IMapper mapper)
+        public EditionService(BookRateDbContext context, IMapper mapper)
         {
-            _editionRepository = editionRepository;
+            _context = context;
             _mapper = mapper;
         }
 
