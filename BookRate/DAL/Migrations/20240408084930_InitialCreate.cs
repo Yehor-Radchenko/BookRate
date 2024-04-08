@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BookRate.Migrations
+namespace BookRate.DAL.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -46,6 +46,18 @@ namespace BookRate.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Editions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Follows",
+                columns: table => new
+                {
+                    FolloweeId = table.Column<int>(type: "int", nullable: false),
+                    FollowerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Follows", x => new { x.FolloweeId, x.FollowerId });
                 });
 
             migrationBuilder.CreateTable(
@@ -259,7 +271,8 @@ namespace BookRate.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SerieId = table.Column<int>(type: "int", nullable: true),
-                    FirstPublished = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FirstPublished = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -291,6 +304,27 @@ namespace BookRate.Migrations
                         name: "FK_NarrativeSetting_Settings_SettingsId",
                         column: x => x.SettingsId,
                         principalTable: "Settings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shelves",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shelves", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Shelves_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -408,6 +442,30 @@ namespace BookRate.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BookShelf",
+                columns: table => new
+                {
+                    BooksId = table.Column<int>(type: "int", nullable: false),
+                    ShelvesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookShelf", x => new { x.BooksId, x.ShelvesId });
+                    table.ForeignKey(
+                        name: "FK_BookShelf_Books_BooksId",
+                        column: x => x.BooksId,
+                        principalTable: "Books",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookShelf_Shelves_ShelvesId",
+                        column: x => x.ShelvesId,
+                        principalTable: "Shelves",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Commentaries",
                 columns: table => new
                 {
@@ -518,6 +576,11 @@ namespace BookRate.Migrations
                 column: "SerieId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookShelf_ShelvesId",
+                table: "BookShelf",
+                column: "ShelvesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Commentaries_ReviewId",
                 table: "Commentaries",
                 column: "ReviewId");
@@ -593,6 +656,11 @@ namespace BookRate.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Shelves_UserId",
+                table: "Shelves",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
@@ -615,6 +683,9 @@ namespace BookRate.Migrations
                 name: "BookNarrative");
 
             migrationBuilder.DropTable(
+                name: "BookShelf");
+
+            migrationBuilder.DropTable(
                 name: "CommentaryLikes");
 
             migrationBuilder.DropTable(
@@ -622,6 +693,9 @@ namespace BookRate.Migrations
 
             migrationBuilder.DropTable(
                 name: "ContributorRole");
+
+            migrationBuilder.DropTable(
+                name: "Follows");
 
             migrationBuilder.DropTable(
                 name: "GenreNarrative");
@@ -640,6 +714,9 @@ namespace BookRate.Migrations
 
             migrationBuilder.DropTable(
                 name: "Editions");
+
+            migrationBuilder.DropTable(
+                name: "Shelves");
 
             migrationBuilder.DropTable(
                 name: "Commentaries");

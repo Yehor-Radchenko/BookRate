@@ -9,13 +9,11 @@ public partial class BookRateDbContext : DbContext
 {
     public BookRateDbContext()
     {
-        Database.EnsureCreated();
     }
 
     public BookRateDbContext(DbContextOptions<BookRateDbContext> options)
         : base(options)
     {
-        Database.EnsureCreated();
     }
 
     public virtual DbSet<Book> Books { get; set; }
@@ -52,19 +50,26 @@ public partial class BookRateDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<Shelf> Shelves { get; set; }
+
+    public virtual DbSet<Follow> Follows { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=localhost;Database=BookRate;Trusted_Connection=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=localhost;Database=ReadRate;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CommentaryLike>()
-        .HasKey(cl => new { cl.UserId, cl.CommentaryId });
+            .HasKey(cl => new { cl.UserId, cl.CommentaryId });
 
         modelBuilder.Entity<ReviewLike>()
-        .HasKey(cl => new { cl.UserId, cl.ReviewId });
+            .HasKey(cl => new { cl.UserId, cl.ReviewId });
+
+        modelBuilder.Entity<Follow>()
+           .HasKey(f => new { f.FolloweeId, f.FollowerId });
 
         modelBuilder.Entity<Rate>()
-       .HasKey(cl => new { cl.UserId, cl.BookId });
+           .HasKey(cl => new { cl.UserId, cl.BookId });
 
         modelBuilder.Entity<Commentary>()
             .HasOne(c => c.User)

@@ -1,15 +1,21 @@
-using BookRate.BLL.Mappers;
+using BookRate.BLL.Services;
+using BookRate.BLL.Services.IService;
+using BookRate.DAL.Context;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddDbContext<BookRateDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found.")));
+
+builder.Services.AddScoped<IBookService, BookService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

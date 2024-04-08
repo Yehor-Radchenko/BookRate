@@ -22,4 +22,6 @@ public partial class Book
     public virtual Serie? Serie { get; set; }
 
     public virtual ICollection<Narrative> Narratives { get; set; }
+
+    public virtual ICollection<Shelf> Shelves { get; set; }
 }

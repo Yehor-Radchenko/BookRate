@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookRate", "BookRate\BookRate.csproj", "{2E0660F3-7FC7-44C8-ABE8-BA981AD03AFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookRate", "BookRate\BookRate.csproj", "{2E0660F3-7FC7-44C8-ABE8-BA981AD03AFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesTest", "ServicesTest\ServicesTest.csproj", "{179958CC-A12F-4BF2-93C0-E326899F6ECB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2E0660F3-7FC7-44C8-ABE8-BA981AD03AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E0660F3-7FC7-44C8-ABE8-BA981AD03AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E0660F3-7FC7-44C8-ABE8-BA981AD03AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{179958CC-A12F-4BF2-93C0-E326899F6ECB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{179958CC-A12F-4BF2-93C0-E326899F6ECB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{179958CC-A12F-4BF2-93C0-E326899F6ECB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{179958CC-A12F-4BF2-93C0-E326899F6ECB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

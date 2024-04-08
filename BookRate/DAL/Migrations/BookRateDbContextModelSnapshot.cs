@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BookRate.Migrations
+namespace BookRate.DAL.Migrations
 {
     [DbContext(typeof(BookRateDbContext))]
     partial class BookRateDbContextModelSnapshot : ModelSnapshot
@@ -225,6 +225,21 @@ namespace BookRate.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Editions");
+                });
+
+            modelBuilder.Entity("BookRate.DAL.Models.Follow", b =>
+                {
+                    b.Property<int>("FolloweeId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("FolloweeId", "FollowerId");
+
+                    b.ToTable("Follows");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Genre", b =>
@@ -463,6 +478,32 @@ namespace BookRate.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("BookRate.DAL.Models.Shelf", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Shelves");
+                });
+
             modelBuilder.Entity("BookRate.DAL.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -509,6 +550,21 @@ namespace BookRate.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("BookShelf", b =>
+                {
+                    b.Property<int>("BooksId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShelvesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BooksId", "ShelvesId");
+
+                    b.HasIndex("ShelvesId");
+
+                    b.ToTable("BookShelf");
                 });
 
             modelBuilder.Entity("ContributorNarrative", b =>
@@ -734,6 +790,32 @@ namespace BookRate.Migrations
                     b.Navigation("Review");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookRate.DAL.Models.Shelf", b =>
+                {
+                    b.HasOne("BookRate.DAL.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookShelf", b =>
+                {
+                    b.HasOne("BookRate.DAL.Models.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookRate.DAL.Models.Shelf", null)
+                        .WithMany()
+                        .HasForeignKey("ShelvesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ContributorNarrative", b =>

@@ -12,6 +12,6 @@ namespace BookRate.DAL.DTO
 
         public DateTime FirstPublished { get; set; }
 
-        public virtual IEnumerable<Narrative> Narratives { get; set; }
+        public virtual IEnumerable<int> NarrativesId { get; set; }
     }
 }
