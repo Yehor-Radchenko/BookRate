@@ -1,6 +1,7 @@
 ﻿using BookRate.DAL.Context;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookRate.DAL.Repositories
 {
@@ -56,15 +57,15 @@ namespace BookRate.DAL.Repositories
 
         public bool IsAnyBookEditionReferenced(int bookId)
         {
-            return context.Books.Any(b => b.Id == bookId && b.BookEditions.Any());
+            return _context.Books.Any(b => b.Id == bookId && b.BookEditions.Any());
         }
         public bool IsAnyReviewReferenced(int bookId)
         {
-            return context.Books.Any(b => b.Id == bookId && b.Reviews.Any());
+            return _context.Books.Any(b => b.Id == bookId && b.Reviews.Any());
         }
         public bool IsAnyShelfReferenced(int bookId)
         {
-            return context.Books.Any(b => b.Id == bookId && b.Shelves.Any());
+            return _context.Books.Any(b => b.Id == bookId && b.Shelves.Any());
         }
     }
 }

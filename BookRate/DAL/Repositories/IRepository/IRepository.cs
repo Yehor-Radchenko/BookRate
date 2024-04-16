@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BookRate.DAL.Repositories
+namespace BookRate.DAL.Repositories.IRepository
 {
     public interface IRepository<Model>
     {

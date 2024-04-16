@@ -1,6 +1,7 @@
 ﻿using BookRate.DAL.Context;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookRate.DAL.Repositories
 {
@@ -36,5 +37,10 @@ namespace BookRate.DAL.Repositories
             return await _context.Follows.FindAsync(id);
         }
 
+        //Follow can't be updated.
+        public Task<bool> Update(Follow entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

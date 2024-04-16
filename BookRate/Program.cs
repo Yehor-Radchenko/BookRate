@@ -1,7 +1,6 @@
 using BookRate.BLL.Services;
 using BookRate.BLL.Services.IService;
 using BookRate.DAL.Context;
-using BookRate.DAL.Models;
 using BookRate.DAL.Repositories;
 using BookRate.DAL.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +17,9 @@ builder.Services.AddDbContext<BookRateDbContext>(options =>
 
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IGenreService, GenreService>();
+
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

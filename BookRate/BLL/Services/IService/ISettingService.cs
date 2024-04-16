@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace BookRate.BLL.Services.IService
 {
-    public interface ISettingService : IService<SettingDTO, SettingViewModel>
+    public interface ISettingService
     {
     }
 }

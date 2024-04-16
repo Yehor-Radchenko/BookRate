@@ -52,7 +52,7 @@ namespace BookRate.DAL.Repositories
 
         public bool IsGenreWithNameExists(string name)
         {
-            return _context.Genres.Any(g => g.Name.ToLower() == name.ToLower());
+            return _context.Genres.Any(g => name.ToLower() ==  g.Name.ToLower());
         }
     }
 }

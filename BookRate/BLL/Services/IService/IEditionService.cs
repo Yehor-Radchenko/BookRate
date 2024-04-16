@@ -3,7 +3,7 @@ using BookRate.DAL.DTO;
 
 namespace BookRate.BLL.Services.IService
 {
-    public interface IEditionService : IService<EditionDTO, EditionViewModel>
+    public interface IEditionService
     {
     }
 }

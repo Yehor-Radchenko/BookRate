@@ -3,7 +3,7 @@ using BookRate.DAL.DTO;
 
 namespace BookRate.BLL.Services.IService
 {
-    public interface IRevardService : IService<RevardDTO, RevardViewModel>
+    public interface IRevardService
     {
     }
 }
