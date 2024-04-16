@@ -13,15 +13,15 @@ public partial class Book
 
     public string Title { get; set; }
 
-    public virtual ICollection<BookEdition> BookEditions { get; set; }
+    public virtual ICollection<BookEdition> BookEditions { get; set; } = new List <BookEdition>();
 
-    public virtual ICollection<Rate>? Rates { get; set; }
+    public virtual ICollection<Rate>? Rates { get; set; } = new List <Rate>();
 
-    public virtual ICollection<Review>? Reviews { get; set; }
+    public virtual ICollection<Review>? Reviews { get; set; } = new List <Review>();
 
     public virtual Serie? Serie { get; set; }
 
-    public virtual ICollection<Narrative> Narratives { get; set; }
+    public virtual ICollection<Narrative> Narratives { get; set; } = new List <Narrative>();
 
-    public virtual ICollection<Shelf> Shelves { get; set; }
+    public virtual ICollection<Shelf> Shelves { get; set; } = new List <Shelf>();
 }
