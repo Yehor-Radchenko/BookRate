@@ -50,6 +50,11 @@ namespace BookRate.DAL.Repositories
             return _context.Genres.Any(g => g.Id == genreId && g.Narratives.Any());
         }
 
+        public bool IsAnyContributorReferenced(int genreId)
+        {
+            return _context.Genres.Any(g => g.Id == genreId && g.Narratives.Any());
+        }
+
         public bool IsGenreWithNameExists(string name)
         {
             return _context.Genres.Any(g => name.ToLower() ==  g.Name.ToLower());

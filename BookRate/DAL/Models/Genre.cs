@@ -12,4 +12,6 @@ public partial class Genre
     public string? Description { get; set; }
 
     public virtual ICollection<Narrative> Narratives { get; set; } = new List<Narrative>();
+
+    public virtual ICollection<Contributor> Contributors { get; set; } = new List<Contributor>();
 }
