@@ -1,8 +1,8 @@
 ﻿using BookRate.DAL.Models;
 
-namespace BookRate.BLL.ViewModels
+namespace BookRate.DAL.DTO
 {
-    public class ContributorViewModel
+    public class UpdateContributorDTO
     {
         public int Id { get; set; }
 
@@ -16,12 +16,14 @@ namespace BookRate.BLL.ViewModels
 
         public DateTime? DeathDate { get; set; }
 
-        public string? Biography { get; set; }
+        public string Biography { get; set; }
 
-        public string? BirthPlace { get; set; }
+        public string BirthPlace { get; set; }
 
         public byte[]? Photo { get; set; }
 
-        public virtual IEnumerable<RoleViewModel> Roles { get; set; }
+        public virtual IEnumerable<int> Roles { get; set; }
+
+        public virtual IEnumerable<int> Genres { get; set; }
     }
 }

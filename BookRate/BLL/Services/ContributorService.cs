@@ -3,43 +3,109 @@ using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
 using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
+using BookRate.DAL.Models;
+using BookRate.DAL.Repositories;
+using BookRate.DAL.Repositories.IRepository;
+using System.Data;
 
 namespace BookRate.BLL.Services
 {
     public class ContributorService : IContributorService
     {
-        private readonly BookRateDbContext _context;
+        private readonly IContributorRepository _contributorRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
 
-        public ContributorService(BookRateDbContext context, IMapper mapper)
+        public ContributorService(IContributorRepository contributorRepository, IRoleRepository roleRepository, IMapper mapper)
         {
-            _context = context;
+            _contributorRepository = contributorRepository;
+            _roleRepository = roleRepository;
             _mapper = mapper;
         }
 
-        public Task<bool> Create(ContributorDTO model)
+        public async Task<bool> Add(CreateContributorDTO dto)
         {
-            throw new NotImplementedException();
+            List<Role> selectedRoleModels = new List<Role>();
+            foreach (int roleId in dto.RolesId)
+            {
+                selectedRoleModels.Add(await _roleRepository.GetByIdAsync(roleId));
+            }
+
+            try
+            {
+                var contributor = _mapper.Map<Contributor>(dto);
+                contributor.Roles = selectedRoleModels.ToList();
+                await _contributorRepository.Add(contributor);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<bool> Delete(int? id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            if (_contributorRepository.IsAnyNarrativeReferenced(id))
+                throw new Exception("Contributor can't be removed because it referenced by at least one narrative.");
+
+            try
+            {
+                await _contributorRepository.Delete(new Contributor { Id = id });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public Task<IEnumerable<ContributorViewModel>> GetAll()
+        public async Task<IEnumerable<ContributorViewModel>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                IEnumerable<Contributor> contributorModels = await _contributorRepository.GetAllAsync();
+                return _mapper.Map<IEnumerable<ContributorViewModel>>(contributorModels);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving contributors.", ex);
+            }
         }
 
-        public Task<ContributorViewModel?> GetById(int? id)
+        public async Task<ContributorViewModel?> GetById(int? id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (id == null)
+                    throw new Exception("Id is null.");
+
+                Contributor? contributorModel = await _contributorRepository.GetByIdAsync(id.Value);
+
+                if (contributorModel == null)
+                    throw new Exception($"There is no model with Id {id}");
+
+                return _mapper.Map<ContributorViewModel>(contributorModel);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving contributor.", ex);
+            }
         }
 
-        public Task<bool> Update(ContributorDTO expectedEntityValues)
+        public async Task<bool> Update(UpdateContributorDTO expectedEntityValues)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var contributorModel = _mapper.Map<Contributor>(expectedEntityValues);
+
+                await _contributorRepository.Update(contributorModel);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating contributor.", ex);
+            }
         }
     }
 }

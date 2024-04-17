@@ -29,7 +29,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostRole([FromBody] CreateRoleDTO dto)
+        public async Task<IActionResult> Post([FromBody] CreateRoleDTO dto)
         {
             if (await _service.Add(dto))
                 return Ok("Successfully created");
@@ -37,7 +37,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutRole([FromBody] UpdateRoleDTO dto)
+        public async Task<IActionResult> Put([FromBody] UpdateRoleDTO dto)
         {
             if (await _service.Update(dto))
                 return Ok("Updated successfully.");
@@ -45,7 +45,7 @@ namespace BookRate.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRole([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (await _service.Delete(id))
                 return Ok("Deleted successfully.");

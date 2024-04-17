@@ -25,7 +25,7 @@ public partial class Contributor
 
     public virtual ICollection<Narrative> Narratives { get; set; } = new List<Narrative>();
 
-    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+    public virtual IEnumerable<Role> Roles { get; set; } = new List<Role>();
 
-    public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
+    public virtual IEnumerable<Genre> Genres { get; set; } = new List<Genre>();
 }

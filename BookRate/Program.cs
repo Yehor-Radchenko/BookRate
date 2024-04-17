@@ -3,7 +3,9 @@ using BookRate.BLL.Services.IService;
 using BookRate.DAL.Context;
 using BookRate.DAL.Repositories;
 using BookRate.DAL.Repositories.IRepository;
+using BookRate.Profile;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,10 @@ builder.Services.AddScoped<IGenreService, GenreService>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+
+builder.Services.AddScoped<IContributorRepository, ContributorRepository>();
+builder.Services.AddScoped<IContributorService, ContributorService>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

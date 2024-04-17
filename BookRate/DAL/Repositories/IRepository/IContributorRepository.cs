@@ -6,6 +6,6 @@ namespace BookRate.DAL.Repositories.IRepository
     {
         bool IsAnyNarrativeReferenced(int contributorId);
         bool IsAnyRoleReferenced(int contributorId);
-        bool IsContributorWithNameExists(string firstName, string lastName);
+        Task<IEnumerable<Role>?> GetRolesByContributorIdAsync(int id);
     }
 }

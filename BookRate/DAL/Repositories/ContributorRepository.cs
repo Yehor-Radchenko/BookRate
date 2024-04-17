@@ -30,12 +30,12 @@ namespace BookRate.DAL.Repositories
 
         public async Task<IEnumerable<Contributor>> GetAllAsync()
         {
-            return await _context.Contributors.ToListAsync();
+            return await _context.Contributors.Include(c => c.Roles).ToListAsync();
         }
 
         public async Task<Contributor?> GetByIdAsync(int id)
         {
-            return await _context.Contributors.FindAsync(id);
+            return await _context.Contributors.Include(c => c.Roles).SingleOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<bool> Update(Contributor entity)
@@ -60,10 +60,13 @@ namespace BookRate.DAL.Repositories
             return _context.Contributors.Any(c => c.Id == contributorId && c.Genres.Any());
         }
 
-        public bool IsContributorWithNameExists(string firstName, string lastName)
+        public async Task<IEnumerable<Role>?> GetRolesByContributorIdAsync(int id)
         {
-            return _context.Contributors.Any(c => c.FirstName.ToLower() == firstName.ToLower() && c.LastName
-            .ToLower() == lastName.ToLower()); 
+            var contributor = await _context.Contributors
+                .Include(c => c.Roles)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            return contributor?.Roles;
         }
     }
 }

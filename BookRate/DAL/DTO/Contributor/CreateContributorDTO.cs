@@ -2,10 +2,8 @@
 
 namespace BookRate.DAL.DTO
 {
-    public class ContributorDTO
+    public class CreateContributorDTO
     {
-        public int Id { get; set; }
-
         public string LastName { get; set; }
 
         public string FirstName { get; set; }
@@ -16,12 +14,14 @@ namespace BookRate.DAL.DTO
 
         public DateTime? DeathDate { get; set; }
 
-        public string Biography { get; set; }
+        public string? Biography { get; set; }
 
-        public string BirthPlace { get; set; }
+        public string? BirthPlace { get; set; }
 
         public byte[]? Photo { get; set; }
 
-        public virtual IEnumerable<Role> Roles { get; set; }
+        public virtual IEnumerable<int> RolesId { get; set; }
+
+        public virtual IEnumerable<int>? GenresId { get; set; }
     }
 }
