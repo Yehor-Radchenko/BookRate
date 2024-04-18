@@ -59,10 +59,12 @@ namespace BookRate.DAL.Repositories
         {
             return _context.Books.Any(b => b.Id == bookId && b.BookEditions.Any());
         }
+
         public bool IsAnyReviewReferenced(int bookId)
         {
             return _context.Books.Any(b => b.Id == bookId && b.Reviews.Any());
         }
+
         public bool IsAnyShelfReferenced(int bookId)
         {
             return _context.Books.Any(b => b.Id == bookId && b.Shelves.Any());
