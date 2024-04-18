@@ -1,9 +1,7 @@
 ﻿namespace BookRate.DAL.DTO
 {
-    public class EditionDTO
+    public class CreateEditionDTO
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string? Description { get; set; }

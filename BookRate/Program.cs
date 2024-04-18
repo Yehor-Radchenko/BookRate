@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<BookRateDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found.")));
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IGenreService, GenreService>();
@@ -25,7 +26,9 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IContributorRepository, ContributorRepository>();
 builder.Services.AddScoped<IContributorService, ContributorService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddScoped<IEditionRepository, EditionRepository>();
+builder.Services.AddScoped<IEditionService, EditionService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

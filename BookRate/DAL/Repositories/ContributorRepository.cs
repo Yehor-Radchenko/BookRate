@@ -59,14 +59,5 @@ namespace BookRate.DAL.Repositories
         {
             return _context.Contributors.Any(c => c.Id == contributorId && c.Genres.Any());
         }
-
-        public async Task<IEnumerable<Role>?> GetRolesByContributorIdAsync(int id)
-        {
-            var contributor = await _context.Contributors
-                .Include(c => c.Roles)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            return contributor?.Roles;
-        }
     }
 }

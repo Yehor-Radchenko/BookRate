@@ -11,8 +11,14 @@
         {
             CreateMap<Contributor, ContributorViewModel>();
             CreateMap<CreateContributorDTO, Contributor>();
+            CreateMap<UpdateContributorDTO, Contributor>();
 
             CreateMap<Role, RoleViewModel>();
+
+            CreateMap<Edition, EditionViewModel>();
+            CreateMap<CreateEditionDTO, Edition>();
+            CreateMap<UpdateEditionDTO, Edition>();
+
         }
     }
 }

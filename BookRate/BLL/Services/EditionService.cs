@@ -1,45 +1,99 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
-using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
+using BookRate.DAL.Models;
+using BookRate.DAL.Repositories;
+using BookRate.DAL.Repositories.IRepository;
 
 namespace BookRate.BLL.Services
 {
     public class EditionService : IEditionService
     {
-        private readonly BookRateDbContext _context;
+        private readonly IEditionRepository _editionRepository;
         private readonly IMapper _mapper;
 
-        public EditionService(BookRateDbContext context, IMapper mapper)
+        public EditionService(IEditionRepository editionRepository, IMapper mapper)
         {
-            _context = context;
+            _editionRepository = editionRepository;
             _mapper = mapper;
         }
 
-        public Task<bool> Create(EditionDTO model)
+        public async Task<bool> Add(CreateEditionDTO dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var edition = _mapper.Map<Edition>(dto);
+                await _editionRepository.Add(edition);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<bool> Delete(int? id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            if (_editionRepository.IsAnyBookEditionReferenced(id))
+                throw new Exception("Edition can't be removed because it referenced by at least one BookEdition.");
+
+            try
+            {
+                await _editionRepository.Delete(new Edition { Id = id });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public Task<IEnumerable<EditionViewModel>> GetAll()
+        public async Task<IEnumerable<EditionViewModel>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                IEnumerable<Edition> editionModels = await _editionRepository.GetAllAsync();
+                return _mapper.Map<IEnumerable<EditionViewModel>>(editionModels);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving editions.", ex);
+            }
         }
 
-        public Task<EditionViewModel?> GetById(int? id)
+        public async Task<EditionViewModel?> GetById(int? id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (id == null)
+                    throw new Exception("Id is null.");
+
+                Edition? model = await _editionRepository.GetByIdAsync(id.Value);
+
+                if (model == null)
+                    throw new Exception($"There is no model with Id {id}");
+
+                return _mapper.Map<EditionViewModel>(model);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving edition.", ex);
+            }
         }
 
-        public Task<bool> Update(EditionDTO expectedEntityValues)
+        public async Task<bool> Update(UpdateEditionDTO expectedEntityValues)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var model = _mapper.Map<Edition>(expectedEntityValues);
+                await _editionRepository.Update(model);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating edition.", ex);
+            }
         }
     }
 }

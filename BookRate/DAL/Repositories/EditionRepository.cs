@@ -20,6 +20,7 @@ namespace BookRate.DAL.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
         public async Task<bool> Delete(Edition entity)
         {
             _context.Editions.Remove(entity);
