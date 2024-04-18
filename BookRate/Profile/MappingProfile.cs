@@ -19,6 +19,10 @@
             CreateMap<CreateEditionDTO, Edition>();
             CreateMap<UpdateEditionDTO, Edition>();
 
+            CreateMap<Setting, SettingViewModel>();
+            CreateMap<CreateSettingDTO, Setting>();
+            CreateMap<UpdateSettingDTO, Setting>();
+
         }
     }
 }

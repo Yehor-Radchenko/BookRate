@@ -30,6 +30,9 @@ builder.Services.AddScoped<IContributorService, ContributorService>();
 builder.Services.AddScoped<IEditionRepository, EditionRepository>();
 builder.Services.AddScoped<IEditionService, EditionService>();
 
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+builder.Services.AddScoped<ISettingService, SettingService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

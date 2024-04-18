@@ -83,7 +83,7 @@ namespace BookRate.BLL.Services
                 Contributor? contributorModel = await _contributorRepository.GetByIdAsync(id.Value);
 
                 if (contributorModel == null)
-                    throw new Exception($"There is no model with Id {id}");
+                    throw new Exception($"There is no contributor with Id {id}");
 
                 return _mapper.Map<ContributorViewModel>(contributorModel);
             }

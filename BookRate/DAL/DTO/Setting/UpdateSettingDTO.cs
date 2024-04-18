@@ -1,8 +1,9 @@
-﻿namespace BookRate.BLL.ViewModels
+﻿namespace BookRate.DAL.DTO
 {
-    public class SettingViewModel
+    public class UpdateSettingDTO
     {
         public int Id { get; set; }
+
         public string Name { get; set; }
     }
 }
