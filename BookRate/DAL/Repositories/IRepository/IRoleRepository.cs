@@ -4,7 +4,7 @@ namespace BookRate.DAL.Repositories.IRepository
 {
     public interface IRoleRepository : IRepository<Role>
     {
-        bool IsAnyCotributorReferenced(int roleId);
+        bool IsAnyContributorReferenced(int roleId);
         bool IsRoleWithNameExists(string name);
     }
 }

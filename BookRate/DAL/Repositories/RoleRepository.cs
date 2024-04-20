@@ -44,14 +44,14 @@ namespace BookRate.DAL.Repositories
             return true;
         }
 
-        public bool IsAnyCotributorReferenced(int roleId)
+        public bool IsAnyContributorReferenced(int roleId)
         {
             return _context.Roles.Any(r => r.Id == roleId && r.Contributors.Any());
         }
 
         public bool IsRoleWithNameExists(string name)
         {
-            return _context.Roles.Any(g => name.ToLower() == g.Name.ToLower());
+            return _context.Roles.Any(r => name.ToLower() == r.Name.ToLower());
         }
     }
 }

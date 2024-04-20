@@ -41,7 +41,7 @@ namespace BookRate.BLL.Services
 
         public async Task<bool> Delete(int id)
         {
-            if (_roleRepository.IsAnyCotributorReferenced(id))
+            if (_roleRepository.IsAnyContributorReferenced(id))
                 throw new Exception("Role cant be removed because it referenced by at least one contributor.");
 
             try
