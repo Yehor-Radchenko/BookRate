@@ -1,6 +1,7 @@
 ﻿using BookRate.DAL.Context;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookRate.DAL.Repositories
 {

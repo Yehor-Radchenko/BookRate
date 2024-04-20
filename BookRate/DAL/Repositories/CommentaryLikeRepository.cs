@@ -37,6 +37,5 @@ namespace BookRate.DAL.Repositories
         {
             return await _context.CommentaryLikes.FindAsync(id);
         }
-
     }
 }
