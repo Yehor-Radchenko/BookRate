@@ -36,11 +36,5 @@ namespace BookRate.DAL.Repositories
         {
             return await _context.Follows.FindAsync(id);
         }
-
-        //Follow can't be updated.
-        public Task<bool> Update(Follow entity)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
