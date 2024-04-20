@@ -5,16 +5,16 @@ using BookRate.DAL.Repositories;
 using BookRate.DAL.Repositories.IRepository;
 using BookRate.Profile;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+DotNetEnv.Env.Load();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<BookRateDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string not found.")));
+    options.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_CON_STRING") ?? throw new InvalidOperationException("Connection string not found.")));
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
