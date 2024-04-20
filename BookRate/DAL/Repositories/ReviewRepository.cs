@@ -43,16 +43,6 @@ namespace BookRate.DAL.Repositories
             return true;
         }
 
-        public bool IsAnyCommentaryReferenced(int reviewId)
-        {
-            return _context.Reviews.Any(r => r.Id == reviewId && r.Commentaries.Any());
-        }
-
-        public bool IsAnyReviewLikeReferenced(int reviewId)
-        {
-            return _context.Reviews.Any(r => r.Id == reviewId && r.ReviewLikes.Any());
-        }
-
         public bool IsReviewWithTitleExists(string title)
         {
             return _context.Reviews.Any(r => title.ToLower() == r.Title.ToLower());

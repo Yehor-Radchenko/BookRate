@@ -48,9 +48,5 @@ namespace BookRate.DAL.Repositories
             return _context.Revards.Any(r => r.Id == revardId && r.NarrativeRevards.Any());
         }
 
-        public bool IsRevardWithNameExists(string name)
-        {
-            return _context.Revards.Any(r => name.ToLower() == r.Name.ToLower());
-        }
     }
 }

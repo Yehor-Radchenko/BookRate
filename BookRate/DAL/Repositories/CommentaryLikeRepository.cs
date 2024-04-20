@@ -38,11 +38,5 @@ namespace BookRate.DAL.Repositories
             return await _context.CommentaryLikes.FindAsync(id);
         }
 
-        public async Task<bool> Update(CommentaryLike entity)
-        {
-            _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return true;
-        }
     }
 }

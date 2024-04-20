@@ -44,11 +44,6 @@ namespace BookRate.DAL.Repositories
             return true;
         }
 
-        public bool IsAnyBookReferenced(int shelfId)
-        {
-            return _context.Shelves.Any(s => s.Id == shelfId && s.Books.Any());
-        }
-
         public bool IsShelfWithNameExists(string name)
         {
             return _context.Shelves.Any(s => name.ToLower() == s.Name.ToLower());
