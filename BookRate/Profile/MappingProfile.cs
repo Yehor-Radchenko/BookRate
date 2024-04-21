@@ -27,6 +27,8 @@
             CreateMap<CreateSerieDTO, Serie>();
             CreateMap<UpdateSerieDTO, Serie>();
 
+
+
         }
     }
 }

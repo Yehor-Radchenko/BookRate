@@ -1,6 +1,8 @@
-﻿namespace BookRate.DAL.Models
+﻿using BookRate.DAL.Models;
+
+namespace BookRate.DAL.DTO
 {
-    public class Shelf
+    public class UpdateShelfDTO
     {
         public int Id { get; set; }
 
@@ -11,7 +13,5 @@
         public int UserId { get; set; }
 
         public List<Book> Books { get; set; } = new List<Book>();
-
-        public virtual User User { get; set; }
     }
 }
