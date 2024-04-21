@@ -1,12 +1,7 @@
-﻿using BookRate.DAL.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BookRate.DAL.DTO
+﻿namespace BookRate.DAL.DTO
 {
-    public class CommentaryDTO
+    public class CreateCommentaryDTO
     {
-        public int Id { get; set; }
-
         public int UserId { get; set; }
 
         public int ReviewId { get; set; }

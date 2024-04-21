@@ -1,6 +1,6 @@
 ﻿namespace BookRate.DAL.DTO
 {
-    public class ReviewDTO
+    public class UpdateReviewDTO
     {
         public int Id { get; set; }
 

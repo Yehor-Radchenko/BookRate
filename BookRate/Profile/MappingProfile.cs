@@ -23,6 +23,10 @@
             CreateMap<CreateSettingDTO, Setting>();
             CreateMap<UpdateSettingDTO, Setting>();
 
+            CreateMap<Serie, SerieViewModel>();
+            CreateMap<CreateSerieDTO, Serie>();
+            CreateMap<UpdateSerieDTO, Serie>();
+
         }
     }
 }

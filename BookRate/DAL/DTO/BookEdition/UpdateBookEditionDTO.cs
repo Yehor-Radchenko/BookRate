@@ -1,6 +1,6 @@
 ﻿namespace BookRate.DAL.DTO
 {
-    public class BookEditionDTO
+    public class UpdateBookEditionDTO
     {
         public int BookId { get; set; }
 

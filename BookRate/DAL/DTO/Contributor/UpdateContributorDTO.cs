@@ -1,6 +1,4 @@
-﻿using BookRate.DAL.Models;
-
-namespace BookRate.DAL.DTO
+﻿namespace BookRate.DAL.DTO
 {
     public class UpdateContributorDTO
     {

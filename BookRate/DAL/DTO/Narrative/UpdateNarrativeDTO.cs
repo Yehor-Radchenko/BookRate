@@ -1,8 +1,6 @@
-﻿using BookRate.DAL.Models;
-
-namespace BookRate.DAL.DTO
+﻿namespace BookRate.DAL.DTO
 {
-    public class NarrativeDTO
+    public class UpdateNarrativeDTO
     {
         public int Id { get; set; }
 
@@ -14,8 +12,8 @@ namespace BookRate.DAL.DTO
 
         public string ThreeLetterIsolanguageName { get; set; } 
 
-        public virtual IEnumerable<UpdateContributorDTO> Contributors { get; set; }
+        public virtual IEnumerable<int> ContributorsId { get; set; }
 
-        public virtual ICollection<Genre> Genres { get; set; }
+        public virtual IEnumerable<int> GenresId { get; set; }
     }
 }

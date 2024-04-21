@@ -1,8 +1,6 @@
-﻿using BookRate.DAL.Models;
-
-namespace BookRate.DAL.DTO
+﻿namespace BookRate.DAL.DTO
 {
-    public class BookDTO
+    public class UpdateBookDTO
     {
         public int Id { get; set; }
 

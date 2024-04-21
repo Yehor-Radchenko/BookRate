@@ -14,7 +14,7 @@ namespace BookRate.BLL.Services
         {
             _context = context;
         } 
-        public async Task<bool> Create(BookDTO model)
+        public async Task<bool> Create(CreateBookDTO model)
         {
             throw new NotImplementedException();
         }
@@ -34,7 +34,7 @@ namespace BookRate.BLL.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> Update(BookDTO expectedEntityValues)
+        public Task<bool> Update(CreateBookDTO expectedEntityValues)
         {
             throw new NotImplementedException();
         }

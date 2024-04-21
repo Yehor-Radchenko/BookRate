@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BookRate.DAL.DTO
+﻿namespace BookRate.DAL.DTO
 {
-    public class RateDTO
+    public class UpdateRateDTO
     {
         public int UserId { get; set; }
 

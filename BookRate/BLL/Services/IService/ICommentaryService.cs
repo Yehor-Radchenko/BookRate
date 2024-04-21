@@ -5,5 +5,10 @@ namespace BookRate.BLL.Services.IService
 {
     public interface ICommentaryService
     {
+        Task<bool> Add(CreateBookDTO dto);
+        Task<bool> Update(UpdateBookDTO expectedEntityValues);
+        Task<bool> Delete(int id);
+        Task<IEnumerable<BookViewModel>> GetAll();
+        Task<BookViewModel?> GetById(int? id);
     }
 }
