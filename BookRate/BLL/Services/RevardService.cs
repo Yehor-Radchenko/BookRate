@@ -4,43 +4,95 @@ using BookRate.BLL.ViewModels;
 using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
+using BookRate.DAL.Repositories;
+using BookRate.DAL.Repositories.IRepository;
 
 namespace BookRate.BLL.Services
 {
     public class RevardService : IRevardService
     {
-        private readonly BookRateDbContext _context;
+        private readonly IRevardRepository _revardRepository;
         private readonly IMapper _mapper;
 
-        public RevardService(BookRateDbContext context, IMapper mapper)
+        public RevardService(IRevardRepository revardRepository, IMapper mapper)
         {
-            _context = context;
+            _revardRepository = revardRepository;
             _mapper = mapper;
         }
 
-        public Task<bool> Create(UpdateRevardDTO model)
+        public async Task<bool> Add(CreateRevardDTO dto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var model = _mapper.Map<Revard>(dto);
+                await _revardRepository.Add(model);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        public Task<bool> Delete(int? id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _revardRepository.Delete(new Revard { Id = id });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public Task<IEnumerable<RevardViewModel>> GetAll()
+        public async Task<IEnumerable<RevardViewModel>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                IEnumerable<Revard> models = await _revardRepository.GetAllAsync();
+                return _mapper.Map<IEnumerable<RevardViewModel>>(models);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving revard.", ex);
+            }
         }
 
-        public Task<RevardViewModel?> GetById(int? id)
+        public async Task<RevardViewModel?> GetById(int? id)
         {
-            throw new NotImplementedException();
+            if (id == null)
+                throw new Exception("Id is null.");
+
+            try
+            {
+                Revard? model = await _revardRepository.GetByIdAsync(id.Value);
+
+                if (model == null)
+                    throw new Exception($"There is no revard with Id {id}");
+
+                return _mapper.Map<RevardViewModel>(model);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving revard.", ex);
+            }
         }
 
-        public Task<bool> Update(UpdateRevardDTO expectedEntityValues)
+        public async Task<bool> Update(UpdateRevardDTO expectedEntityValues)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Revard model = _mapper.Map<Revard>(expectedEntityValues);
+
+                await _revardRepository.Update(model);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while updating revard.", ex);
+            }
         }
     }
 }

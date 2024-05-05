@@ -1,4 +1,6 @@
-﻿namespace BookRate.DAL.DTO
+﻿using BookRate.BLL.ViewModels;
+
+namespace BookRate.DAL.DTO
 {
     public class CreateNarrativeDTO
     {
@@ -15,5 +17,7 @@
         public virtual IEnumerable<int> GenresId { get; set; }
 
         public virtual IEnumerable<int>? SettingsId { get; set; }
+
+        public virtual IEnumerable<int>? RevardsId { get; set; }
     }
 }

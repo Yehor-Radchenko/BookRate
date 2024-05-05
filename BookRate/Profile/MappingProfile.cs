@@ -27,8 +27,13 @@
             CreateMap<CreateSerieDTO, Serie>();
             CreateMap<UpdateSerieDTO, Serie>();
 
+            CreateMap<Narrative, NarrativeViewModel>();
+            CreateMap<CreateNarrativeDTO, Narrative>();
+            CreateMap<UpdateNarrativeDTO, Narrative>();
 
-
+            CreateMap<Book, BookViewModel>();
+            CreateMap<CreateBookDTO, Book>();
+            CreateMap<UpdateBookDTO, Book>();
         }
     }
 }

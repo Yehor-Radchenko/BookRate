@@ -1,4 +1,5 @@
-﻿using BookRate.DAL.Models;
+﻿using BookRate.BLL.ViewModels;
+using BookRate.DAL.Models;
 
 namespace BookRate.DAL.Repositories.IRepository
 {
@@ -9,5 +10,6 @@ namespace BookRate.DAL.Repositories.IRepository
         bool IsAnyReviewReferenced(int bookId);
         bool IsAnyNarrativeReferenced(int bookId);
         bool IsAnyShelfReferenced(int bookId);
+        Task<List<Book>> GetTopOfWeekBooks();
     }
 }

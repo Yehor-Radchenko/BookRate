@@ -1,4 +1,5 @@
-﻿using BookRate.DAL.Context;
+﻿using BookRate.BLL.ViewModels;
+using BookRate.DAL.Context;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -68,6 +69,26 @@ namespace BookRate.DAL.Repositories
         public bool IsAnyShelfReferenced(int bookId)
         {
             return _context.Books.Any(b => b.Id == bookId && b.Shelves.Any());
+        }
+
+        public async Task<List<Book>> GetTopOfWeekBooks()
+        {
+            DateTime lastWeekStart = DateTime.Today.AddDays(-7);
+            DateTime lastWeekEnd = DateTime.Today;
+
+            var topBookIds = await _context.Rates
+                .Where(r => r.DateRated >= lastWeekStart && r.DateRated <= lastWeekEnd)
+                .Select(r => r.BookId)
+                .Distinct()
+                .ToListAsync();
+
+            return await _context.Books
+                .Include(b => b.Narratives)
+                    .ThenInclude(n => n.Contributors)
+                        .ThenInclude(c => c.Roles)
+                .Include(b => b.BookEditions)
+                .Where(b => topBookIds.Contains(b.Id))
+                .ToListAsync();
         }
     }
 }

@@ -10,5 +10,6 @@ namespace BookRate.BLL.Services.IService
         Task<bool> Delete(int id);
         Task<IEnumerable<BookViewModel>> GetAll();
         Task<BookViewModel?> GetById(int? id);
+        Task<List<BookCardViewModel>> GetTopOfWeekBookCards();
     }
 }

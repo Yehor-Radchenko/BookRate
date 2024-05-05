@@ -1,6 +1,6 @@
 ﻿namespace BookRate.DAL.DTO
 {
-    public class ReviewLikeDTO
+    public class CreateReviewLikeDTO
     {
         public int UserId { get; set; }
 

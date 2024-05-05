@@ -1,4 +1,5 @@
 ﻿using BookRate.BLL.ViewModels;
+using BookRate.DAL.DTO;
 
 namespace BookRate.BLL.Services.IService
 {
@@ -6,7 +7,5 @@ namespace BookRate.BLL.Services.IService
     {
         Task<bool> Add(CreateReviewLikeDTO dto);
         Task<bool> Delete(int id);
-        Task<IEnumerable<ReviewLikeViewModel>> GetAll();
-        Task<ReviewLikeViewModel?> GetById(int? id);
     }
 }

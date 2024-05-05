@@ -4,26 +4,27 @@ using BookRate.BLL.ViewModels;
 using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
+using BookRate.DAL.Repositories.IRepository;
 
 namespace BookRate.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly BookRateDbContext _context;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserService(BookRateDbContext context, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            _context = context;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
-        public Task<bool> Create(UpdateUserDTO model)
+        public Task<bool> Add(CreateUserDTO dto)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Delete(int? id)
+        public Task<bool> Delete(int id)
         {
             throw new NotImplementedException();
         }

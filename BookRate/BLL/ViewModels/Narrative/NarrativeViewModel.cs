@@ -1,4 +1,6 @@
-﻿namespace BookRate.BLL.ViewModels
+﻿using BookRate.DAL.Models;
+
+namespace BookRate.BLL.ViewModels
 {
     public class NarrativeViewModel
     {
@@ -14,6 +16,10 @@
 
         public IEnumerable<ContributorListModel> Contributors { get; set; }
 
-        public virtual IEnumerable<GenreListModel> Genres { get; set; }
+        public IEnumerable<GenreListModel> Genres { get; set; }
+
+        public IEnumerable<SettingViewModel> Settings { get; set; }
+
+        public IEnumerable<NarrativeRevardViewModel> NarrativeRevards { get; set; }
     }
 }

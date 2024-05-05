@@ -18,12 +18,12 @@ namespace BookRate.BLL.Services
             _mapper = mapper;
         }
 
-        public Task<bool> Create(UpdateReviewDTO model)
+        public Task<bool> Add(CreateReviewDTO dto)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Delete(int? id)
+        public Task<bool> Delete(int id)
         {
             throw new NotImplementedException();
         }
