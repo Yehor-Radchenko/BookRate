@@ -18,4 +18,6 @@ public partial class Rate
     public virtual Book Book { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
+
+    public byte[] Timestamp { get; set; }
 }

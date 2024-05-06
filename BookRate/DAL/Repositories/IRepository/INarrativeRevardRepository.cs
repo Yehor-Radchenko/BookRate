@@ -2,7 +2,7 @@
 
 namespace BookRate.DAL.Repositories.IRepository
 {
-    public interface INarrativeRevardRepository : IRepository<NarrativeRevard>
+    public interface INarrativeRewardRepository : IRepository<NarrativeReward>
     {
     }
 }

@@ -15,7 +15,7 @@ public partial class Narrative
 
     public string ThreeLetterIsolanguageName { get; set; } = null!;
 
-    public virtual ICollection<NarrativeRevard> NarrativeRevards { get; set; } = new List<NarrativeRevard>();
+    public virtual ICollection<NarrativeReward> NarrativeRewards { get; set; } = new List<NarrativeReward>();
 
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 

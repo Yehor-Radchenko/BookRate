@@ -54,5 +54,12 @@ namespace BookRate.DAL.Repositories
         {
             return _context.Editions.Any(e => e.Name.ToLower() == name.ToLower());
         }
+
+        public bool IsEditionWithIdExists(int id)
+        {
+            if (_context.Editions.Any(e => e.Id == id))
+                return true;
+            return false;
+        }
     }
 }

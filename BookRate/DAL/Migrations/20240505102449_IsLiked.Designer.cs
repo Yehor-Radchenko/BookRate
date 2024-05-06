@@ -4,6 +4,7 @@ using BookRate.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRate.DAL.Migrations
 {
     [DbContext(typeof(BookRateDbContext))]
-    partial class BookRateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240505102449_IsLiked")]
+    partial class IsLiked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,9 +243,6 @@ namespace BookRate.DAL.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(1);
 
-                    b.Property<DateTime>("DateFollowed")
-                        .HasColumnType("smalldatetime");
-
                     b.HasKey("FolloweeId", "FollowerId");
 
                     b.ToTable("Follows");
@@ -296,7 +296,7 @@ namespace BookRate.DAL.Migrations
                     b.ToTable("Narratives");
                 });
 
-            modelBuilder.Entity("BookRate.DAL.Models.NarrativeReward", b =>
+            modelBuilder.Entity("BookRate.DAL.Models.NarrativeRevard", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,22 +304,22 @@ namespace BookRate.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateRewarded")
-                        .HasColumnType("smalldatetime");
+                    b.Property<DateTime>("DateRevarded")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("NarrativeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RewardId")
+                    b.Property<int>("RevardId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NarrativeId");
 
-                    b.HasIndex("RewardId");
+                    b.HasIndex("RevardId");
 
-                    b.ToTable("NarrativeRewards");
+                    b.ToTable("NarrativeRevards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Rate", b =>
@@ -336,15 +336,34 @@ namespace BookRate.DAL.Migrations
                     b.Property<int>("StarsRate")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Timestamp")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.HasKey("UserId", "BookId");
 
                     b.HasIndex("BookId");
 
                     b.ToTable("Rates");
+                });
+
+            modelBuilder.Entity("BookRate.DAL.Models.Revard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Revards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Review", b =>
@@ -370,10 +389,6 @@ namespace BookRate.DAL.Migrations
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsRequired()
-                        .HasColumnType("timestamp");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -417,29 +432,6 @@ namespace BookRate.DAL.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("ReviewLikes");
-                });
-
-            modelBuilder.Entity("BookRate.DAL.Models.Reward", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Website")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rewards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Role", b =>
@@ -553,10 +545,6 @@ namespace BookRate.DAL.Migrations
 
                     b.Property<byte[]>("Photo")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsRequired()
-                        .HasColumnType("timestamp");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -748,23 +736,23 @@ namespace BookRate.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookRate.DAL.Models.NarrativeReward", b =>
+            modelBuilder.Entity("BookRate.DAL.Models.NarrativeRevard", b =>
                 {
                     b.HasOne("BookRate.DAL.Models.Narrative", "Narrative")
-                        .WithMany("NarrativeRewards")
+                        .WithMany("NarrativeRevards")
                         .HasForeignKey("NarrativeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookRate.DAL.Models.Reward", "Reward")
-                        .WithMany("NarrativeRewards")
-                        .HasForeignKey("RewardId")
+                    b.HasOne("BookRate.DAL.Models.Revard", "Revard")
+                        .WithMany("NarrativeRevards")
+                        .HasForeignKey("RevardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Narrative");
 
-                    b.Navigation("Reward");
+                    b.Navigation("Revard");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Rate", b =>
@@ -950,7 +938,12 @@ namespace BookRate.DAL.Migrations
 
             modelBuilder.Entity("BookRate.DAL.Models.Narrative", b =>
                 {
-                    b.Navigation("NarrativeRewards");
+                    b.Navigation("NarrativeRevards");
+                });
+
+            modelBuilder.Entity("BookRate.DAL.Models.Revard", b =>
+                {
+                    b.Navigation("NarrativeRevards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Review", b =>
@@ -958,11 +951,6 @@ namespace BookRate.DAL.Migrations
                     b.Navigation("Commentaries");
 
                     b.Navigation("ReviewLikes");
-                });
-
-            modelBuilder.Entity("BookRate.DAL.Models.Reward", b =>
-                {
-                    b.Navigation("NarrativeRewards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Serie", b =>

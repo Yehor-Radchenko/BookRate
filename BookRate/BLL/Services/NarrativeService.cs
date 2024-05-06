@@ -12,8 +12,6 @@ namespace BookRate.BLL.Services
     public class NarrativeService : INarrativeService
     {
         private readonly INarrativeRepository _narrativeRepository;
-        private readonly IRevardRepository _revardRepository;
-        private readonly INarrativeRevardRepository _narrativeRevardRepository;
         private readonly IGenreRepository _genreRepository;
         private readonly IContributorRepository _contributorRepository;
         private readonly ISettingRepository _settingRepository;
@@ -21,13 +19,11 @@ namespace BookRate.BLL.Services
 
         public NarrativeService(
             INarrativeRepository narrativeRepository,
-            IRevardRepository revardRepository,
             IGenreRepository genreRepository,
             IContributorRepository contributorRepository,
             IMapper mapper) 
         {
             _narrativeRepository = narrativeRepository;
-            _revardRepository = revardRepository;
             _genreRepository = genreRepository;
             _contributorRepository = contributorRepository;
             _mapper = mapper;
@@ -134,6 +130,20 @@ namespace BookRate.BLL.Services
         {
             try
             {
+                bool isAnyContributorFillsAuthorRole = false;
+                foreach (var contributorId in expectedEntityValues.ContributorsId)
+                {
+                    Contributor contributor = await _contributorRepository.GetByIdAsync(contributorId);
+                    if (contributor.Roles.Any(r => r.Name == "Author"))
+                    {
+                        isAnyContributorFillsAuthorRole = true;
+                        break;
+                    }
+                }
+
+                if (!isAnyContributorFillsAuthorRole)
+                    throw new Exception("You cannot update narrative without a contributor with role Author.");
+
                 var narrativeModel = _mapper.Map<Narrative>(expectedEntityValues);
 
                 await _narrativeRepository.Update(narrativeModel);

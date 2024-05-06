@@ -4,13 +4,13 @@
     {
         public int Id { get; set; }
 
+        public string Title { get; set; }
+
         public DateTime FirstPublished { get; set; }
 
         public BookEditionViewModel BookEdition { get; set; }
 
         public double AverageRate { get; set; }
-
-        public IEnumerable<ReviewViewModel>? Reviews { get; set; }
 
         public int? SerieId { get; set; }
 

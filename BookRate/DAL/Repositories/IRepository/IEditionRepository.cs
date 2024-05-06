@@ -6,5 +6,6 @@ namespace BookRate.DAL.Repositories.IRepository
     {
         bool IsAnyBookEditionReferenced(int editionId);
         bool IsEditionWithNameExists(string name);
+        bool IsEditionWithIdExists(int id);
     }
 }

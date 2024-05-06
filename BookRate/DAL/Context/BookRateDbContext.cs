@@ -32,11 +32,11 @@ public partial class BookRateDbContext : DbContext
 
     public virtual DbSet<Narrative> Narratives { get; set; }
 
-    public virtual DbSet<NarrativeRevard> NarrativeRevards { get; set; }
+    public virtual DbSet<NarrativeReward> NarrativeRewards { get; set; }
 
     public virtual DbSet<Rate> Rates { get; set; }
 
-    public virtual DbSet<Revard> Revards { get; set; }
+    public virtual DbSet<Reward> Rewards { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 

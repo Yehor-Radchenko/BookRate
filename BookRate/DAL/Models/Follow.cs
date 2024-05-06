@@ -10,5 +10,8 @@ namespace BookRate.DAL.Models
 
         [Key, Column(Order = 1)]
         public int FollowerId { get; set; }
+
+        [Column(TypeName = "smalldatetime")]
+        public DateTime DateFollowed { get; set; }
     }
 }

@@ -1,8 +1,10 @@
-﻿using BookRate.BLL.Services.IService;
+﻿using AutoMapper;
+using BookRate.BLL.Services.IService;
 using BookRate.BLL.ViewModels;
 using BookRate.DAL.Context;
 using BookRate.DAL.DTO;
 using BookRate.DAL.Models;
+using BookRate.DAL.Repositories;
 using BookRate.DAL.Repositories.IRepository;
 
 namespace BookRate.BLL.Services
@@ -10,20 +12,54 @@ namespace BookRate.BLL.Services
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
+        private readonly INarrativeRepository _narrativeRepository;
+        private readonly IMapper _mapper;
 
-        public BookService(IBookRepository bookRepository)
+        public BookService(IBookRepository bookRepository, 
+            INarrativeRepository narrativeRepository, 
+            IMapper mapper)
         {
             _bookRepository = bookRepository;
+            _mapper = mapper;
+            _narrativeRepository = narrativeRepository;
         }
 
-        public Task<bool> Add(CreateBookDTO dto)
+        public async Task<bool> Add(CreateBookDTO dto)
         {
-            throw new NotImplementedException();
+            List<Narrative> selectedNarrativeModels= new List<Narrative>();
+
+            foreach (var id in dto.NarrativesId)
+            {
+                Narrative model = await _narrativeRepository.GetByIdAsync(id);
+                if (model is null)
+                    throw new Exception($"Can't create Book: narrative with ID {id} not found.");
+                else
+                    selectedNarrativeModels.Add(model);
+            }
+
+            try
+            {
+                if(await _bookRepository.Add(_mapper.Map<Book>(dto)))
+                    return true;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _bookRepository.Delete(new Book { Id = id });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public Task<IEnumerable<BookViewModel>> GetAll()

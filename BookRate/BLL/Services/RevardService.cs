@@ -9,22 +9,22 @@ using BookRate.DAL.Repositories.IRepository;
 
 namespace BookRate.BLL.Services
 {
-    public class RevardService : IRevardService
+    public class RewardService : IRewardService
     {
-        private readonly IRevardRepository _revardRepository;
+        private readonly IRewardRepository _revardRepository;
         private readonly IMapper _mapper;
 
-        public RevardService(IRevardRepository revardRepository, IMapper mapper)
+        public RewardService(IRewardRepository revardRepository, IMapper mapper)
         {
             _revardRepository = revardRepository;
             _mapper = mapper;
         }
 
-        public async Task<bool> Add(CreateRevardDTO dto)
+        public async Task<bool> Add(CreateRewardDTO dto)
         {
             try
             {
-                var model = _mapper.Map<Revard>(dto);
+                var model = _mapper.Map<Reward>(dto);
                 await _revardRepository.Add(model);
                 return true;
             }
@@ -38,7 +38,7 @@ namespace BookRate.BLL.Services
         {
             try
             {
-                await _revardRepository.Delete(new Revard { Id = id });
+                await _revardRepository.Delete(new Reward { Id = id });
                 return true;
             }
             catch (Exception ex)
@@ -47,12 +47,12 @@ namespace BookRate.BLL.Services
             }
         }
 
-        public async Task<IEnumerable<RevardViewModel>> GetAll()
+        public async Task<IEnumerable<RewardViewModel>> GetAll()
         {
             try
             {
-                IEnumerable<Revard> models = await _revardRepository.GetAllAsync();
-                return _mapper.Map<IEnumerable<RevardViewModel>>(models);
+                IEnumerable<Reward> models = await _revardRepository.GetAllAsync();
+                return _mapper.Map<IEnumerable<RewardViewModel>>(models);
             }
             catch (Exception ex)
             {
@@ -60,19 +60,19 @@ namespace BookRate.BLL.Services
             }
         }
 
-        public async Task<RevardViewModel?> GetById(int? id)
+        public async Task<RewardViewModel?> GetById(int? id)
         {
             if (id == null)
                 throw new Exception("Id is null.");
 
             try
             {
-                Revard? model = await _revardRepository.GetByIdAsync(id.Value);
+                Reward? model = await _revardRepository.GetByIdAsync(id.Value);
 
                 if (model == null)
                     throw new Exception($"There is no revard with Id {id}");
 
-                return _mapper.Map<RevardViewModel>(model);
+                return _mapper.Map<RewardViewModel>(model);
             }
             catch (Exception ex)
             {
@@ -80,11 +80,11 @@ namespace BookRate.BLL.Services
             }
         }
 
-        public async Task<bool> Update(UpdateRevardDTO expectedEntityValues)
+        public async Task<bool> Update(UpdateRewardDTO expectedEntityValues)
         {
             try
             {
-                Revard model = _mapper.Map<Revard>(expectedEntityValues);
+                Reward model = _mapper.Map<Reward>(expectedEntityValues);
 
                 await _revardRepository.Update(model);
                 return true;

@@ -4,6 +4,7 @@ using BookRate.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookRate.DAL.Migrations
 {
     [DbContext(typeof(BookRateDbContext))]
-    partial class BookRateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240506124411_Timestamp-and-Reward")]
+    partial class TimestampandReward
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -304,20 +307,20 @@ namespace BookRate.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateRewarded")
+                    b.Property<DateTime>("DateRevarded")
                         .HasColumnType("smalldatetime");
 
                     b.Property<int>("NarrativeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RewardId")
+                    b.Property<int>("RevardId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NarrativeId");
 
-                    b.HasIndex("RewardId");
+                    b.HasIndex("RevardId");
 
                     b.ToTable("NarrativeRewards");
                 });
@@ -751,20 +754,20 @@ namespace BookRate.DAL.Migrations
             modelBuilder.Entity("BookRate.DAL.Models.NarrativeReward", b =>
                 {
                     b.HasOne("BookRate.DAL.Models.Narrative", "Narrative")
-                        .WithMany("NarrativeRewards")
+                        .WithMany("NarrativeRevards")
                         .HasForeignKey("NarrativeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookRate.DAL.Models.Reward", "Reward")
-                        .WithMany("NarrativeRewards")
-                        .HasForeignKey("RewardId")
+                    b.HasOne("BookRate.DAL.Models.Reward", "Revard")
+                        .WithMany("NarrativeRevards")
+                        .HasForeignKey("RevardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Narrative");
 
-                    b.Navigation("Reward");
+                    b.Navigation("Revard");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Rate", b =>
@@ -950,7 +953,7 @@ namespace BookRate.DAL.Migrations
 
             modelBuilder.Entity("BookRate.DAL.Models.Narrative", b =>
                 {
-                    b.Navigation("NarrativeRewards");
+                    b.Navigation("NarrativeRevards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Review", b =>
@@ -962,7 +965,7 @@ namespace BookRate.DAL.Migrations
 
             modelBuilder.Entity("BookRate.DAL.Models.Reward", b =>
                 {
-                    b.Navigation("NarrativeRewards");
+                    b.Navigation("NarrativeRevards");
                 });
 
             modelBuilder.Entity("BookRate.DAL.Models.Serie", b =>

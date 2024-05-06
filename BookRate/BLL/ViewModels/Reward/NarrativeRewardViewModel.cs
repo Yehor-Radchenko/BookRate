@@ -1,12 +1,12 @@
 ﻿namespace BookRate.BLL.ViewModels
 {
-    public class NarrativeRevardViewModel
+    public class NarrativeRewardViewModel
     {
         public int Id { get; set; }
 
         public int NarrativeId { get; set; }
 
-        public int RevardId { get; set; }
+        public int RewardId { get; set; }
 
         public string Name { get; set; }
 
@@ -14,6 +14,6 @@
 
         public string? Website { get; set; }
 
-        public DateTime DateRevarded { get; set; }
+        public DateTime DateRewarded { get; set; }
     }
 }

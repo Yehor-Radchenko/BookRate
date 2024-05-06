@@ -2,8 +2,8 @@
 
 namespace BookRate.DAL.Repositories.IRepository
 {
-    public interface IRevardRepository : IRepository<Revard>
+    public interface IRewardRepository : IRepository<Reward>
     {
-        bool IsAnyNarrativeRevardReferenced(int revardId);
+        bool IsAnyNarrativeRewardReferenced(int revardId);
     }
 }

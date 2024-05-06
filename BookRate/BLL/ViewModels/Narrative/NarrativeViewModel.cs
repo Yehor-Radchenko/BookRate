@@ -20,6 +20,6 @@ namespace BookRate.BLL.ViewModels
 
         public IEnumerable<SettingViewModel> Settings { get; set; }
 
-        public IEnumerable<NarrativeRevardViewModel> NarrativeRevards { get; set; }
+        public IEnumerable<NarrativeRewardViewModel> NarrativeRewards { get; set; }
     }
 }

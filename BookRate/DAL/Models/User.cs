@@ -33,4 +33,7 @@ public partial class User
     public virtual ICollection<ReviewLike>? ReviewLikes { get; set; }
 
     public virtual ICollection<Review>? Reviews { get; set; }
+
+    [Column(TypeName = "timestamp")]
+    public byte[] Timestamp { get; set; }
 }

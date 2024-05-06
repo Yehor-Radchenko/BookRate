@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BookRate.DAL.Models;
 
-public partial class Revard
+public partial class Reward
 {
     public int Id { get; set; }
 
@@ -13,5 +13,5 @@ public partial class Revard
 
     public string? Website { get; set; }
 
-    public virtual ICollection<NarrativeRevard> NarrativeRevards { get; set; } = new List<NarrativeRevard>();
+    public virtual ICollection<NarrativeReward> NarrativeRewards { get; set; } = new List<NarrativeReward>();
 }

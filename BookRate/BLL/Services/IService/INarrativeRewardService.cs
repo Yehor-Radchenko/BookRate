@@ -3,12 +3,12 @@ using BookRate.DAL.DTO;
 
 namespace BookRate.BLL.Services.IService
 {
-    public interface INarrativeRevardService
+    public interface INarrativeRewardService
     {
-        Task<bool> Add(CreateNarrativeRevardDTO dto);
+        Task<bool> Add(CreateNarrativeRewardDTO dto);
         Task<bool> Update(UpdateNarrativeDTO expectedEntityValues);
         Task<bool> Delete(int id);
-        Task<IEnumerable<NarrativeRevardViewModel>> GetAll();
-        Task<NarrativeRevardViewModel?> GetById(int? id);
+        Task<IEnumerable<NarrativeRewardViewModel>> GetAll();
+        Task<NarrativeRewardViewModel?> GetById(int? id);
     }
 }

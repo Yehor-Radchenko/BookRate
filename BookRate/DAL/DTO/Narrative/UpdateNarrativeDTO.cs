@@ -18,6 +18,6 @@
 
         public virtual IEnumerable<int>? SettingsId { get; set; }
 
-        public virtual IEnumerable<int>? NarrativeRevards { get; set; }
+        public virtual IEnumerable<int>? NarrativeRewards { get; set; }
     }
 }

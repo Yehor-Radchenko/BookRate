@@ -6,7 +6,7 @@ namespace BookRate.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController : ControllerBase
+    public class BookController : Controller
     {
         private readonly IBookService _service;
 

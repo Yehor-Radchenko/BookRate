@@ -18,6 +18,6 @@ namespace BookRate.DAL.DTO
 
         public virtual IEnumerable<int>? SettingsId { get; set; }
 
-        public virtual IEnumerable<int>? RevardsId { get; set; }
+        public virtual IEnumerable<int>? RewardsId { get; set; }
     }
 }

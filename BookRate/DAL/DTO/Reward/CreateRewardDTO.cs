@@ -1,9 +1,7 @@
-﻿namespace BookRate.BLL.ViewModels
+﻿namespace BookRate.DAL.DTO
 {
-    public class RevardViewModel
+    public class CreateRewardDTO
     {
-        public int Id { get; set; }
-
         public string Name { get; set; }
 
         public string? Description { get; set; }

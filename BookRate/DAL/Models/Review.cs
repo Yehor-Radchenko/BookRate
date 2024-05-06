@@ -30,4 +30,7 @@ public partial class Review
     public virtual ICollection<ReviewLike> ReviewLikes { get; set; } = new List<ReviewLike>();
 
     public virtual User User { get; set; } = null!;
+
+    [Column(TypeName = "timestamp")]
+    public byte[] Timestamp { get; set; }
 }

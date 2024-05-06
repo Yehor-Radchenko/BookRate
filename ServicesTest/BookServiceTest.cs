@@ -12,20 +12,7 @@ namespace ServicesTest
     {
         private readonly BookRateDbContext _context;
         private readonly BookService _service;
-
-        public BookServiceTest()
-        {
-            var options = new DbContextOptionsBuilder<BookRateDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
-                .Options;
-
-            _context = new BookRateDbContext(options);
-            _context.Database.EnsureDeleted();
-            _context.Database.Migrate();
-
-            _service = new BookService(new BookRepository(_context));
-        }
-
+       
         public void Dispose()
         {
             _context.Database.EnsureDeleted();

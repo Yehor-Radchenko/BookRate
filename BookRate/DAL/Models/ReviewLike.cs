@@ -13,6 +13,8 @@ public partial class ReviewLike
     [Key, Column(Order = 1)]
     public int ReviewId { get; set; }
 
+    public bool IsLiked { get; set; }
+
     [Column(TypeName = "smalldatetime")]
     public DateTime DateLiked { get; set; }
 

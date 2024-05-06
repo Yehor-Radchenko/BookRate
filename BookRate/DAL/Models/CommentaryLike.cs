@@ -13,6 +13,8 @@ public partial class CommentaryLike
     [Key, Column(Order = 1)]
     public int CommentaryId { get; set; }
 
+    public bool IsLiked { get; set; }
+
     [Column(TypeName = "smalldatetime")]
     public DateTime DateLiked { get; set; }
 

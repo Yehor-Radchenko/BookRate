@@ -48,8 +48,8 @@ namespace BookRate.DAL.Repositories
             return _context.Narratives.Any(n => n.Id == narrativeId && n.Books.Any());
         }
 
-        public bool IsAnyNarrativeRevardReferenced(int narrativeId) {
-            return _context.Narratives.Any(n => n.Id == narrativeId && n.NarrativeRevards.Any());
+        public bool IsAnyNarrativeRewardReferenced(int narrativeId) {
+            return _context.Narratives.Any(n => n.Id == narrativeId && n.NarrativeRewards.Any());
         }
 
         public bool IsAnyContributorReferenced(int narrativeId) {

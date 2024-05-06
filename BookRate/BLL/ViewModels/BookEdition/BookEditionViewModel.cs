@@ -14,7 +14,9 @@
 
         public int BookId { get; set; }
 
-        public EditionViewModel Edition { get; set; }
+        public int EditionId { get; set; }
+
+        public string EditionName { get; set; }
 
         public byte[] Photo { get; set; }
     }

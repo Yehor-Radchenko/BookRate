@@ -36,6 +36,11 @@ builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
 
+builder.Services.AddScoped<INarrativeRepository, NarrativeRepository>();
+builder.Services.AddScoped<INarrativeService, NarrativeService>();
+
+builder.Services.AddScoped<IBookEditionRepository, BookEditionRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
