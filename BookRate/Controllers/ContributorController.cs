@@ -24,8 +24,8 @@ namespace BookRate.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetById([FromRoute] int Id)
         {
-            var category = await _service.GetById(Id);
-            return Ok(category);
+            var contributor = await _service.GetById(Id);
+            return Ok(contributor);
         }
 
         [HttpPost]

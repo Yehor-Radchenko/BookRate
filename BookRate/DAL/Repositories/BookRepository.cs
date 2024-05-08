@@ -15,11 +15,14 @@ namespace BookRate.DAL.Repositories
             _context = context;
         }
 
-        public async Task<bool> Add(Book entity)
+        public async Task<int> Add(Book entity)
         {
-            _context.Books.Add(entity);
-            await _context.SaveChangesAsync();
-            return true;
+            try
+            {
+                _context.Books.Add(entity);
+                await _context.SaveChangesAsync();
+                return entity.Id;
+            } catch (Exception ex) { return -1;}
         }
 
         public async Task<bool> Delete(Book entity)
@@ -27,11 +30,6 @@ namespace BookRate.DAL.Repositories
             _context.Books.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
-        }
-
-        public async Task<IEnumerable<Book>> GetAllAsync()
-        {
-            return await _context.Books.ToListAsync();
         }
 
         public async Task<Book?> GetByIdAsync(int id)
@@ -89,6 +87,14 @@ namespace BookRate.DAL.Repositories
                 .Include(b => b.BookEditions)
                 .Where(b => topBookIds.Contains(b.Id))
                 .ToListAsync();
+        }
+
+        public async Task<BookEdition?> GetSpecificBookInfoAsync(int bookEditionId)
+        {
+            return await _context.BookEditions
+                .Include(be => be.Book)
+                .ThenInclude(b => b.Narratives)
+                .FirstAsync(be => be.Id == bookEditionId);
         }
     }
 }

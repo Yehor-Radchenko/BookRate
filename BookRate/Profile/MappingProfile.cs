@@ -34,6 +34,9 @@
             CreateMap<Book, BookViewModel>();
             CreateMap<CreateBookDTO, Book>();
             CreateMap<UpdateBookDTO, Book>();
+
+            CreateMap<CreateBookEditionDTO, BookEdition>()
+            .ForMember(dest => dest.BookId, opt => opt.Ignore());
         }
     }
 }

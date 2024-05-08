@@ -13,15 +13,21 @@ namespace BookRate.BLL.Services
     {
         private readonly IBookRepository _bookRepository;
         private readonly INarrativeRepository _narrativeRepository;
+        private readonly IBookEditionRepository _bookEditionRepository;
+        private readonly IEditionRepository _editionRepository;
         private readonly IMapper _mapper;
 
         public BookService(IBookRepository bookRepository, 
             INarrativeRepository narrativeRepository, 
+            IBookEditionRepository bookEditionRepository,
+            IEditionRepository editionRepository,
             IMapper mapper)
         {
             _bookRepository = bookRepository;
             _mapper = mapper;
             _narrativeRepository = narrativeRepository;
+            _bookEditionRepository = bookEditionRepository;
+            _editionRepository = editionRepository;
         }
 
         public async Task<bool> Add(CreateBookDTO dto)
@@ -39,9 +45,15 @@ namespace BookRate.BLL.Services
 
             try
             {
-                if(await _bookRepository.Add(_mapper.Map<Book>(dto)))
-                    return true;
-                return false;
+                int addedBookId = await _bookRepository.Add(_mapper.Map<Book>(dto));
+
+                if (addedBookId > 0 && _editionRepository.IsEditionWithIdExists(dto.createBookEditionDTO.EditionId))
+                {
+                    var bookEditionModel = _mapper.Map<BookEdition>(dto.createBookEditionDTO);
+                    bookEditionModel.BookId = addedBookId;
+                    await _bookEditionRepository.Add(bookEditionModel);
+                }
+                return true;
             }
             catch (Exception ex)
             {
@@ -62,14 +74,24 @@ namespace BookRate.BLL.Services
             }
         }
 
-        public Task<IEnumerable<BookViewModel>> GetAll()
+        public async Task<BookViewModel?> GetSpecificBookInfo(int? id)
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                if (id == null)
+                    throw new Exception("Id is null.");
 
-        public Task<BookViewModel?> GetById(int? id)
-        {
-            throw new NotImplementedException();
+                BookEdition? bookEditionModel = await _bookRepository.GetSpecificBookInfoAsync(id.Value);
+
+                if (bookEditionModel == null)
+                    throw new Exception($"There is no book with Id {id}");
+
+                return _mapper.Map<BookViewModel>(bookEditionModel);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving specific book.", ex);
+            }
         }
 
         public Task<bool> Update(UpdateBookDTO expectedEntityValues)

@@ -25,10 +25,17 @@ namespace BookRate.BLL.Services
 
         public async Task<bool> Add(CreateContributorDTO dto)
         {
+            if(dto.RolesId is null)
+                throw new Exception($"Contributor without at least one role can't be created.");
+
             List<Role> selectedRoleModels = new List<Role>();
             foreach (int roleId in dto.RolesId)
             {
-                selectedRoleModels.Add(await _roleRepository.GetByIdAsync(roleId));
+                var roleModel = await _roleRepository.GetByIdAsync(roleId);
+                if (roleModel is not null)
+                    selectedRoleModels.Add(roleModel);
+                else
+                    throw new Exception($"Role with specified Id: {roleId} not found.");
             }
 
             try

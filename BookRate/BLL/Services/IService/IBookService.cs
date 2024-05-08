@@ -8,8 +8,7 @@ namespace BookRate.BLL.Services.IService
         Task<bool> Add(CreateBookDTO dto);
         Task<bool> Update(UpdateBookDTO expectedEntityValues);
         Task<bool> Delete(int id);
-        Task<IEnumerable<BookViewModel>> GetAll();
-        Task<BookViewModel?> GetById(int? id);
+        Task<BookViewModel?> GetSpecificBookInfo(int? id);
         Task<List<BookCardViewModel>> GetTopOfWeekBookCards();
     }
 }

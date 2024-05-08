@@ -9,5 +9,7 @@
         public DateTime FirstPublished { get; set; }
 
         public virtual IEnumerable<int> NarrativesId { get; set; }
+
+        public CreateBookEditionDTO createBookEditionDTO { get; set; }
     }
 }
