@@ -1,6 +1,5 @@
-﻿using BookRate.BLL.Services;
-using BookRate.BLL.Services.IService;
-using BookRate.DAL.DTO;
+﻿using BookRate.BLL.Services.IService;
+using BookRate.DAL.DTO.Genre;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookRate.Controllers

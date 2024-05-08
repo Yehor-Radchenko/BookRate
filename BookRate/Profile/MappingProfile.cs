@@ -1,8 +1,20 @@
 ﻿namespace BookRate.Profile
 {
     using AutoMapper;
-    using BookRate.BLL.ViewModels;
-    using BookRate.DAL.DTO;
+    using BookRate.BLL.ViewModels.Book;
+    using BookRate.BLL.ViewModels.Contributor;
+    using BookRate.BLL.ViewModels.Edition;
+    using BookRate.BLL.ViewModels.Narrative;
+    using BookRate.BLL.ViewModels.Role;
+    using BookRate.BLL.ViewModels.Serie;
+    using BookRate.BLL.ViewModels.Setting;
+    using BookRate.DAL.DTO.Book;
+    using BookRate.DAL.DTO.BookEdition;
+    using BookRate.DAL.DTO.Contributor;
+    using BookRate.DAL.DTO.Edition;
+    using BookRate.DAL.DTO.Narrative;
+    using BookRate.DAL.DTO.Serie;
+    using BookRate.DAL.DTO.Setting;
     using BookRate.DAL.Models;
 
     public class MappingProfile : Profile

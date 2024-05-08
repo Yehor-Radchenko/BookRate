@@ -1,5 +1,6 @@
-﻿using BookRate.BLL.Services.IService;
-using BookRate.DAL.DTO;
+﻿
+using BookRate.BLL.Services.IService;
+using BookRate.DAL.DTO.Book;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
