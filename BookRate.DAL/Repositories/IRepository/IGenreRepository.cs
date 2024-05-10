@@ -1,11 +1,13 @@
 ﻿using BookRate.DAL.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BookRate.DAL.Repositories.IRepository
 {
-    public interface IGenreRepository : IRepository<Genre>
+    public interface IGenreRepository : IGenericRepository<Genre>
     {
-        bool IsAnyNarrativeReferenced(int genreId);
-        bool IsAnyContributorReferenced(int genreId);
-        bool IsGenreWithNameExists(string name);
     }
 }
