@@ -3,7 +3,7 @@ using BookRate.BLL.ViewModels.Genre;
 using BookRate.DAL.Context;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories;
-using BookRate.DAL.Repositories.IRepository;
+using BookRate.DAL.UoW;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +26,8 @@ namespace BookRate.BLL.Services
 
         public async Task<IEnumerable<GenreListModel>> GetDescriptionByGenreAsync(string genreName)
         {
-            var list = await _unitOfWork.GenreRepository.GetAllAsync(e => e.Name == genreName);
+            var movieRepository = _unitOfWork.GetRepository<Genre>();
+            var list = await movieRepository.GetAllAsync(e => e.Name == genreName);
 
             var getMappedList = _mapper.Map<IEnumerable<GenreListModel>>(list);
 

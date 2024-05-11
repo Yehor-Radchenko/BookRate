@@ -25,7 +25,6 @@ namespace BookRate.DAL.Repositories
 
         }
 
-
         public async Task<bool> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
@@ -46,7 +45,12 @@ namespace BookRate.DAL.Repositories
             }
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
+        public bool Exists(Expression<Func<T, bool>> predicate)
+        {
+            return _dbSet.Any(predicate);
+        }
+
+        public virtual async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
         {
 
             IQueryable<T> query = _dbSet;
@@ -64,10 +68,10 @@ namespace BookRate.DAL.Repositories
                 }
             }
 
-            return await query.ToListAsync();
+            return await Task.FromResult(query);
         }
 
-        public virtual async Task<T?> GetByIdAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
+        public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -99,7 +103,6 @@ namespace BookRate.DAL.Repositories
                 await Console.Out.WriteLineAsync(ex.Message);
                 throw;
             }
-
         }
     }
 }
