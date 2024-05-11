@@ -26,7 +26,8 @@ namespace BookRate.BLL.Services
 
         public async Task<IEnumerable<GenreListModel>> GetDescriptionByGenreAsync(string genreName)
         {
-            var list = await _unitOfWork.GenreRepository.GetAllAsync(e => e.Name == genreName);
+            var movieRepository = _unitOfWork.GetRepository<Genre>();
+            var list = await movieRepository.GetAllAsync(e => e.Name == genreName);
 
             var getMappedList = _mapper.Map<IEnumerable<GenreListModel>>(list);
 
