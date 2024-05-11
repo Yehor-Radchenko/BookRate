@@ -3,7 +3,7 @@ using BookRate.BLL.ViewModels.Genre;
 using BookRate.DAL.Context;
 using BookRate.DAL.Models;
 using BookRate.DAL.Repositories;
-using BookRate.DAL.Repositories.IRepository;
+using BookRate.DAL.UoW;
 using System;
 using System.Collections.Generic;
 using System.Linq;

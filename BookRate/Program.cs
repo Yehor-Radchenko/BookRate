@@ -1,7 +1,6 @@
 using BookRate.BLL.Services;
 using BookRate.DAL.Context;
-using BookRate.DAL.Repositories;
-using BookRate.DAL.Repositories.IRepository;
+using BookRate.DAL.UoW;
 using BookRate.Profile;
 using Microsoft.EntityFrameworkCore;
 
