@@ -1,7 +1,6 @@
 ﻿using BookRate.DAL.Context;
-using BookRate.DAL.Repositories.EntitiesImplementations;
+using BookRate.DAL.Repositories.EntityImplementations;
 using BookRate.DAL.Repositories.IRepository;
-using BookRate.DAL.Repositories.IRepository.EntitiesRepository;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
