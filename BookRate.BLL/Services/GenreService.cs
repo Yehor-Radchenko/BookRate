@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Genre;
 using BookRate.DAL.Context;
 using BookRate.DAL.DTO.Genre;
@@ -13,15 +14,10 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
-    public class GenreService 
+    public class GenreService : BaseService, IService<CreateGenreDTO, UpdateGenreDTO, Genre>
     {
-        protected readonly IUnitOfWork _unitOfWork;
-        protected readonly IMapper _mapper;
-
-        public GenreService(IUnitOfWork unitOfWork, IMapper mapper)                   
+        public GenreService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<bool> AddAsync(CreateGenreDTO genreDTO)
