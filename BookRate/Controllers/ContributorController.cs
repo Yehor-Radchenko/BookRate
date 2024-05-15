@@ -1,16 +1,17 @@
 ﻿using BookRate.BLL.Services;
-using BookRate.DAL.DTO.Genre;
+using BookRate.DAL.DTO.Contributor;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookRate.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class GenreController : Controller
+    [ApiController]
+    public class ContributorController : ControllerBase
     {
-        private readonly GenreService _service;
+        private readonly ContributorService _service;
 
-        public GenreController(GenreService service)
+        public ContributorController(ContributorService service)
         {
             _service = service;
         }
@@ -18,7 +19,7 @@ namespace BookRate.Controllers
         [HttpGet]
         public async Task<IActionResult> GetListModels()
         {
-            return Ok(await _service.GetGenreListModelsAsync());
+            return Ok(await _service.GetContributorListModelsAsync());
         }
 
         [HttpGet("{Id}")]
@@ -29,7 +30,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateGenreDTO dto)
+        public async Task<IActionResult> Post([FromBody] CreateContributorDTO dto)
         {
             if (await _service.AddAsync(dto))
                 return Ok("Successfully created");
@@ -37,7 +38,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateGenreDTO dto)
+        public async Task<IActionResult> Put([FromBody] UpdateContributorDTO dto)
         {
             if (await _service.UpdateAsync(dto))
                 return Ok("Updated successfully.");

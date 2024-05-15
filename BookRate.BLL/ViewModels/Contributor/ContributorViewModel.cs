@@ -1,4 +1,5 @@
-﻿using BookRate.BLL.ViewModels.Role;
+﻿using BookRate.BLL.ViewModels.Genre;
+using BookRate.BLL.ViewModels.Role;
 using BookRate.DAL.Models;
 
 namespace BookRate.BLL.ViewModels.Contributor
@@ -24,5 +25,6 @@ namespace BookRate.BLL.ViewModels.Contributor
         public byte[]? Photo { get; set; }
 
         public virtual IEnumerable<RoleViewModel> Roles { get; set; }
+        public virtual IEnumerable<GenreListModel> Genres { get; set; }
     }
 }

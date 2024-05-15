@@ -20,8 +20,8 @@
 
         public byte[]? Photo { get; set; }
 
-        public virtual IEnumerable<int> Roles { get; set; }
+        public virtual IEnumerable<int>? RolesId { get; set; }
 
-        public virtual IEnumerable<int> Genres { get; set; }
+        public virtual IEnumerable<int>? GenresId { get; set; }
     }
 }
