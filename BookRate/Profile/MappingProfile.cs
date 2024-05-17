@@ -6,6 +6,7 @@
     using BookRate.BLL.ViewModels.Edition;
     using BookRate.BLL.ViewModels.Genre;
     using BookRate.BLL.ViewModels.Narrative;
+    using BookRate.BLL.ViewModels.Reward;
     using BookRate.BLL.ViewModels.Role;
     using BookRate.BLL.ViewModels.Serie;
     using BookRate.BLL.ViewModels.Setting;
@@ -15,6 +16,7 @@
     using BookRate.DAL.DTO.Edition;
     using BookRate.DAL.DTO.Genre;
     using BookRate.DAL.DTO.Narrative;
+    using BookRate.DAL.DTO.Reward;
     using BookRate.DAL.DTO.Serie;
     using BookRate.DAL.DTO.Setting;
     using BookRate.DAL.Models;
@@ -44,6 +46,11 @@
             CreateMap<Setting, SettingViewModel>();
             CreateMap<CreateSettingDTO, Setting>();
             CreateMap<UpdateSettingDTO, Setting>();
+
+            CreateMap<Reward, RewardViewModel>();
+            CreateMap<CreateRewardDTO, Reward>();
+            CreateMap<UpdateRewardDTO, Reward>();
+            CreateMap<Reward, RewardListModel>();
 
             CreateMap<Serie, SerieViewModel>();
             CreateMap<CreateSerieDTO, Serie>();
