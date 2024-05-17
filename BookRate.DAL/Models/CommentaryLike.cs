@@ -18,7 +18,10 @@ public partial class CommentaryLike
     [Column(TypeName = "smalldatetime")]
     public DateTime DateLiked { get; set; }
 
-    public virtual Commentary Commentary { get; set; } = null!;
-
+    [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
+
+    [ForeignKey("CommentaryId")]
+    public virtual Commentary Commentary { get; set; } = null!;
 }
+

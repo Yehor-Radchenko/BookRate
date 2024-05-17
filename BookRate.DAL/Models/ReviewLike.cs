@@ -7,10 +7,10 @@ namespace BookRate.DAL.Models;
 
 public partial class ReviewLike
 {
-    [Key, Column(Order = 0)]
+    [ForeignKey(nameof(User))]
     public int UserId { get; set; }
 
-    [Key, Column(Order = 1)]
+    [ForeignKey(nameof(Review))]
     public int ReviewId { get; set; }
 
     public bool IsLiked { get; set; }
@@ -20,5 +20,6 @@ public partial class ReviewLike
 
     public virtual Review Review { get; set; }
 
+    [ForeignKey("UserId")]
     public virtual User User { get; set; }
 }

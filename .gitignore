@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Environment
 *.env
+
+# Migrations - database interactions
+Migrations/

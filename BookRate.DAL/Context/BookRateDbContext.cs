@@ -12,6 +12,10 @@ public partial class BookRateDbContext : DbContext
 
     }
 
+    public virtual DbSet<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
+
+    public virtual DbSet<ContributorRole> ContributorRoles { get; set; }
+
     public virtual DbSet<Book> Books { get; set; }
 
     public virtual DbSet<BookEdition> BookEditions { get; set; }
@@ -73,13 +77,13 @@ public partial class BookRateDbContext : DbContext
 
         modelBuilder.Entity<ReviewLike>()
             .HasOne(rl => rl.User)
-            .WithMany()
+            .WithMany(u => u.ReviewLikes)
             .HasForeignKey(rl => rl.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<CommentaryLike>()
             .HasOne(cl => cl.User)
-            .WithMany()
+            .WithMany(u => u.CommentaryLikes)
             .HasForeignKey(cl => cl.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -90,5 +94,25 @@ public partial class BookRateDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique(true);
+       
+        modelBuilder.Entity<NarrativeContributorRole>()
+            .HasKey(ncr => new { ncr.NarrativeId, ncr.ContributorRoleId });
+
+        modelBuilder.Entity<NarrativeContributorRole>()
+            .HasOne(ncr => ncr.Narrative)
+            .WithMany(n => n.NarrativeContributorRoles)
+            .HasForeignKey(ncr => ncr.NarrativeId);
+
+        modelBuilder.Entity<NarrativeContributorRole>()
+            .HasOne(ncr => ncr.ContributorRole)
+            .WithMany(c => c.NarrativeContributorRoles)
+            .HasForeignKey(ncr => ncr.ContributorRoleId);
+
+        modelBuilder.Entity<ContributorRole>()
+           .HasKey(cr => cr.Id);
+
+        modelBuilder.Entity<ContributorRole>()
+            .HasIndex(cr => new { cr.ContributorId, cr.RoleId })
+            .IsUnique();
     }
 }

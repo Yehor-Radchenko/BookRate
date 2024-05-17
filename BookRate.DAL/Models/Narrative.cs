@@ -19,7 +19,7 @@ public partial class Narrative
 
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 
-    public virtual ICollection<Contributor> Contributors { get; set; } = new List<Contributor>();
+    public virtual ICollection<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
 

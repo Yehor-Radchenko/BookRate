@@ -32,7 +32,7 @@ namespace BookRate.BLL.Services
                 throw new ArgumentException("One or more specified roles do not exist.");
 
             var contributor = _mapper.Map<Contributor>(dto);
-            contributor.Roles = selectedRoleModels.ToList();
+            //contributor.Roles = selectedRoleModels.ToList();
 
             await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);
             await _unitOfWork.CommitAsync();
@@ -41,14 +41,7 @@ namespace BookRate.BLL.Services
 
         public async Task<bool> Delete(int id)
         {
-            var contributorRepo = _unitOfWork.GetRepository<Contributor>();
-
-            if (contributorRepo.Exists(g => g.Id == id && g.Narratives.Any()))
-                throw new Exception("Contributor can't be removed because it referenced by at least one narrative.");
-
-            await contributorRepo.Delete(new Contributor { Id = id });
-            await _unitOfWork.CommitAsync();
-            return true;
+            throw new NotImplementedException();
         }
 
         public async Task<bool> UpdateAsync(UpdateContributorDTO expectedEntityValues)
@@ -61,14 +54,14 @@ namespace BookRate.BLL.Services
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
             var contributorModel = await contributorRepo.GetAsync(c => c.Id == expectedEntityValues.Id, "Genres,Roles");
-            contributorModel.Roles.Clear();
+            //contributorModel.Roles.Clear();
             contributorModel.Genres.Clear();
             await _unitOfWork.CommitAsync();
 
             var contributorResult = _mapper.Map(expectedEntityValues, contributorModel);
             foreach (var id in expectedEntityValues.RolesId)
             {
-                contributorResult.Roles.Add(await roleRepo.GetAsync(r => r.Id == id));
+                //contributorResult.Roles.Add(await roleRepo.GetAsync(r => r.Id == id));
             }
             foreach (var id in expectedEntityValues.GenresId)
             {

@@ -1,5 +1,7 @@
 ﻿
 
+using BookRate.DAL.DTO.NarrativeRevard;
+
 namespace BookRate.DAL.DTO.Narrative
 {
     public class CreateNarrativeDTO
@@ -18,6 +20,6 @@ namespace BookRate.DAL.DTO.Narrative
 
         public virtual IEnumerable<int>? SettingsId { get; set; }
 
-        public virtual IEnumerable<int>? RewardsId { get; set; }
+        public virtual IEnumerable<CreateNarrativeRewardDTO>? NarrativeRewards { get; set; }
     }
 }

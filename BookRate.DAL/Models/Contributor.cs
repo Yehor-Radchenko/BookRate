@@ -23,9 +23,7 @@ public partial class Contributor
 
     public byte[]? Photo { get; set; }
 
-    public virtual ICollection<Narrative> Narratives { get; set; } = new List<Narrative>();
-
-    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+    public virtual ICollection<ContributorRole> ContributorRoles { get; set; }
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
 }

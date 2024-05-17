@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
-using BookRate.BLL.ViewModels.Genre;
-using BookRate.BLL.ViewModels.Role;
-using BookRate.DAL.DTO.Role;
+using BookRate.BLL.ViewModels.Narrative;
+using BookRate.DAL.DTO.Narrative;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using System;
@@ -13,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
-    public class RoleService : BaseService, IService<CreateRoleDTO, UpdateRoleDTO, Role>
+    public class NarrativeService : BaseService, IService<CreateNarrativeDTO, UpdateNarrativeDTO, Narrative>
     {
-        public RoleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public NarrativeService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
 
-        public async Task<bool> AddAsync(CreateRoleDTO dto)
+        public async Task<bool> AddAsync(CreateNarrativeDTO dto)
         {
             throw new NotImplementedException();
         }
@@ -29,20 +28,19 @@ namespace BookRate.BLL.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateAsync(UpdateRoleDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(UpdateNarrativeDTO expectedEntityValues)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<RoleViewModel?> GetByIdAsync(int? id)
+        public async Task<IEnumerable<NarrativeListModel>> GetNarrativeListModelsAsync()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<RoleViewModel>> GetRoleListModelsAsync()
+        public async Task<NarrativeViewModel?> GetByIdAsync(int? id)
         {
             throw new NotImplementedException();
         }
     }
 }
-
