@@ -36,7 +36,6 @@
             CreateMap<UpdateContributorDTO, Contributor>();
             CreateMap<Contributor, ContributorListModel>();
 
-
             CreateMap<Role, RoleViewModel>();
 
             CreateMap<Edition, EditionViewModel>();
@@ -46,6 +45,7 @@
             CreateMap<Setting, SettingViewModel>();
             CreateMap<CreateSettingDTO, Setting>();
             CreateMap<UpdateSettingDTO, Setting>();
+            CreateMap<Setting, SettingListModel>();
 
             CreateMap<Reward, RewardViewModel>();
             CreateMap<CreateRewardDTO, Reward>();
@@ -65,7 +65,7 @@
             CreateMap<UpdateBookDTO, Book>();
 
             CreateMap<CreateBookEditionDTO, BookEdition>()
-            .ForMember(dest => dest.BookId, opt => opt.Ignore());
+                .ForMember(dest => dest.BookId, opt => opt.Ignore());
         }
     }
 }
