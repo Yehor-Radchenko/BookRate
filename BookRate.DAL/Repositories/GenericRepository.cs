@@ -56,9 +56,7 @@ namespace BookRate.DAL.Repositories
             IQueryable<T> query = _dbSet;
 
             if (filter != null)
-            {
                 query = query.Where(filter);
-            }
 
             if (includeOptions != null)
             {
@@ -69,6 +67,24 @@ namespace BookRate.DAL.Repositories
             }
 
             return await Task.FromResult(query);
+        }
+
+        public virtual IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            if (includeOptions != null)
+            {
+                foreach (var entity in includeOptions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(entity);
+                }
+            }
+
+            return query;
         }
 
         public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)

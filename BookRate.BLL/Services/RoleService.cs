@@ -21,27 +21,67 @@ namespace BookRate.BLL.Services
 
         public async Task<bool> AddAsync(CreateRoleDTO dto)
         {
-            throw new NotImplementedException();
+            var roleRepo = _unitOfWork.GetRepository<Role>();
+
+            if (roleRepo.Exists(r => r.Name.Trim().ToLower() == dto.Name.Trim().ToLower()))
+                throw new Exception($"Role named {dto.Name} is already exists in database.");
+
+            var roleModel = _mapper.Map<Role>(dto);
+
+            await roleRepo.AddAsync(roleModel);
+            await _unitOfWork.CommitAsync();
+            return true;
         }
 
         public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            var roleRepo = _unitOfWork.GetRepository<Role>();
+
+            if (roleRepo.Exists(r => r.Id == id && r.ContributorRoles.Any()))
+                throw new Exception("Role cant be removed because it referenced by at least one contributor.");
+
+            await roleRepo.Delete(new Role { Id = id });
+            await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
         public async Task<bool> UpdateAsync(UpdateRoleDTO expectedEntityValues)
         {
-            throw new NotImplementedException();
+            var roleRepo = _unitOfWork.GetRepository<Role>();
+
+            if (roleRepo.Exists(r => r.Name.Trim().ToLower() == expectedEntityValues.Name.Trim().ToLower()))
+                throw new Exception($"Role named {expectedEntityValues.Name} is already exists in database.");
+
+            var roleModel = _mapper.Map<Role>(expectedEntityValues);
+
+            await roleRepo.UpdateAsync(roleModel);
+            await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
         public async Task<RoleViewModel?> GetByIdAsync(int? id)
         {
-            throw new NotImplementedException();
+            var roleRepo = _unitOfWork.GetRepository<Role>();
+
+            Role? roleModel = await roleRepo.GetAsync(g => g.Id == id);
+
+            if (roleModel is null)
+                throw new Exception($"There is no model with Id {id}");
+
+            return _mapper.Map<RoleViewModel>(roleModel);
         }
 
-        public async Task<IEnumerable<RoleViewModel>> GetRoleListModelsAsync()
+        public async Task<IEnumerable<RoleViewModel>> GetRolesAsync()
         {
-            throw new NotImplementedException();
+            var roleRepository = _unitOfWork.GetRepository<Role>();
+
+            var list = await roleRepository.GetAllAsync();
+
+            var getMappedList = _mapper.Map<IEnumerable<RoleViewModel>>(list);
+
+            return getMappedList;
         }
     }
 }

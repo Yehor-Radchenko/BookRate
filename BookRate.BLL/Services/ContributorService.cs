@@ -2,9 +2,12 @@
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Contributor;
 using BookRate.BLL.ViewModels.Genre;
+using BookRate.BLL.ViewModels.Role;
 using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,71 +35,118 @@ namespace BookRate.BLL.Services
                 throw new ArgumentException("One or more specified roles do not exist.");
 
             var contributor = _mapper.Map<Contributor>(dto);
-            //contributor.Roles = selectedRoleModels.ToList();
-
+            
             await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);
             await _unitOfWork.CommitAsync();
+
+            var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
+            foreach (var id in dto.RolesId)
+            {
+                await contributorRoleRepo.AddAsync(new ContributorRole { ContributorId = contributor.Id, RoleId = id });
+            }
+            await _unitOfWork.CommitAsync();
+
             return true;
         }
 
         public async Task<bool> Delete(int id)
         {
-            throw new NotImplementedException();
+            var contributorRepo = _unitOfWork.GetRepository<Contributor>();
+
+            var contributorExists = await contributorRepo.GetAsync(c => c.Id == id);
+            if (contributorExists == null)
+            {
+                throw new ArgumentException($"Contributor with Id {id} does not exist.", nameof(id));
+            }
+
+            await contributorRepo.Delete(contributorExists);
+            await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
         public async Task<bool> UpdateAsync(UpdateContributorDTO expectedEntityValues)
         {
-            if (expectedEntityValues.RolesId is null)
+            if (expectedEntityValues.RolesId == null || !expectedEntityValues.RolesId.Any())
                 throw new ArgumentException("Contributor must have at least one role.", nameof(expectedEntityValues.RolesId));
 
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
-            var contributorModel = await contributorRepo.GetAsync(c => c.Id == expectedEntityValues.Id, "Genres,Roles");
-            //contributorModel.Roles.Clear();
+            var contributorModel = await contributorRepo.GetAll()
+                .Include(c => c.ContributorRoles)
+                .ThenInclude(cr => cr.Role)
+                .Include(c => c.Genres)
+                .FirstOrDefaultAsync(c => c.Id == expectedEntityValues.Id);
+
+            if (contributorModel == null)
+                throw new Exception($"Contributor with Id {expectedEntityValues.Id} not found.");
+
+            contributorModel.ContributorRoles.Clear();
             contributorModel.Genres.Clear();
             await _unitOfWork.CommitAsync();
 
-            var contributorResult = _mapper.Map(expectedEntityValues, contributorModel);
-            foreach (var id in expectedEntityValues.RolesId)
+            _mapper.Map(expectedEntityValues, contributorModel);
+
+            foreach (var roleId in expectedEntityValues.RolesId)
             {
-                //contributorResult.Roles.Add(await roleRepo.GetAsync(r => r.Id == id));
-            }
-            foreach (var id in expectedEntityValues.GenresId)
-            {
-                contributorResult.Genres.Add(await genreRepo.GetAsync(g => g.Id == id));
+                var role = await roleRepo.GetAsync(r => r.Id == roleId);
+                if (role != null)
+                {
+                    contributorModel.ContributorRoles.Add(new ContributorRole
+                    {
+                        ContributorId = contributorModel.Id,
+                        RoleId = role.Id
+                    });
+                }
             }
 
-            await contributorRepo.UpdateAsync(contributorResult);
+            foreach (var genreId in expectedEntityValues.GenresId)
+            {
+                var genre = await genreRepo.GetAsync(g => g.Id == genreId);
+                if (genre != null)
+                {
+                    contributorModel.Genres.Add(genre);
+                }
+            }
+
+            await contributorRepo.UpdateAsync(contributorModel);
             await _unitOfWork.CommitAsync();
+
             return true;
         }
 
         public async Task<ContributorViewModel?> GetByIdAsync(int? id)
         {
             if (id == null)
-                throw new Exception("Id is null.");
+                return null;
 
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
-            Contributor? contributorModel = await contributorRepo.GetAsync(c => c.Id == id, "Genres,Roles");
+            var contributorModel = await contributorRepo.GetAll()
+                .Include(c => c.Genres)
+                .Include(c => c.ContributorRoles)
+                    .ThenInclude(cr => cr.Role)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (contributorModel == null)
-                throw new Exception($"There is no contributor with Id {id}");
+                return null;
 
             return _mapper.Map<ContributorViewModel>(contributorModel);
         }
 
         public async Task<IEnumerable<ContributorListModel>> GetContributorListModelsAsync()
         {
-            var contributorRepository = _unitOfWork.GetRepository<Contributor>();
+            var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
-            var list = await contributorRepository.GetAllAsync(c => true, "Roles");
+            var contributors = contributorRepo.GetAll()
+                .Include(c => c.ContributorRoles)
+                .ThenInclude(cr => cr.Role);
 
-            var getMappedList = _mapper.Map<IEnumerable<ContributorListModel>>(list);
+            var list = await _mapper.ProjectTo<ContributorListModel>(contributors).ToListAsync();
 
-            return getMappedList;
+            return list;
         }
     }
 }

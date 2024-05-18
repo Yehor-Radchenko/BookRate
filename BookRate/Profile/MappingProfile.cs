@@ -17,6 +17,7 @@
     using BookRate.DAL.DTO.Genre;
     using BookRate.DAL.DTO.Narrative;
     using BookRate.DAL.DTO.Reward;
+    using BookRate.DAL.DTO.Role;
     using BookRate.DAL.DTO.Serie;
     using BookRate.DAL.DTO.Setting;
     using BookRate.DAL.Models;
@@ -30,13 +31,16 @@
             CreateMap<UpdateGenreDTO, Genre>();
             CreateMap<Genre, GenreViewModel>();
 
-
-            CreateMap<Contributor, ContributorViewModel>();
+            CreateMap<Contributor, ContributorViewModel>()
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.Role)));
             CreateMap<CreateContributorDTO, Contributor>();
             CreateMap<UpdateContributorDTO, Contributor>();
-            CreateMap<Contributor, ContributorListModel>();
+            CreateMap<Contributor, ContributorListModel>()
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.Role)));
 
             CreateMap<Role, RoleViewModel>();
+            CreateMap<CreateRoleDTO, Role>();
+            CreateMap<UpdateRoleDTO, Role>();
 
             CreateMap<Edition, EditionViewModel>();
             CreateMap<CreateEditionDTO, Edition>();
