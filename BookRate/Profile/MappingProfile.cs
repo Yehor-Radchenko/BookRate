@@ -16,6 +16,7 @@
     using BookRate.DAL.DTO.Edition;
     using BookRate.DAL.DTO.Genre;
     using BookRate.DAL.DTO.Narrative;
+    using BookRate.DAL.DTO.NarrativeRevard;
     using BookRate.DAL.DTO.Reward;
     using BookRate.DAL.DTO.Role;
     using BookRate.DAL.DTO.Serie;
@@ -56,12 +57,20 @@
             CreateMap<UpdateRewardDTO, Reward>();
             CreateMap<Reward, RewardListModel>();
 
+            CreateMap<CreateNarrativeRewardDTO, NarrativeReward>()
+                .ForMember(dest => dest.Narrative, opt => opt.Ignore())
+                .ForMember(dest => dest.NarrativeId, opt => opt.Ignore());
+
             CreateMap<Serie, SerieViewModel>();
             CreateMap<CreateSerieDTO, Serie>();
             CreateMap<UpdateSerieDTO, Serie>();
 
             CreateMap<Narrative, NarrativeViewModel>();
-            CreateMap<CreateNarrativeDTO, Narrative>();
+            CreateMap<CreateNarrativeDTO, Narrative>()
+                .ForMember(dest => dest.Genres, opt => opt.Ignore())
+                .ForMember(dest => dest.Settings, opt => opt.Ignore())
+                .ForMember(dest => dest.NarrativeContributorRoles, opt => opt.Ignore())
+                .ForMember(dest => dest.NarrativeRewards, opt => opt.Ignore());
             CreateMap<UpdateNarrativeDTO, Narrative>();
 
             CreateMap<Book, BookViewModel>();

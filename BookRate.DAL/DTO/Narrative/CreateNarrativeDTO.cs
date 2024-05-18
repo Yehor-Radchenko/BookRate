@@ -14,7 +14,7 @@ namespace BookRate.DAL.DTO.Narrative
 
         public string ThreeLetterIsolanguageName { get; set; }
 
-        public virtual IEnumerable<int> ContributorsId { get; set; }
+        public virtual IEnumerable<int> ContributorRoleIds { get; set; }
 
         public virtual IEnumerable<int> GenresId { get; set; }
 

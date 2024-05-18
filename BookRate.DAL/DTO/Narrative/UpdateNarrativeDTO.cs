@@ -1,4 +1,6 @@
-﻿namespace BookRate.DAL.DTO.Narrative
+﻿using BookRate.DAL.DTO.NarrativeRevard;
+
+namespace BookRate.DAL.DTO.Narrative
 {
     public class UpdateNarrativeDTO
     {
@@ -12,12 +14,12 @@
 
         public string ThreeLetterIsolanguageName { get; set; }
 
-        public virtual IEnumerable<int> ContributorsId { get; set; }
+        public virtual IEnumerable<int> ContributorRoleIds { get; set; }
 
         public virtual IEnumerable<int> GenresId { get; set; }
 
         public virtual IEnumerable<int>? SettingsId { get; set; }
 
-        public virtual IEnumerable<int>? NarrativeRewards { get; set; }
+        public virtual IEnumerable<CreateNarrativeRewardDTO>? NarrativeRewards { get; set; }
     }
 }
