@@ -1,8 +1,7 @@
-using BookRate.BLL.Services;
-using BookRate.DAL.Context;
-using BookRate.DAL.UoW;
+using BookRate.BLL.Extension;
+using BookRate.DAL.Extension;
+using BookRate.Middlware;
 using BookRate.Profile;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
@@ -10,15 +9,15 @@ DotNetEnv.Env.Load();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<BookRateDbContext>(options =>
-    options.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_CON_STRING") ?? throw new InvalidOperationException("Connection string not found.")));
-
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+builder.Services.AddDalServices(builder.Configuration);
 
-builder.Services.AddScoped<GenreService>();
-builder.Services.AddScoped<ContributorService>();
-builder.Services.AddScoped<RoleService>();
+builder.Services.AddBllServices();
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 
 builder.Services.AddEndpointsApiExplorer();
@@ -32,9 +31,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+
 
 app.MapControllers();
 
