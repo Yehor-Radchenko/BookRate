@@ -19,13 +19,20 @@ namespace BookRate.Controllers
         [HttpGet]
         public async Task<IActionResult> GetListModels()
         {
-            return Ok(await _service.GetContributorListModelsAsync());
+          
+            return Ok( await _service.GetContributorListModelsAsync());
         }
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetById([FromRoute] int Id)
         {
             var category = await _service.GetByIdAsync(Id);
+
+            if (category == null)
+            {
+                throw new Exception("There is no such entity");
+            }
+
             return Ok(category);
         }
 
