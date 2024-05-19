@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookRate.DAL.Models;
@@ -8,20 +9,28 @@ public partial class User
 {
     public int Id { get; set; }
 
+    [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
     public string Email { get; set; } = null!;
 
+    [Required(ErrorMessage = "Password is required.")]
+    [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
     public string Password { get; set; } = null!;
 
-    public string Username { get; set; }
+    [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Username must contain only letters, numbers, or underscores.")]
+    public string? Username { get; set; }
 
+    [Required(ErrorMessage = "Last name is required.")]
     public string LastName { get; set; } = null!;
 
+    [Required(ErrorMessage = "First name is required.")]
     public string FirstName { get; set; } = null!;
 
     public string? Patronymic { get; set; }
 
     public byte[]? Photo { get; set; }
 
+    [MaxLength(100, ErrorMessage = "Interests cannot exceed 100 characters.")]
     public string? Interests { get; set; }
 
     public virtual ICollection<Commentary>? Commentaries { get; set; }

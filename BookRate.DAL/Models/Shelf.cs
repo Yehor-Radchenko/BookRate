@@ -1,12 +1,17 @@
 ﻿namespace BookRate.DAL.Models
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class Shelf
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(100, ErrorMessage = "Shelf name length cannot exceed 100 characters.")]
         public string Name { get; set; } = null!;
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int UserId { get; set; }
 
@@ -14,4 +19,5 @@
 
         public virtual User User { get; set; }
     }
+
 }

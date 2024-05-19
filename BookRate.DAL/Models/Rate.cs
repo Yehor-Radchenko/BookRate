@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace BookRate.DAL.Models;
 
@@ -10,6 +12,7 @@ public partial class Rate
 
     public int BookId { get; set; }
 
+    [Range(1, 5, ErrorMessage = "Stars rate must be between 1 and 5.")]
     public int StarsRate { get; set; }
 
     [Column(TypeName = "smalldatetime")]

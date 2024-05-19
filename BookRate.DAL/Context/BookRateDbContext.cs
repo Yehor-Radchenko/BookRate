@@ -114,5 +114,9 @@ public partial class BookRateDbContext : DbContext
         modelBuilder.Entity<ContributorRole>()
             .HasIndex(cr => new { cr.ContributorId, cr.RoleId })
             .IsUnique();
+
+        modelBuilder.Entity<Genre>()
+           .HasIndex(g => g.Name)
+           .IsUnique();
     }
 }

@@ -1,25 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BookRate.DAL.Models;
-
-public partial class Commentary
+﻿namespace BookRate.DAL.Models
 {
-    public int Id { get; set; }
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
-    public string Text { get; set; } = null!;
+    public partial class Commentary
+    {
+        public int Id { get; set; }
 
-    [Column(TypeName = "smalldatetime")]
-    public DateTime DateCommented { get; set; }
+        [Required(ErrorMessage = "Text is required.")]
+        public string Text { get; set; } = null!;
 
-    public int UserId { get; set; }
+        [Required(ErrorMessage = "Date commented is required.")]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
+        public DateTime DateCommented { get; set; }
 
-    public int ReviewId { get; set; }
+        public int UserId { get; set; }
 
-    public virtual ICollection<CommentaryLike> CommentaryLikes { get; set; } = new List<CommentaryLike>();
+        public int ReviewId { get; set; }
 
-    public virtual Review Review { get; set; } = null!;
+        public virtual ICollection<CommentaryLike> CommentaryLikes { get; set; } = new List<CommentaryLike>();
 
-    public virtual User User { get; set; } = null!;
+        public virtual Review Review { get; set; } = null!;
+
+        public virtual User User { get; set; } = null!;
+    }
 }

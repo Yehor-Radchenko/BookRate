@@ -1,5 +1,7 @@
 using BookRate.BLL.Extension;
+using BookRate.DAL.Context;
 using BookRate.DAL.Extension;
+using BookRate.DAL.UoW;
 using BookRate.Middlware;
 using BookRate.Profile;
 
@@ -9,7 +11,7 @@ DotNetEnv.Env.Load();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<BookRateDbContext>(options =>
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(typeof(MappingProfile)));
 
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 builder.Services.AddDalServices(builder.Configuration);

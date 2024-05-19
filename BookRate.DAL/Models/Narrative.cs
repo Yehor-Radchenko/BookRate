@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookRate.DAL.Models;
 
-public partial class Narrative
+public class Narrative
 {
     public int Id { get; set; }
 
+    [Required(ErrorMessage = "Title is required.")]
+    [StringLength(100, ErrorMessage = "Title length cannot exceed 100 characters.")]
     public string Title { get; set; } = null!;
 
+    [Required(ErrorMessage = "Description is required.")]
     public string Description { get; set; } = null!;
 
+    [StringLength(100, ErrorMessage = "Original title length cannot exceed 100 characters.")]
     public string? OriginalTitle { get; set; }
 
+    [Required(ErrorMessage = "ThreeLetterIsolanguageName is required.")]
+    [StringLength(3, MinimumLength = 3, ErrorMessage = "ThreeLetterIsolanguageName must be exactly 3 characters.")]
     public string ThreeLetterIsolanguageName { get; set; } = null!;
 
     public virtual ICollection<NarrativeReward> NarrativeRewards { get; set; } = new List<NarrativeReward>();

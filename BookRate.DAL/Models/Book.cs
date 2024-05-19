@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookRate.DAL.Models;
 
@@ -9,8 +10,11 @@ public partial class Book
 
     public int? SerieId { get; set; }
 
+    [Required(ErrorMessage = "First published date is required.")]
+    [DataType(DataType.Date)]
     public DateTime FirstPublished { get; set; }
 
+    [Required(ErrorMessage = "Title is required.")]
     public string Title { get; set; }
 
     public virtual ICollection<BookEdition> BookEditions { get; set; } = new List <BookEdition>();
