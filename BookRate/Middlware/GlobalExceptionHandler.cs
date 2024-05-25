@@ -31,7 +31,6 @@ namespace BookRate.Middlware
                 Type = "Server Error"
             };
 
-
             var response = JsonSerializer.Serialize(problemDetails);
             httpContext.Response.ContentType = "application/json";
 
@@ -39,6 +38,5 @@ namespace BookRate.Middlware
 
             return true;
         }
-
     }
 }

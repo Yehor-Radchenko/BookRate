@@ -17,12 +17,11 @@ namespace BookRate.DAL.Repositories
     {
         protected BookRateDbContext _bookRateDbContext;
         protected DbSet<T> _dbSet;
-        public GenericRepository(BookRateDbContext bookRateDbContext
-            )
+
+        public GenericRepository(BookRateDbContext bookRateDbContext)
         {
             _bookRateDbContext = bookRateDbContext;
             _dbSet = _bookRateDbContext.Set<T>();
-
         }
 
         public async Task<bool> AddAsync(T entity)

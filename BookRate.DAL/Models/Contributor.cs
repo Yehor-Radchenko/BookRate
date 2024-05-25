@@ -39,6 +39,8 @@ public partial class Contributor
 
     public byte[]? Photo { get; set; }
 
+    [Required(ErrorMessage = "At least one role is required.")]
+    [MinLength(1, ErrorMessage = "At least one role is required.")]
     public virtual ICollection<ContributorRole> ContributorRoles { get; set; }
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();

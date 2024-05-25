@@ -18,6 +18,8 @@ public partial class User
     public string Password { get; set; } = null!;
 
     [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Username must contain only letters, numbers, or underscores.")]
+    [StringLength(50, ErrorMessage = "Username must be at most 50 characters long.")]
+    [MinLength(4, ErrorMessage = "Username must be at least 4 characters long.")]
     public string? Username { get; set; }
 
     [Required(ErrorMessage = "Last name is required.")]
