@@ -34,7 +34,7 @@ namespace BookRate.Controllers
         public async Task<IActionResult> Post([FromBody] CreateRoleDTO dto)
         {
             if (await _service.AddAsync(dto))
-                return Ok("Successfully created");
+                return StatusCode(StatusCodes.Status201Created, "Created successfully!");
             else return BadRequest();
         }
 
@@ -42,7 +42,7 @@ namespace BookRate.Controllers
         public async Task<IActionResult> Put([FromBody] UpdateRoleDTO dto)
         {
             if (await _service.UpdateAsync(dto))
-                return Ok("Updated successfully.");
+                return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
             return BadRequest();
         }
 
@@ -50,7 +50,7 @@ namespace BookRate.Controllers
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (await _service.Delete(id))
-                return Ok("Deleted successfully.");
+                return StatusCode(StatusCodes.Status200OK, "Deleted successfully.");
             return BadRequest();
         }
     }

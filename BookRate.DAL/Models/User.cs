@@ -45,6 +45,8 @@ public partial class User
 
     public virtual ICollection<Review>? Reviews { get; set; }
 
+    public virtual ICollection<Role>? Roles { get; set; }
+
     [Column(TypeName = "timestamp")]
     public byte[] Timestamp { get; set; }
 }

@@ -1,9 +1,7 @@
 ﻿namespace BookRate.DAL.DTO.Setting
 {
-    public class UpdateSettingDTO
+    public class UpdateSettingDTO : BaseSerieDTO
     {
         public int Id { get; set; }
-
-        public string Name { get; set; }
     }
 }
