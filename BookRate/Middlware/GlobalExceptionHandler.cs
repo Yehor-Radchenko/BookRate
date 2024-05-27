@@ -38,6 +38,5 @@ namespace BookRate.Middlware
 
             return true;
         }
-
     }
 }

@@ -21,6 +21,7 @@ Log.Logger.Information("Start Project");
 builder.Services.AddControllers();
 
 
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
@@ -29,7 +30,6 @@ builder.Services.AddBllServices();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-
 
 
 builder.Services.AddEndpointsApiExplorer();

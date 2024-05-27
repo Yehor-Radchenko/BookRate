@@ -12,7 +12,7 @@ public partial class Role
     [StringLength(100, ErrorMessage = "Role name cannot exceed 100 characters.")]
     [RegularExpression(@"^[A-Za-zА-Яа-яЁёЇїІіЄєҐґ]+(?:\s[A-Za-zА-Яа-яЁёЇїІіЄєҐґ]+)*$",
         ErrorMessage = "Role name must consist of words separated by a single space.")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     public virtual ICollection<ContributorRole> ContributorRoles { get; set; }
 }

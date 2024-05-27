@@ -26,6 +26,7 @@ public partial class Review
     }
     private string _text = null!;
 
+    [Required]
     [Column(TypeName = "smalldatetime")]
     public DateTime DatePosted { get; set; }
 
@@ -35,8 +36,10 @@ public partial class Review
     [DataType(DataType.Date)]
     public DateTime? EndReadDate { get; set; }
 
+    [Required]
     public int BookId { get; set; }
 
+    [Required]
     public int UserId { get; set; }
 
     public virtual Book Book { get; set; } = null!;
