@@ -8,10 +8,8 @@ public partial class BookRateDbContext : DbContext
 {
     public BookRateDbContext(DbContextOptions<BookRateDbContext> options)
         : base(options)
-    {
-
-    }
-
+    {}
+  
     public virtual DbSet<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
 
     public virtual DbSet<ContributorRole> ContributorRoles { get; set; }

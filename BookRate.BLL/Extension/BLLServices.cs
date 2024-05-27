@@ -13,12 +13,8 @@ namespace BookRate.BLL.Extension
             services.AddScoped<RewardService>();
             services.AddScoped<RoleService>();
             services.AddScoped<SettingService>();
-
             return services;
         }
-
-
-
     }
 
 }
