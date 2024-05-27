@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Genre;
-using BookRate.DAL.Context;
 using BookRate.DAL.DTO.Genre;
 using BookRate.DAL.Models;
-using BookRate.DAL.Repositories;
 using BookRate.DAL.UoW;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {

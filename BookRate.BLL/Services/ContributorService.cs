@@ -1,26 +1,21 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Contributor;
-using BookRate.BLL.ViewModels.Genre;
-using BookRate.BLL.ViewModels.Role;
 using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
     public class ContributorService : BaseService, IService<CreateContributorDTO, UpdateContributorDTO, Contributor>
     {
         public ContributorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
-        {
+        { 
+        
+
         }
+     
 
         public async Task<bool> AddAsync(CreateContributorDTO dto)
         {
