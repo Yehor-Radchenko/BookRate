@@ -2,6 +2,7 @@ using BookRate.BLL.Extension;
 using BookRate.DAL.Extension;
 using BookRate.Middlware;
 using BookRate.Profile;
+using BookRate.Validation.Extentions;
 using Serilog;
 using Serilog.Extensions.Hosting;
 
@@ -24,9 +25,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-
 builder.Services.AddDalServices(builder.Configuration);
 builder.Services.AddBllServices();
+builder.Services.AddValidationServices();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
