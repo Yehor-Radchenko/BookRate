@@ -19,7 +19,7 @@ namespace BookRate.BLL.Services
         {
         }
 
-        public async Task<bool> AddAsync(CreateNarrativeDTO dto)
+        public async Task<int> AddAsync(CreateNarrativeDTO dto)
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
@@ -86,10 +86,10 @@ namespace BookRate.BLL.Services
                 }
             }
 
-            await narrativeRepo.UpdateAsync(narrative);
+            await narrativeRepo.AddAsync(narrative);
             await _unitOfWork.CommitAsync();
 
-            return true;
+            return narrative.Id;
         }
 
         public async Task<bool> Delete(int id)

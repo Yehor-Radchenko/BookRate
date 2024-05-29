@@ -18,7 +18,7 @@ namespace BookRate.BLL.Services
         {
         }
 
-        public async Task<bool> AddAsync(CreateRewardDTO dto)
+        public async Task<int> AddAsync(CreateRewardDTO dto)
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
@@ -29,7 +29,7 @@ namespace BookRate.BLL.Services
 
             await rewardRepo.AddAsync(rewardModel);
             await _unitOfWork.CommitAsync();
-            return true;
+            return rewardModel.Id;
         }
 
         public async Task<bool> Delete(int id)

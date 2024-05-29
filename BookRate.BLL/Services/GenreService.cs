@@ -13,7 +13,7 @@ namespace BookRate.BLL.Services
         {
         }
 
-        public async Task<bool> AddAsync(CreateGenreDTO dto)
+        public async Task<int> AddAsync(CreateGenreDTO dto)
         {
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
@@ -24,7 +24,7 @@ namespace BookRate.BLL.Services
 
             await genreRepo.AddAsync(genreModel);
             await _unitOfWork.CommitAsync();
-            return true;
+            return genreModel.Id;
         }
 
         public async Task<bool> Delete(int id)

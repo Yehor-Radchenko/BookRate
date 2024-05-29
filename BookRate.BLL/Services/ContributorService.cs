@@ -17,7 +17,7 @@ namespace BookRate.BLL.Services
         }
      
 
-        public async Task<bool> AddAsync(CreateContributorDTO dto)
+        public async Task<int> AddAsync(CreateContributorDTO dto)
         {
             if (dto.RolesId is null)
                 throw new ArgumentException("Contributor must have at least one role.", nameof(dto.RolesId));
@@ -41,7 +41,7 @@ namespace BookRate.BLL.Services
             }
             await _unitOfWork.CommitAsync();
 
-            return true;
+            return contributor.Id;
         }
 
         public async Task<bool> Delete(int id)

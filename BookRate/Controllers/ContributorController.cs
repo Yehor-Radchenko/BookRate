@@ -1,7 +1,10 @@
 ﻿using BookRate.BLL.Services;
 using BookRate.DAL.DTO.Contributor;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace BookRate.Controllers
 {
@@ -10,16 +13,18 @@ namespace BookRate.Controllers
     public class ContributorController : ControllerBase
     {
         private readonly ContributorService _service;
+        private IValidator<BaseContributorDTO> _validator;
 
-        public ContributorController(ContributorService service)
+        public ContributorController(ContributorService service, IValidator<BaseContributorDTO> validator)
         {
             _service = service;
+            _validator = validator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetListModels()
         {
-          
+            
             return Ok( await _service.GetContributorListModelsAsync());
         }
 
@@ -39,17 +44,25 @@ namespace BookRate.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateContributorDTO dto)
         {
-            if (await _service.AddAsync(dto))
-                return StatusCode(StatusCodes.Status201Created, "Created successfully!");
-            else return BadRequest();
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+            {
+                if (await _service.AddAsync(dto) > 0)
+                    return StatusCode(StatusCodes.Status201Created, "Created successfully!");
+            }
+            return BadRequest(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UpdateContributorDTO dto)
         {
-            if (await _service.UpdateAsync(dto))
-                return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
-            return BadRequest();
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+            {
+                if (await _service.UpdateAsync(dto))
+                    return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
+            }
+            return BadRequest(result);
         }
 
         [HttpDelete("{id}")]

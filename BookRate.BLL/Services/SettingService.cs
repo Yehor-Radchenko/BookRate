@@ -13,7 +13,7 @@ namespace BookRate.BLL.Services
         {
         }
 
-        public async Task<bool> AddAsync(CreateSettingDTO dto)
+        public async Task<int> AddAsync(CreateSettingDTO dto)
         {
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
@@ -24,7 +24,7 @@ namespace BookRate.BLL.Services
 
             await settingRepo.AddAsync(settingModel);
             await _unitOfWork.CommitAsync();
-            return true;
+            return settingModel.Id;
         }
 
         public async Task<bool> Delete(int id)

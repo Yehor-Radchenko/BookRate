@@ -33,7 +33,7 @@ namespace BookRate.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateRoleDTO dto)
         {
-            if (await _service.AddAsync(dto))
+            if (await _service.AddAsync(dto) > 0)
                 return StatusCode(StatusCodes.Status201Created, "Created successfully!");
             else return BadRequest();
         }

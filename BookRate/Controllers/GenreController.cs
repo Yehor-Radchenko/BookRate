@@ -1,6 +1,10 @@
 ﻿using BookRate.BLL.Services;
+using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.DTO.Genre;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Sprache;
 
 namespace BookRate.Controllers
 {
@@ -9,10 +13,12 @@ namespace BookRate.Controllers
     public class GenreController : Controller
     {
         private readonly GenreService _service;
+        private IValidator<BaseGenreDTO> _validator;
 
-        public GenreController(GenreService service)
+        public GenreController(GenreService service, IValidator<BaseGenreDTO> validator)
         {
             _service = service;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -31,16 +37,24 @@ namespace BookRate.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateGenreDTO dto)
         {
-            if (await _service.AddAsync(dto))
-                return StatusCode(StatusCodes.Status201Created, "Created successfully!");
-            else return BadRequest();
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+            {
+                if (await _service.AddAsync(dto) > 0)
+                    return StatusCode(StatusCodes.Status201Created, "Created successfully!");
+            }
+            return BadRequest(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UpdateGenreDTO dto)
         {
-            if (await _service.UpdateAsync(dto))
-                return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+            {
+                if (await _service.UpdateAsync(dto))
+                    return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
+            }
             return BadRequest();
         }
 

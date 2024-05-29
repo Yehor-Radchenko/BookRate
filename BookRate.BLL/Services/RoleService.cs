@@ -19,7 +19,7 @@ namespace BookRate.BLL.Services
         {
         }
 
-        public async Task<bool> AddAsync(CreateRoleDTO dto)
+        public async Task<int> AddAsync(CreateRoleDTO dto)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
@@ -30,7 +30,7 @@ namespace BookRate.BLL.Services
 
             await roleRepo.AddAsync(roleModel);
             await _unitOfWork.CommitAsync();
-            return true;
+            return roleModel.Id;
         }
 
         public async Task<bool> Delete(int id)
