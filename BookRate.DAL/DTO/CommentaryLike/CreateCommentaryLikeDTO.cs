@@ -6,6 +6,8 @@
 
         public int CommentaryId { get; set; }
 
+        public bool IsLiked { get; set; }
+
         public DateTime DateLiked { get; set; }
     }
 }

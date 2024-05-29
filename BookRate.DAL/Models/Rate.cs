@@ -8,6 +8,8 @@ namespace BookRate.DAL.Models;
 
 public partial class Rate
 {
+    public int Id { get; set; }
+
     public int UserId { get; set; }
 
     public int BookId { get; set; }
@@ -21,6 +23,8 @@ public partial class Rate
     public virtual Book Book { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
+
+    public virtual ICollection<Review>? Reviews { get; set; }
 
     public byte[] Timestamp { get; set; }
 }

@@ -36,39 +36,13 @@ public partial class Review
     [DataType(DataType.Date)]
     public DateTime? EndReadDate { get; set; }
 
-    [Required]
-    public int BookId { get; set; }
-
-    [Required]
-    public int UserId { get; set; }
-
-    public virtual Book Book { get; set; } = null!;
-
     public virtual ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
 
     public virtual ICollection<ReviewLike> ReviewLikes { get; set; } = new List<ReviewLike>();
 
-    public virtual User User { get; set; } = null!;
-
     [Column(TypeName = "timestamp")]
     public byte[] Timestamp { get; set; }
 
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (string.IsNullOrWhiteSpace(Title))
-        {
-            yield return new ValidationResult("Title cannot be empty or whitespace.", new[] { nameof(Title) });
-        }
-
-        if (string.IsNullOrWhiteSpace(Text))
-        {
-            yield return new ValidationResult("Text cannot be empty or whitespace.", new[] { nameof(Text) });
-        }
-
-        if (StartReadDate.HasValue && EndReadDate.HasValue && StartReadDate.Value >= EndReadDate.Value)
-        {
-            yield return new ValidationResult("Start read date must be before end read date.",
-                new[] { nameof(StartReadDate), nameof(EndReadDate) });
-        }
-    }
+    public int RateId { get; set; }
+    public virtual Rate Rate { get; set; } = null!;
 }

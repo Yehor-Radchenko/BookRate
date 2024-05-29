@@ -1,7 +1,6 @@
 ﻿namespace BookRate.DAL.DTO.Role
 {
-    public class CreateRoleDTO
+    public class CreateRoleDTO : BaseRoleDTO
     {
-        public string? Name { get; set; }
     }
 }

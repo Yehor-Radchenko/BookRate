@@ -1,11 +1,6 @@
 ﻿namespace BookRate.DAL.DTO.NarrativeRevard
 {
-    public class CreateNarrativeRewardDTO
+    public class CreateNarrativeRewardDTO : BaseNarrativeRewardDTO
     {
-        public int NarrativeId { get; set; }
-
-        public int RewardId { get; set; }
-
-        public DateTime DateRewarded { get; set; }
     }
 }
