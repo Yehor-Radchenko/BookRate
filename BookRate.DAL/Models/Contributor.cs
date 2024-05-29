@@ -44,13 +44,6 @@ public partial class Contributor
     public virtual ICollection<ContributorRole> ContributorRoles { get; set; }
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (BirthDate.HasValue && DeathDate.HasValue && BirthDate > DeathDate)
-        {
-            yield return new ValidationResult("Birth date cannot be after death date.", new[] { "BirthDate", "DeathDate" });
-        }
-    }
+    
 }
 

@@ -67,7 +67,7 @@ public partial class BookRateDbContext : DbContext
            .HasKey(f => new { f.FolloweeId, f.FollowerId });
 
         modelBuilder.Entity<Rate>()
-           .HasKey(cl => new { cl.UserId, cl.BookId });
+           .HasKey(r => r.Id);
 
         modelBuilder.Entity<Commentary>()
             .HasOne(c => c.User)
@@ -117,6 +117,10 @@ public partial class BookRateDbContext : DbContext
 
         modelBuilder.Entity<Genre>()
            .HasIndex(g => g.Name)
+           .IsUnique();
+
+        modelBuilder.Entity<Rate>()
+           .HasIndex(r => new { r.UserId, r.BookId })
            .IsUnique();
     }
 }

@@ -18,8 +18,6 @@ namespace BookRate.DAL.DTO.Review
 
         public DateTime? EndReadDate { get; set; }
 
-        public int BookId { get; set; }
-
-        public int UserId { get; set; }
+        public int RateId { get; set; }
     }
 }

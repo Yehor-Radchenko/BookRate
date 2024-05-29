@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookRate.DAL.DTO.Setting
 {
-    public abstract class BaseSerieDTO
+    public abstract class BaseSettingDTO
     {
         public string Name { get; set; }
     }

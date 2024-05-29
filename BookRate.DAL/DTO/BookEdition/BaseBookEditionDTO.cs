@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookRate.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace BookRate.DAL.DTO.BookEdition
 
         public int EditionId { get; set; }
 
-        public int CoverType { get; set; }
+        public CoverType CoverType { get; set; }
 
         public int PagesCount { get; set; }
 
