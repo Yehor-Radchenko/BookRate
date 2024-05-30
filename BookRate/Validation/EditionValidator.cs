@@ -1,5 +1,6 @@
 ﻿using BookRate.DAL.DTO.Edition;
 using FluentValidation;
+using BookRate.Validation.Extentions;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace BookRate.Validation
@@ -24,8 +25,8 @@ namespace BookRate.Validation
                 .When(x => !string.IsNullOrEmpty(x.Phone)).WithMessage("Invalid phone number format.");
 
             RuleFor(x => x.Website)
-                .Matches(@"^(https?://)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*/?$")
-                .When(x => !string.IsNullOrEmpty(x.Website)).WithMessage("Invalid website format.");
+                .Must(uri => Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                .When(x => !string.IsNullOrEmpty(x.Website)).WithMessage("Invalid URL format.");
         }
     }
 }

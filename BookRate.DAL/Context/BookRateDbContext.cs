@@ -9,6 +9,8 @@ public partial class BookRateDbContext : DbContext
     public BookRateDbContext(DbContextOptions<BookRateDbContext> options)
         : base(options)
     {}
+
+    public virtual DbSet<Photo> Photos { get; set; }
   
     public virtual DbSet<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
 
@@ -120,5 +122,9 @@ public partial class BookRateDbContext : DbContext
         modelBuilder.Entity<Rate>()
            .HasIndex(r => new { r.UserId, r.BookId })
            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.PhotoId)
+            .IsUnique();
     }
 }

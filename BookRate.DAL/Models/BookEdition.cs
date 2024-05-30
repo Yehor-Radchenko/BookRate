@@ -28,7 +28,8 @@ public partial class BookEdition
 
     public int EditionId { get; set; }
 
-    public byte[]? Photo { get; set; }
+    [Url(ErrorMessage = "Invalid website URL.")]
+    public string PhotoUrl { get; set; }
 
     public virtual Book Book { get; set; } = null!;
 

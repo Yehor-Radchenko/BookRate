@@ -21,6 +21,6 @@ namespace BookRate.DAL.DTO.BookEdition
 
         public string Ibsn { get; set; }
 
-        public byte[]? Photo { get; set; }
+        public string? PhotoUrl { get; set; }
     }
 }

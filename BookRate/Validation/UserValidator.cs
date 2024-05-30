@@ -1,5 +1,6 @@
 ﻿using BookRate.DAL.DTO.User;
 using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookRate.Validation
 {
@@ -40,6 +41,10 @@ namespace BookRate.Validation
 
             RuleFor(user => user.RolesId)
                 .NotEmpty().WithMessage("At least one role is required.");
+
+            RuleFor(user => user.Photo)
+                .SetValidator(new PhotoValidator()!)
+                .When(x => x.Photo is not null);
         }
     }
 }

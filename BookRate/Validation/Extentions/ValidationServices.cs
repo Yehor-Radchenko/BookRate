@@ -35,7 +35,8 @@ namespace BookRate.Validation.Extentions
             services.AddScoped<IValidator<BaseSettingDTO>, SettingValidator>();
             services.AddScoped<IValidator<BaseShelfDTO>, ShelfValidator>();
             services.AddScoped<IValidator<BaseUserDTO>, UserValidator>();
-            
+            services.AddScoped <IValidator <byte[]>, PhotoValidator>();
+
             return services;
         }
     }

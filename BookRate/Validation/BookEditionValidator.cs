@@ -1,4 +1,5 @@
 ﻿using BookRate.DAL.DTO.BookEdition;
+using BookRate.Validation.Extentions;
 using FluentValidation;
 
 namespace BookRate.Validation
@@ -22,8 +23,9 @@ namespace BookRate.Validation
                 .Length(10, 13).WithMessage("Ibsn must be between 10 and 13 characters long.")
                 .Matches(@"^[0-9\-]+$").WithMessage("Ibsn must contain only digits.");
 
-            RuleFor(x => x.Photo)
-                .NotNull().WithMessage("Photo is required.");
+            RuleFor(x => x.PhotoUrl)
+                .Must(uri => Uri.IsWellFormedUriString(uri, UriKind.Absolute))
+                .When(x => !string.IsNullOrEmpty(x.PhotoUrl)).WithMessage("Invalid URL format.");
         }
     }
 }

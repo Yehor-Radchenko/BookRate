@@ -62,6 +62,10 @@ namespace BookRate.Validation
 
             RuleFor(x => x.RolesId)
                 .NotEmpty().WithMessage("At least one role ID is required.");
+
+            RuleFor(x => x.Photo)
+               .SetValidator(new PhotoValidator()!)
+               .When(x => x.Photo is not null);
         }
     }
 }

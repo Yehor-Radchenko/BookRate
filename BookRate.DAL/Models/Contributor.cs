@@ -37,7 +37,9 @@ public partial class Contributor
     [StringLength(100, ErrorMessage = "Birth place cannot exceed 100 characters.")]
     public string BirthPlace { get; set; } = null!;
 
-    public byte[]? Photo { get; set; }
+    public int? PhotoId { get; set; }
+
+    public Photo? Photo { get; set; }
 
     [Required(ErrorMessage = "At least one role is required.")]
     [MinLength(1, ErrorMessage = "At least one role is required.")]

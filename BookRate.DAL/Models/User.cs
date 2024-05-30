@@ -30,7 +30,9 @@ public partial class User
 
     public string? Patronymic { get; set; }
 
-    public byte[]? Photo { get; set; }
+    public int? PhotoId { get; set; }
+
+    public Photo? Photo { get; set; }
 
     [MaxLength(100, ErrorMessage = "Interests cannot exceed 100 characters.")]
     public string? Interests { get; set; }

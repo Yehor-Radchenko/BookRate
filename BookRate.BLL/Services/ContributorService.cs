@@ -12,10 +12,7 @@ namespace BookRate.BLL.Services
     {
         public ContributorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         { 
-        
-
         }
-     
 
         public async Task<int> AddAsync(CreateContributorDTO dto)
         {
