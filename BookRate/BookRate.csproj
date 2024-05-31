@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookRate.BLL\BookRate.BLL.csproj" />
+    <ProjectReference Include="..\BookRate.Services\BookRate.Service.csproj" />
   </ItemGroup>
 
 </Project>

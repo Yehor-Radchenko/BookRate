@@ -1,6 +1,8 @@
 ﻿using BookRate.BLL.Services;
 using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.DTO.Genre;
+using BookRate.Service.Models;
+using BookRate.Service.Services;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -58,7 +60,7 @@ namespace BookRate.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("TestEmail")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (await _service.Delete(id))

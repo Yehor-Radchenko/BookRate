@@ -1,10 +1,11 @@
 using BookRate.BLL.Extension;
+using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.DAL.Extension;
 using BookRate.Middlware;
 using BookRate.Profile;
+using BookRate.Service.Services;
 using BookRate.Validation.Extentions;
 using Serilog;
-using Serilog.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
@@ -18,16 +19,14 @@ Log.Logger = new LoggerConfiguration()
 
 Log.Logger.Information("Start Project");
 
-
 builder.Services.AddControllers();
-
-
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddDalServices(builder.Configuration);
 builder.Services.AddBllServices();
 builder.Services.AddValidationServices();
+builder.Services.AddTransient<EmailService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -38,8 +37,6 @@ builder.Host.UseSerilog();
 builder.Services.AddSwaggerGen();
 
 Log.Information("Total Services {count}: ", builder.Services.Count());
-
-
 
 var app = builder.Build();
 
