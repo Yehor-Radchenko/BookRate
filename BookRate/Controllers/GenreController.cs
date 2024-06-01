@@ -60,7 +60,7 @@ namespace BookRate.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("TestEmail")]
+        [HttpDelete]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (await _service.Delete(id))

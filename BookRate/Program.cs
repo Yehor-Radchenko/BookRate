@@ -5,6 +5,8 @@ using BookRate.Middlware;
 using BookRate.Profile;
 using BookRate.Service.Services;
 using BookRate.Validation.Extentions;
+using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +28,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddDalServices(builder.Configuration);
 builder.Services.AddBllServices();
 builder.Services.AddValidationServices();
-builder.Services.AddTransient<EmailService>();
+
+builder.Services.AddTransient(sp => new EmailService(Environment.GetEnvironmentVariable("MAILJET_API_KEY")!,
+    Environment.GetEnvironmentVariable("MAILJET_API_SECRET")!));
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
