@@ -14,7 +14,7 @@ namespace BookRate.Controllers
     {
         private readonly ContributorService _service;
         private IValidator<BaseContributorDTO> _validator;
-
+        
         public ContributorController(ContributorService service, IValidator<BaseContributorDTO> validator)
         {
             _service = service;
