@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace BookRate.Validation
 {
-    public class ReivewValidator : AbstractValidator<BaseReviewDTO>
+    public class ReviewValidator : AbstractValidator<BaseReviewDTO>
     {
-        public ReivewValidator()
+        public ReviewValidator()
         {
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title is required.")

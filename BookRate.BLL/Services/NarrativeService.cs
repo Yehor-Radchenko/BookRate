@@ -1,26 +1,25 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
-using BookRate.BLL.ViewModels.Contributor;
 using BookRate.BLL.ViewModels.Narrative;
 using BookRate.DAL.DTO.Narrative;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
-    public class NarrativeService : BaseService, IService<CreateNarrativeDTO, UpdateNarrativeDTO, Narrative>
+    public class NarrativeService : BaseService<Narrative, CreateNarrativeDTO, UpdateNarrativeDTO>
     {
-        public NarrativeService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public NarrativeService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IValidator<BaseNarrativeDTO> validator
+            ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async Task<int> AddAsync(CreateNarrativeDTO dto)
+        public async override Task<int> AddAsync(CreateNarrativeDTO dto)
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
@@ -93,7 +92,7 @@ namespace BookRate.BLL.Services
             return narrative.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async override Task<bool> Delete(int id)
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
 
@@ -108,7 +107,7 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(UpdateNarrativeDTO expectedEntityValues)
+        public async override Task<bool> UpdateAsync(UpdateNarrativeDTO expectedEntityValues)
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
@@ -181,7 +180,6 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-
         public async Task<IEnumerable<NarrativeListModel>> GetNarrativeListModelsAsync()
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
@@ -196,7 +194,6 @@ namespace BookRate.BLL.Services
 
             return list;
         }
-
 
         public async Task<NarrativeViewModel?> GetByIdAsync(int? id)
         {

@@ -4,16 +4,21 @@ using BookRate.BLL.ViewModels.Setting;
 using BookRate.DAL.DTO.Setting;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
 
 namespace BookRate.BLL.Services
 {
-    public class SettingService : BaseService, IService<CreateSettingDTO, UpdateSettingDTO, Setting>
+    public class SettingService : BaseService<Setting, CreateSettingDTO, UpdateSettingDTO>
     {
-        public SettingService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public SettingService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IValidator<BaseSettingDTO> validator
+            ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async Task<int> AddAsync(CreateSettingDTO dto)
+        public async override Task<int> AddAsync(CreateSettingDTO dto)
         {
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
@@ -27,7 +32,7 @@ namespace BookRate.BLL.Services
             return settingModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async override Task<bool> Delete(int id)
         {
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
@@ -52,7 +57,7 @@ namespace BookRate.BLL.Services
             return _mapper.Map<SettingViewModel>(settingModel);
         }
 
-        public async Task<bool> UpdateAsync(UpdateSettingDTO expectedEntityValues)
+        public async override Task<bool> UpdateAsync(UpdateSettingDTO expectedEntityValues)
         {
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 

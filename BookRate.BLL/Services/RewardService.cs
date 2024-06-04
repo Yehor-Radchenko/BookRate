@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Reward;
+using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.DTO.Reward;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +14,17 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
-    public class RewardService : BaseService, IService<CreateRewardDTO, UpdateRewardDTO, Reward>
+    public class RewardService : BaseService<Reward, CreateRewardDTO, UpdateRewardDTO>
     {
-        public RewardService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public RewardService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IValidator<BaseRewardDTO> validator
+            ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async Task<int> AddAsync(CreateRewardDTO dto)
+        public async override Task<int> AddAsync(CreateRewardDTO dto)
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
@@ -32,7 +38,7 @@ namespace BookRate.BLL.Services
             return rewardModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async override Task<bool> Delete(int id)
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
@@ -45,7 +51,7 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(UpdateRewardDTO expectedEntityValues)
+        public async override Task<bool> UpdateAsync(UpdateRewardDTO expectedEntityValues)
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 

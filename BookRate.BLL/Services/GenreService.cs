@@ -4,16 +4,21 @@ using BookRate.BLL.ViewModels.Genre;
 using BookRate.DAL.DTO.Genre;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
 
 namespace BookRate.BLL.Services
 {
-    public class GenreService : BaseService, IService<CreateGenreDTO, UpdateGenreDTO, Genre>
+    public class GenreService : BaseService<Genre, CreateGenreDTO, UpdateGenreDTO>
     {
-        public GenreService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public GenreService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IValidator<BaseGenreDTO> validator
+            ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async Task<int> AddAsync(CreateGenreDTO dto)
+        public async override Task<int> AddAsync(CreateGenreDTO dto)
         {
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
@@ -27,7 +32,7 @@ namespace BookRate.BLL.Services
             return genreModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async override Task<bool> Delete(int id)
         {
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
@@ -55,7 +60,7 @@ namespace BookRate.BLL.Services
             return _mapper.Map<GenreViewModel>(genreModel);
         }
 
-        public async Task<bool> UpdateAsync(UpdateGenreDTO expectedEntityValues)
+        public async override Task<bool> UpdateAsync(UpdateGenreDTO expectedEntityValues)
         {
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 

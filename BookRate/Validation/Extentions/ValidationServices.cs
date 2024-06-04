@@ -8,6 +8,7 @@ using BookRate.DAL.DTO.Narrative;
 using BookRate.DAL.DTO.NarrativeRevard;
 using BookRate.DAL.DTO.Review;
 using BookRate.DAL.DTO.Reward;
+using BookRate.DAL.DTO.Role;
 using BookRate.DAL.DTO.Serie;
 using BookRate.DAL.DTO.Setting;
 using BookRate.DAL.DTO.Shelf;
@@ -29,7 +30,8 @@ namespace BookRate.Validation.Extentions
             services.AddScoped<IValidator<BaseEditionDTO>, EditionValidator>();
             services.AddScoped<IValidator<BaseNarrativeRewardDTO>, NarrativeRewardValidator>();
             services.AddScoped<IValidator<BaseNarrativeDTO>, NarrativeValidator>();
-            services.AddScoped<IValidator<BaseReviewDTO>, ReivewValidator>();
+            services.AddScoped<IValidator<BaseReviewDTO>, ReviewValidator>();
+            services.AddScoped<IValidator<BaseRoleDTO>, RoleValidator>();
             services.AddScoped<IValidator<BaseRewardDTO>, RewardValidator>();
             services.AddScoped<IValidator<BaseSerieDTO>, SerieValidator>();
             services.AddScoped<IValidator<BaseSettingDTO>, SettingValidator>();

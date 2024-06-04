@@ -4,17 +4,22 @@ using BookRate.BLL.ViewModels.Contributor;
 using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookRate.BLL.Services
 {
-    public class ContributorService : BaseService, IService<CreateContributorDTO, UpdateContributorDTO, Contributor>
+    public class ContributorService : BaseService<Contributor, CreateContributorDTO, UpdateContributorDTO>
     {
-        public ContributorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public ContributorService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IValidator<BaseContributorDTO> validator
+            ) : base(unitOfWork, mapper, validator)
         { 
         }
 
-        public async Task<int> AddAsync(CreateContributorDTO dto)
+        public async override Task<int> AddAsync(CreateContributorDTO dto)
         {
             if (dto.RolesId == null || !dto.RolesId.Any())
                 throw new ArgumentException("Contributor must have at least one role.", nameof(dto.RolesId));
@@ -41,7 +46,7 @@ namespace BookRate.BLL.Services
             return contributor.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async override Task<bool> Delete(int id)
         {
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
@@ -57,7 +62,7 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(UpdateContributorDTO expectedEntityValues)
+        public async override Task<bool> UpdateAsync(UpdateContributorDTO expectedEntityValues)
         {
             if (expectedEntityValues.RolesId == null || !expectedEntityValues.RolesId.Any())
                 throw new ArgumentException("Contributor must have at least one role.", nameof(expectedEntityValues.RolesId));

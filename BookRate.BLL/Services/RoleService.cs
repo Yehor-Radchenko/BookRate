@@ -2,24 +2,31 @@
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Genre;
 using BookRate.BLL.ViewModels.Role;
+using BookRate.DAL.DTO.Reward;
 using BookRate.DAL.DTO.Role;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
-    public class RoleService : BaseService, IService<CreateRoleDTO, UpdateRoleDTO, Role>
+    public class RoleService : BaseService<Role, CreateRoleDTO, UpdateRoleDTO>
     {
-        public RoleService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public RoleService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IValidator<BaseRoleDTO> validator
+            ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async Task<int> AddAsync(CreateRoleDTO dto)
+        public async override Task<int> AddAsync(CreateRoleDTO dto)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
@@ -33,7 +40,7 @@ namespace BookRate.BLL.Services
             return roleModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async override Task<bool> Delete(int id)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
@@ -46,7 +53,7 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(UpdateRoleDTO expectedEntityValues)
+        public async override Task<bool> UpdateAsync(UpdateRoleDTO expectedEntityValues)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services.ServiceAbstraction
 {
-    public interface IService <CreateDto, UpdateDto, TEntity> 
+    public interface IService <TEntity, CreateDto, UpdateDto> 
         where CreateDto : class
         where UpdateDto : class
         where TEntity : class
