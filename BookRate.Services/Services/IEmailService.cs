@@ -10,6 +10,6 @@ namespace BookRate.Service.Services
 {
     internal interface IEmailService
     {
-        Task SendEmailAsync(EmailMessage emailMessage);
+        Task SendEmailAsync(EmailModel emailMessage);
     }
 }

@@ -1,31 +1,49 @@
 ﻿using BookRate.Service.Models;
-using MailKit.Net.Smtp;
-using MimeKit;
-using static System.Net.Mime.MediaTypeNames;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using Mailjet.Client.TransactionalEmails;
+using Mailjet.Client.TransactionalEmails.Response;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
-namespace BookRate.Service.Services
+public class EmailService
 {
-    public class EmailService
+    private readonly string _apiKey;
+    private readonly string _apiSecret;
+    public EmailService(string apiKey, string apiSecret)
     {
-        public async Task SendEmailAsync(EmailMessage emailMessage)
-        {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("BookSpace", emailMessage.From));
-            foreach (var to in emailMessage.To)
-            {
-                message.To.Add(new MailboxAddress("", to));
-            }
-            message.Subject = emailMessage.Subject;
-            message.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = emailMessage.Body };
+        _apiKey = apiKey;
+        _apiSecret = apiSecret;
+    }
 
-            using (var client = new SmtpClient())
+    public async Task SendEmailAsync(EmailModel emailModel)
+    {
+        MailjetClient client = new MailjetClient(_apiKey, _apiSecret)
+        {
+            BaseAdress = "https://api.mailjet.com",
+        };
+
+        var email = new TransactionalEmailBuilder()
+                .WithFrom(new SendContact(emailModel.From))
+                .WithSubject(emailModel.Subject)
+                .WithHtmlPart(emailModel.Body)
+                .WithTo(new SendContact(emailModel.To))
+                .Build();
+
+        var response = await client.SendTransactionalEmailAsync(email);
+        StringBuilder stringBuilder = new StringBuilder();
+
+        foreach (var message in response.Messages)
+        {
+            if (message.Errors is not null)
             {
-                await client.ConnectAsync("smtp.gmail.com", 465, true);
-                await client.AuthenticateAsync(emailMessage.From, "mvso befm imdl whmj"); // Use Google App password
-                await client.SendAsync(message);
-                await client.DisconnectAsync(true);
+                foreach (var error in message.Errors)
+                {
+                    stringBuilder.AppendLine("Code: " + error.ErrorCode + "Message: " + error.ErrorMessage);
+                }
+
+                throw new Exception("MailJet error:" + stringBuilder.ToString());
             }
         }
     }
 }
-    
