@@ -25,6 +25,4 @@ public partial class Rate
     public virtual User User { get; set; } = null!;
 
     public virtual ICollection<Review>? Reviews { get; set; }
-
-    public byte[] Timestamp { get; set; }
 }

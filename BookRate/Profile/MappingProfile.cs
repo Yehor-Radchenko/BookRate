@@ -34,10 +34,18 @@
 
             CreateMap<Contributor, ContributorViewModel>()
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.Role)));
-            CreateMap<CreateContributorDTO, Contributor>();
-            CreateMap<UpdateContributorDTO, Contributor>();
+            CreateMap<CreateContributorDTO, Contributor>()
+                .ForMember(dest => dest.ContributorRoles, opt => opt.MapFrom(src => src.RolesId.Select(roleId => new ContributorRole { RoleId = roleId })))
+                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.GenresId.Select(genreId => new Genre { Id = genreId })))
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo != null && src.Photo.Length > 0 ? new Photo { Data = src.Photo } : null));
+
+            CreateMap<UpdateContributorDTO, Contributor>()
+                .ForMember(dest => dest.ContributorRoles, opt => opt.Ignore())
+                .ForMember(dest => dest.Genres, opt => opt.Ignore())
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo != null && src.Photo.Length > 0 ? new Photo { Data = src.Photo } : null));
             CreateMap<Contributor, ContributorListModel>()
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.Role)));
+            CreateMap<Contributor, AuthorListModel>();
 
             CreateMap<Role, RoleViewModel>();
             CreateMap<CreateRoleDTO, Role>();
@@ -65,13 +73,30 @@
             CreateMap<CreateSerieDTO, Serie>();
             CreateMap<UpdateSerieDTO, Serie>();
 
-            CreateMap<Narrative, NarrativeViewModel>();
+            CreateMap<Narrative, NarrativeViewModel>()
+                .ForMember(dest => dest.Contributors, opt => opt.MapFrom(src =>
+                    src.NarrativeContributorRoles.Select(ncr => ncr.ContributorRole.Contributor).Distinct()))
+                .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
+                .ForMember(dest => dest.Settings, opt => opt.MapFrom(src => src.Settings))
+                .ForMember(dest => dest.Rewards, opt => opt.MapFrom(src => src.NarrativeRewards));
+
             CreateMap<CreateNarrativeDTO, Narrative>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Genres, opt => opt.Ignore())
                 .ForMember(dest => dest.Settings, opt => opt.Ignore())
                 .ForMember(dest => dest.NarrativeContributorRoles, opt => opt.Ignore())
                 .ForMember(dest => dest.NarrativeRewards, opt => opt.Ignore());
-            CreateMap<UpdateNarrativeDTO, Narrative>();
+            CreateMap<UpdateNarrativeDTO, Narrative>()
+                .ForMember(dest => dest.Genres, opt => opt.Ignore())
+                .ForMember(dest => dest.Settings, opt => opt.Ignore())
+                .ForMember(dest => dest.NarrativeContributorRoles, opt => opt.Ignore())
+                .ForMember(dest => dest.NarrativeRewards, opt => opt.Ignore());
+            CreateMap<Narrative, NarrativeListModel>()
+                .ForMember(dest => dest.Author, opt => opt.MapFrom(src =>
+                    src.NarrativeContributorRoles
+                        .Where(ncr => ncr.ContributorRole.Role.Name == "Author")
+                        .Select(ncr => ncr.ContributorRole.Contributor)
+                        .FirstOrDefault()));
 
             CreateMap<Book, BookViewModel>();
             CreateMap<CreateBookDTO, Book>();

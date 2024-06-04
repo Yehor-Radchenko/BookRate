@@ -1,6 +1,8 @@
 using BookRate.BLL.Extension;
 using BookRate.BLL.Services.ServiceAbstraction;
+using BookRate.DAL.Context;
 using BookRate.DAL.Extension;
+using BookRate.DAL.Seed;
 using BookRate.Middlware;
 using BookRate.Profile;
 using BookRate.Service.Services;
@@ -31,10 +33,11 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Host.UseSerilog();
 builder.Services.AddSwaggerGen();
+
+
 
 Log.Information("Total Services {count}: ", builder.Services.Count());
 
@@ -49,6 +52,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseExceptionHandler();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<BookRateDbContext>();
+    DataSeed.SeedDatabase(context);
+}
 
 app.UseHttpsRedirection();
 

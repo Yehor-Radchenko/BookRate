@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BookRate.BLL.ViewModels.Contributor;
 
 namespace BookRate.BLL.ViewModels.Narrative
 {
@@ -11,5 +7,7 @@ namespace BookRate.BLL.ViewModels.Narrative
         public int Id { get; set; }
 
         public string Title { get; set; }
+
+        public AuthorListModel Author { get; set; }
     }
 }

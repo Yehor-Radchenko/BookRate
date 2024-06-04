@@ -49,7 +49,7 @@ namespace BookRate.DAL.Repositories
             return _dbSet.Any(predicate);
         }
 
-        public virtual async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
         {
 
             IQueryable<T> query = _dbSet;

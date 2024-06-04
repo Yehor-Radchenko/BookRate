@@ -16,4 +16,8 @@
     <ProjectReference Include="..\BookRate.Common\BookRate.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Seed\Photos\" />
+  </ItemGroup>
+
 </Project>

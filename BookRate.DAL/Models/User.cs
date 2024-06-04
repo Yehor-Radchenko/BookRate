@@ -49,6 +49,7 @@ public partial class User
 
     public virtual ICollection<Role>? Roles { get; set; }
 
+    [Timestamp]
     [Column(TypeName = "timestamp")]
     public byte[] Timestamp { get; set; }
 }

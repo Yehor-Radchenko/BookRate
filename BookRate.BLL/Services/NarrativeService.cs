@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
+using BookRate.BLL.ViewModels.Contributor;
 using BookRate.BLL.ViewModels.Narrative;
 using BookRate.DAL.DTO.Narrative;
 using BookRate.DAL.Models;
@@ -28,7 +29,7 @@ namespace BookRate.BLL.Services
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
-            await EnsureContributorWithAuthoorRoleExists(dto.ContributorRoleIds);
+            await EnsureContributorWithAuthorRoleExists(dto.ContributorRoleIds);
 
             var narrative = _mapper.Map<Narrative>(dto);
 
@@ -86,7 +87,7 @@ namespace BookRate.BLL.Services
                 }
             }
 
-            await narrativeRepo.AddAsync(narrative);
+            await narrativeRepo.UpdateAsync(narrative);
             await _unitOfWork.CommitAsync();
 
             return narrative.Id;
@@ -121,7 +122,7 @@ namespace BookRate.BLL.Services
             if (narrativeToUpdate == null)
                 return false;
 
-            await EnsureContributorWithAuthoorRoleExists(expectedEntityValues.ContributorRoleIds);
+            await EnsureContributorWithAuthorRoleExists(expectedEntityValues.ContributorRoleIds);
 
             var updatedNarrative = _mapper.Map(expectedEntityValues, narrativeToUpdate);
 
@@ -183,15 +184,37 @@ namespace BookRate.BLL.Services
 
         public async Task<IEnumerable<NarrativeListModel>> GetNarrativeListModelsAsync()
         {
-            throw new NotImplementedException();
+            var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
+
+            var narrativesQuery = narrativeRepo.GetAll()
+                .Include(n => n.NarrativeContributorRoles)
+                    .ThenInclude(ncr => ncr.ContributorRole)
+                        .ThenInclude(cr => cr.Contributor)
+                .Where(n => n.NarrativeContributorRoles.Any(ncr => ncr.ContributorRole.Role.Name == "Author"));
+
+            var list = await _mapper.ProjectTo<NarrativeListModel>(narrativesQuery).ToListAsync();
+
+            return list;
         }
+
 
         public async Task<NarrativeViewModel?> GetByIdAsync(int? id)
         {
-            throw new NotImplementedException();
+            if (id == null)
+                return null;
+
+            var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
+
+            var narrativeModel = await narrativeRepo.GetAsync(c => c.Id == id,
+                "NarrativeContributorRoles.ContributorRole.Contributor,NarrativeContributorRoles.ContributorRole.Role,Genres,Settings,NarrativeRewards.Reward");
+
+            if (narrativeModel == null)
+                return null;
+
+            return _mapper.Map<NarrativeViewModel>(narrativeModel);
         }
 
-        private async Task EnsureContributorWithAuthoorRoleExists(IEnumerable<int> contributorRoleIds)
+        private async Task EnsureContributorWithAuthorRoleExists(IEnumerable<int> contributorRoleIds)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();

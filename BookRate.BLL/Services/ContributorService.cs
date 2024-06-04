@@ -16,26 +16,26 @@ namespace BookRate.BLL.Services
 
         public async Task<int> AddAsync(CreateContributorDTO dto)
         {
-            if (dto.RolesId is null)
+            if (dto.RolesId == null || !dto.RolesId.Any())
                 throw new ArgumentException("Contributor must have at least one role.", nameof(dto.RolesId));
 
             var roleRepo = _unitOfWork.GetRepository<Role>();
+            var genreRepo = _unitOfWork.GetRepository<Genre>();
 
             var selectedRoleModels = await roleRepo.GetAllAsync(r => dto.RolesId.Contains(r.Id));
+            var selectedGenreModels = dto.GenresId != null ? await genreRepo.GetAllAsync(g => dto.GenresId.Contains(g.Id)) : new List<Genre>();
 
             if (selectedRoleModels.Count() != dto.RolesId.Count())
                 throw new ArgumentException("One or more specified roles do not exist.");
 
-            var contributor = _mapper.Map<Contributor>(dto);
-            
-            await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);
-            await _unitOfWork.CommitAsync();
+            if (dto.GenresId != null && selectedGenreModels.Count() != dto.GenresId.Count())
+                throw new ArgumentException("One or more specified genres do not exist.");
 
-            var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
-            foreach (var id in dto.RolesId)
-            {
-                await contributorRoleRepo.AddAsync(new ContributorRole { ContributorId = contributor.Id, RoleId = id });
-            }
+            var contributor = _mapper.Map<Contributor>(dto);
+
+            contributor.Genres = selectedGenreModels.ToList();
+
+            await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);
             await _unitOfWork.CommitAsync();
 
             return contributor.Id;
@@ -66,41 +66,31 @@ namespace BookRate.BLL.Services
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
-            var contributorModel = await contributorRepo.GetAll()
-                .Include(c => c.ContributorRoles)
-                .ThenInclude(cr => cr.Role)
-                .Include(c => c.Genres)
-                .FirstOrDefaultAsync(c => c.Id == expectedEntityValues.Id);
+            var contributorModel = await contributorRepo.GetAsync(c => c.Id == expectedEntityValues.Id, "Genres,ContributorRoles");
 
             if (contributorModel == null)
                 throw new Exception($"Contributor with Id {expectedEntityValues.Id} not found.");
 
             contributorModel.ContributorRoles.Clear();
             contributorModel.Genres.Clear();
-            await _unitOfWork.CommitAsync();
+
+            var selectedRoleModels = await roleRepo.GetAllAsync(r => expectedEntityValues.RolesId.Contains(r.Id));
+            var selectedGenreModels = expectedEntityValues.GenresId != null ? await genreRepo.GetAllAsync(g => expectedEntityValues.GenresId.Contains(g.Id)) : new List<Genre>();
 
             _mapper.Map(expectedEntityValues, contributorModel);
 
-            foreach (var roleId in expectedEntityValues.RolesId)
+            foreach (var role in selectedRoleModels)
             {
-                var role = await roleRepo.GetAsync(r => r.Id == roleId);
-                if (role != null)
+                contributorModel.ContributorRoles.Add(new ContributorRole
                 {
-                    contributorModel.ContributorRoles.Add(new ContributorRole
-                    {
-                        ContributorId = contributorModel.Id,
-                        RoleId = role.Id
-                    });
-                }
+                    ContributorId = contributorModel.Id,
+                    RoleId = role.Id
+                });
             }
 
-            foreach (var genreId in expectedEntityValues.GenresId)
+            foreach (var genre in selectedGenreModels)
             {
-                var genre = await genreRepo.GetAsync(g => g.Id == genreId);
-                if (genre != null)
-                {
-                    contributorModel.Genres.Add(genre);
-                }
+                contributorModel.Genres.Add(genre);
             }
 
             await contributorRepo.UpdateAsync(contributorModel);
@@ -116,11 +106,10 @@ namespace BookRate.BLL.Services
 
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
-            var contributorModel = await contributorRepo.GetAll()
-                .Include(c => c.Genres)
-                .Include(c => c.ContributorRoles)
-                    .ThenInclude(cr => cr.Role)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var contributorModel = await contributorRepo.GetAsync(
+                filter: c => c.Id == id,
+                includeOptions: "Genres,ContributorRoles.Role"
+            );
 
             if (contributorModel == null)
                 return null;

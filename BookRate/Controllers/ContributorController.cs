@@ -2,9 +2,7 @@
 using BookRate.DAL.DTO.Contributor;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace BookRate.Controllers
 {

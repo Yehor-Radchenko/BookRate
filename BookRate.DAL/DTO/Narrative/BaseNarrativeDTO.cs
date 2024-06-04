@@ -23,6 +23,6 @@ namespace BookRate.DAL.DTO.Narrative
 
         public virtual IEnumerable<int>? SettingsId { get; set; }
 
-        public virtual IEnumerable<CreateNarrativeRewardDTO>? NarrativeRewards { get; set; }
+        public virtual IEnumerable<CreateNarrativeRewardDTO>? NarrativeRewards { get; set; } = null;
     }
 }
