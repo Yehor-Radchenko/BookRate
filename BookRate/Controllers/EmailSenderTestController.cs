@@ -19,6 +19,7 @@ namespace BookRate.Controllers
         public async Task<IActionResult> SendEmail([FromBody] EmailModel emailMessage) 
         {
             await _emailService.SendEmailAsync(emailMessage);
+            return StatusCode(StatusCodes.Status200OK, "Sended successfully.");
         }
     }
 }
