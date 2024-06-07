@@ -5,24 +5,27 @@ using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookRate.BLL.Services
 {
-    public class ContributorService : BaseService<Contributor, CreateContributorDTO, UpdateContributorDTO>
+    public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>
     {
         public ContributorService(
             IUnitOfWork unitOfWork, 
             IMapper mapper, 
-            IValidator<BaseContributorDTO> validator
+            IValidator<ContributorDto> validator
             ) : base(unitOfWork, mapper, validator)
         { 
         }
 
-        public async override Task<int> AddAsync(CreateContributorDTO dto)
+        public async Task<int> AddAsync(ContributorDto dto)
         {
-            if (dto.RolesId == null || !dto.RolesId.Any())
-                throw new ArgumentException("Contributor must have at least one role.", nameof(dto.RolesId));
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);   
 
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
@@ -46,15 +49,13 @@ namespace BookRate.BLL.Services
             return contributor.Id;
         }
 
-        public async override Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
             var contributorExists = await contributorRepo.GetAsync(c => c.Id == id);
-            if (contributorExists == null)
-            {
+            if (contributorExists is null)
                 throw new ArgumentException($"Contributor with Id {id} does not exist.", nameof(id));
-            }
 
             await contributorRepo.Delete(contributorExists);
             await _unitOfWork.CommitAsync();
@@ -62,19 +63,20 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async override Task<bool> UpdateAsync(UpdateContributorDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(int id, ContributorDto expectedEntityValues)
         {
-            if (expectedEntityValues.RolesId == null || !expectedEntityValues.RolesId.Any())
-                throw new ArgumentException("Contributor must have at least one role.", nameof(expectedEntityValues.RolesId));
+            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
 
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
+            var photoRepo = _unitOfWork.GetRepository<Photo>();
 
-            var contributorModel = await contributorRepo.GetAsync(c => c.Id == expectedEntityValues.Id, "Genres,ContributorRoles");
-
+            var contributorModel = await contributorRepo.GetAsync(c => c.Id == id, "Genres,ContributorRoles,Photo");
             if (contributorModel == null)
-                throw new Exception($"Contributor with Id {expectedEntityValues.Id} not found.");
+                throw new Exception($"Contributor with Id {id} not found.");
 
             contributorModel.ContributorRoles.Clear();
             contributorModel.Genres.Clear();
@@ -82,23 +84,20 @@ namespace BookRate.BLL.Services
             var selectedRoleModels = await roleRepo.GetAllAsync(r => expectedEntityValues.RolesId.Contains(r.Id));
             var selectedGenreModels = expectedEntityValues.GenresId != null ? await genreRepo.GetAllAsync(g => expectedEntityValues.GenresId.Contains(g.Id)) : new List<Genre>();
 
-            _mapper.Map(expectedEntityValues, contributorModel);
+            if (selectedRoleModels.Count() != expectedEntityValues.RolesId.Count())
+                throw new ArgumentException("One or more specified roles do not exist.");
 
+            if (expectedEntityValues.GenresId != null && selectedGenreModels.Count() != expectedEntityValues.GenresId.Count())
+                throw new ArgumentException("One or more specified genres do not exist.");
+
+            var updatedContributor = _mapper.Map(expectedEntityValues, contributorModel);
+            updatedContributor.Id = id;
+            updatedContributor.Genres = selectedGenreModels.ToList();
             foreach (var role in selectedRoleModels)
             {
-                contributorModel.ContributorRoles.Add(new ContributorRole
-                {
-                    ContributorId = contributorModel.Id,
-                    RoleId = role.Id
-                });
+                updatedContributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
             }
-
-            foreach (var genre in selectedGenreModels)
-            {
-                contributorModel.Genres.Add(genre);
-            }
-
-            await contributorRepo.UpdateAsync(contributorModel);
+            await contributorRepo.UpdateAsync(updatedContributor);
             await _unitOfWork.CommitAsync();
 
             return true;

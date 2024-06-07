@@ -10,7 +10,7 @@
 
         public DateTime EditionDate { get; set; }
 
-        public string Ibsn { get; set; }
+        public string Isbn { get; set; }
 
         public int BookId { get; set; }
 

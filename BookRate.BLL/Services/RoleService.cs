@@ -7,27 +7,26 @@ using BookRate.DAL.DTO.Role;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentValidation.Results;
 
 namespace BookRate.BLL.Services
 {
-    public class RoleService : BaseService<Role, CreateRoleDTO, UpdateRoleDTO>
+    public class RoleService : BaseService<Role, RoleDto>, IService<RoleDto>
     {
         public RoleService(
             IUnitOfWork unitOfWork, 
             IMapper mapper,
-            IValidator<BaseRoleDTO> validator
+            IValidator<RoleDto> validator
             ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async override Task<int> AddAsync(CreateRoleDTO dto)
+        public async Task<int> AddAsync(RoleDto dto)
         {
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
             if (roleRepo.Exists(r => r.Name.Trim().ToLower() == dto.Name.Trim().ToLower()))
@@ -40,21 +39,27 @@ namespace BookRate.BLL.Services
             return roleModel.Id;
         }
 
-        public async override Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
-            if (roleRepo.Exists(r => r.Id == id && r.ContributorRoles.Any()))
-                throw new Exception("Role cant be removed because it referenced by at least one contributor.");
+            Role? roleToDelete = await roleRepo.GetAsync(g => g.Id == id);
 
-            await roleRepo.Delete(new Role { Id = id });
+            if (roleToDelete is null)
+                throw new ArgumentException($"There is no model with Id {id}", nameof(id));
+
+            await roleRepo.Delete(roleToDelete);
             await _unitOfWork.CommitAsync();
 
             return true;
         }
 
-        public async override Task<bool> UpdateAsync(UpdateRoleDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(int id, RoleDto expectedEntityValues)
         {
+            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
             if (roleRepo.Exists(r => r.Name.Trim().ToLower() == expectedEntityValues.Name.Trim().ToLower()))

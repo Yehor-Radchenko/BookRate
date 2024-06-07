@@ -15,12 +15,10 @@ namespace BookRate.Controllers
     public class GenreController : Controller
     {
         private readonly GenreService _service;
-        private IValidator<BaseGenreDTO> _validator;
 
-        public GenreController(GenreService service, IValidator<BaseGenreDTO> validator)
+        public GenreController(GenreService service)
         {
             _service = service;
-            _validator = validator;
         }
 
         [HttpGet]
@@ -29,38 +27,32 @@ namespace BookRate.Controllers
             return Ok(await _service.GetGenreListModelsAsync());
         }
 
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> GetById([FromRoute] int Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var category = await _service.GetByIdAsync(Id);
+            var category = await _service.GetByIdAsync(id);
             return Ok(category);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateGenreDTO dto)
+        public async Task<IActionResult> Post([FromBody] GenreDto dto)
         {
-            ValidationResult result = await _validator.ValidateAsync(dto);
-            if (!result.IsValid)
-            {
-                if (await _service.AddAsync(dto) > 0)
-                    return StatusCode(StatusCodes.Status201Created, "Created successfully!");
-            }
-            return BadRequest(result);
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateGenreDTO dto)
-        {
-            ValidationResult result = await _validator.ValidateAsync(dto);
-            if (!result.IsValid)
-            {
-                if (await _service.UpdateAsync(dto))
-                    return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
-            }
+            
+            if (await _service.AddAsync(dto) > 0)
+                return StatusCode(StatusCodes.Status201Created, "Created successfully!");
             return BadRequest();
         }
 
-        [HttpDelete]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] GenreDto dto)
+        {
+            
+            if (await _service.UpdateAsync(id, dto))
+                return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             if (await _service.Delete(id))

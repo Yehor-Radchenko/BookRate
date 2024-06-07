@@ -11,12 +11,10 @@ namespace BookRate.Controllers
     public class NarrativeController : Controller
     {
         private readonly NarrativeService _service;
-        private IValidator<BaseNarrativeDTO> _validator;
 
-        public NarrativeController(NarrativeService service, IValidator<BaseNarrativeDTO> validator)
+        public NarrativeController(NarrativeService service)
         {
             _service = service;
-            _validator = validator;
         }
 
         [HttpGet]
@@ -39,27 +37,19 @@ namespace BookRate.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateNarrativeDTO dto)
+        public async Task<IActionResult> Post([FromBody] NarrativeDto dto)
         {
-            ValidationResult result = await _validator.ValidateAsync(dto);
-            if (result.IsValid)
-            {
-                if (await _service.AddAsync(dto) > 0)
-                    return StatusCode(StatusCodes.Status201Created, "Created successfully!");
-            }
-            return BadRequest(result);
+            if (await _service.AddAsync(dto) > 0)
+                return StatusCode(StatusCodes.Status201Created, "Created successfully!");
+            return BadRequest();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateNarrativeDTO dto)
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] NarrativeDto dto)
         {
-            ValidationResult result = await _validator.ValidateAsync(dto);
-            if (result.IsValid)
-            {
-                if (await _service.UpdateAsync(dto))
-                    return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
-            }
-            return BadRequest(result);
+            if (await _service.UpdateAsync(id, dto))
+                return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]

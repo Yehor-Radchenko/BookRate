@@ -1,26 +1,32 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Narrative;
+using BookRate.DAL.DTO.Genre;
 using BookRate.DAL.DTO.Narrative;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookRate.BLL.Services
 {
-    public class NarrativeService : BaseService<Narrative, CreateNarrativeDTO, UpdateNarrativeDTO>
+    public class NarrativeService : BaseService<Narrative, NarrativeDto>, IService<NarrativeDto>
     {
         public NarrativeService(
             IUnitOfWork unitOfWork, 
             IMapper mapper,
-            IValidator<BaseNarrativeDTO> validator
+            IValidator<NarrativeDto> validator
             ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async override Task<int> AddAsync(CreateNarrativeDTO dto)
+        public async Task<int> AddAsync(NarrativeDto dto)
         {
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
@@ -92,14 +98,14 @@ namespace BookRate.BLL.Services
             return narrative.Id;
         }
 
-        public async override Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
 
             var narrativeToDelete = await narrativeRepo.GetAsync(n => n.Id == id);
 
-            if (narrativeToDelete == null)
-                return false;
+            if (narrativeToDelete is null)
+                throw new Exception("Narrative can't be found.");
 
             await narrativeRepo.Delete(narrativeToDelete);
             await _unitOfWork.CommitAsync();
@@ -107,8 +113,12 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async override Task<bool> UpdateAsync(UpdateNarrativeDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(int id, NarrativeDto expectedEntityValues)
         {
+            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
@@ -116,7 +126,7 @@ namespace BookRate.BLL.Services
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
-            var narrativeToUpdate = await narrativeRepo.GetAsync(n => n.Id == expectedEntityValues.Id, "NarrativeRewards,NarrativeContributorRoles,Genres,Settings");
+            var narrativeToUpdate = await narrativeRepo.GetAsync(n => n.Id == id, "NarrativeRewards,NarrativeContributorRoles,Genres,Settings");
 
             if (narrativeToUpdate == null)
                 return false;
@@ -124,6 +134,7 @@ namespace BookRate.BLL.Services
             await EnsureContributorWithAuthorRoleExists(expectedEntityValues.ContributorRoleIds);
 
             var updatedNarrative = _mapper.Map(expectedEntityValues, narrativeToUpdate);
+            updatedNarrative.Id = id;
 
             updatedNarrative.NarrativeContributorRoles.Clear();
             foreach (var contributorRoleId in expectedEntityValues.ContributorRoleIds)

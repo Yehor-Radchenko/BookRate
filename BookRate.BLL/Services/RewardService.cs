@@ -2,10 +2,12 @@
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Reward;
 using BookRate.DAL.DTO.Contributor;
+using BookRate.DAL.DTO.Narrative;
 using BookRate.DAL.DTO.Reward;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
+using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,22 +16,26 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services
 {
-    public class RewardService : BaseService<Reward, CreateRewardDTO, UpdateRewardDTO>
+    public class RewardService : BaseService<Reward, RewardDto>, IService<RewardDto>
     {
         public RewardService(
             IUnitOfWork unitOfWork, 
             IMapper mapper,
-            IValidator<BaseRewardDTO> validator
+            IValidator<RewardDto> validator
             ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async override Task<int> AddAsync(CreateRewardDTO dto)
+        public async Task<int> AddAsync(RewardDto dto)
         {
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
             if (rewardRepo.Exists(r => r.Name.ToLower() == dto.Name.ToLower()))
-                throw new Exception($"Reward named {dto.Name} is already exists in database.");
+                throw new InvalidOperationException($"Reward named {dto.Name} is already exists in database.");
 
             var rewardModel = _mapper.Map<Reward>(dto);
 
@@ -38,7 +44,7 @@ namespace BookRate.BLL.Services
             return rewardModel.Id;
         }
 
-        public async override Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
@@ -51,14 +57,19 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async override Task<bool> UpdateAsync(UpdateRewardDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(int id, RewardDto expectedEntityValues)
         {
+            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
             if (rewardRepo.Exists(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
                 throw new Exception($"Reward named {expectedEntityValues.Name} is already exists in database.");
 
             var rewardModel = _mapper.Map<Reward>(expectedEntityValues);
+            rewardModel.Id = id;
 
             await rewardRepo.UpdateAsync(rewardModel);
             await _unitOfWork.CommitAsync();

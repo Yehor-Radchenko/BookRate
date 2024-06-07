@@ -2,6 +2,7 @@
 using BookRate.DAL.DTO.Contributor;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookRate.Controllers
@@ -11,25 +12,23 @@ namespace BookRate.Controllers
     public class ContributorController : ControllerBase
     {
         private readonly ContributorService _service;
-        private IValidator<BaseContributorDTO> _validator;
-        
-        public ContributorController(ContributorService service, IValidator<BaseContributorDTO> validator)
+
+        public ContributorController(ContributorService service)
         {
             _service = service;
-            _validator = validator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetListModels()
         {
-            
-            return Ok( await _service.GetContributorListModelsAsync());
+
+            return Ok(await _service.GetContributorListModelsAsync());
         }
 
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> GetById([FromRoute] int Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var category = await _service.GetByIdAsync(Id);
+            var category = await _service.GetByIdAsync(id);
 
             if (category == null)
             {
@@ -40,27 +39,21 @@ namespace BookRate.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateContributorDTO dto)
+        public async Task<IActionResult> Post([FromBody] ContributorDto dto)
         {
-            ValidationResult result = await _validator.ValidateAsync(dto);
-            if (!result.IsValid)
-            {
-                if (await _service.AddAsync(dto) > 0)
-                    return StatusCode(StatusCodes.Status201Created, "Created successfully!");
-            }
-            return BadRequest(result);
+
+            if (await _service.AddAsync(dto) > 0)
+                return StatusCode(StatusCodes.Status201Created, "Created successfully!");
+            return BadRequest();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateContributorDTO dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] ContributorDto dto)
         {
-            ValidationResult result = await _validator.ValidateAsync(dto);
-            if (!result.IsValid)
-            {
-                if (await _service.UpdateAsync(dto))
-                    return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
-            }
-            return BadRequest(result);
+
+            if (await _service.UpdateAsync(id, dto))
+                return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]

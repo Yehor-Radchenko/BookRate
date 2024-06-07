@@ -5,21 +5,26 @@ using BookRate.DAL.DTO.Setting;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
+using FluentValidation.Results;
 
 namespace BookRate.BLL.Services
 {
-    public class SettingService : BaseService<Setting, CreateSettingDTO, UpdateSettingDTO>
+    public class SettingService : BaseService<Setting, SettingDto>
     {
         public SettingService(
             IUnitOfWork unitOfWork, 
             IMapper mapper,
-            IValidator<BaseSettingDTO> validator
+            IValidator<SettingDto> validator
             ) : base(unitOfWork, mapper, validator)
         {
         }
 
-        public async override Task<int> AddAsync(CreateSettingDTO dto)
+        public async Task<int> AddAsync(SettingDto dto)
         {
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
             if (settingRepo.Exists(s => s.Name.ToLower() == dto.Name.ToLower()))
@@ -32,14 +37,16 @@ namespace BookRate.BLL.Services
             return settingModel.Id;
         }
 
-        public async override Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
-            if (settingRepo.Exists(s => s.Id == id && s.Narratives.Any()))
-                throw new Exception("Setting cant be removed because it referenced by at least one narrative.");
+            Setting? settingToDelete = await settingRepo.GetAsync(g => g.Id == id);
 
-            await settingRepo.Delete(new Setting { Id = id });
+            if (settingToDelete is null)
+                throw new ArgumentException($"There is no model with Id {id}", nameof(id));
+
+            await settingRepo.Delete(settingToDelete);
             await _unitOfWork.CommitAsync();
 
             return true;
@@ -57,8 +64,12 @@ namespace BookRate.BLL.Services
             return _mapper.Map<SettingViewModel>(settingModel);
         }
 
-        public async override Task<bool> UpdateAsync(UpdateSettingDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(int id, SettingDto expectedEntityValues)
         {
+            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
+
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
             if (settingRepo.Exists(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
