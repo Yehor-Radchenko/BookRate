@@ -34,13 +34,10 @@ builder.Services.AddValidationServices();
 builder.Services.AddTransient(sp => new EmailService(Environment.GetEnvironmentVariable("MAILJET_API_KEY")!,
     Environment.GetEnvironmentVariable("MAILJET_API_SECRET")!));
 
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Host.UseSerilog();
 builder.Services.AddSwaggerGen();
-
 
 
 Log.Information("Total Services {count}: ", builder.Services.Count());
@@ -55,7 +52,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler();
+app.UseMiddleware<GlobalExceptionHandler>();
 
 using (var scope = app.Services.CreateScope())
 {
