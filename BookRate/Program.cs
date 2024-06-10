@@ -8,8 +8,11 @@ using BookRate.Profile;
 using BookRate.Service.Services;
 using BookRate.Validation.Extentions;
 using Mailjet.Client.Resources;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 DotNetEnv.Env.Load();
@@ -17,9 +20,9 @@ DotNetEnv.Env.Load();
 
 
 Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Configuration)
-                .CreateLogger();
-               
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
 
 Log.Logger.Information("Start Project");
 
@@ -32,10 +35,39 @@ builder.Services.AddBllServices();
 builder.Services.AddValidationServices();
 
 builder.Services.AddTransient(sp => new EmailService(Environment.GetEnvironmentVariable("MAILJET_API_KEY")!,
-    Environment.GetEnvironmentVariable("MAILJET_API_SECRET")!));
+Environment.GetEnvironmentVariable("MAILJET_API_SECRET")!));
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            context.Token = context.Request.Cookies["Token"];
+            return Task.CompletedTask;
+        }
+    };
+
+});
+
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Host.UseSerilog();
@@ -65,10 +97,9 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
-
-

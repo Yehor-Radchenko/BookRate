@@ -1,4 +1,6 @@
-﻿namespace BookRate.Profile
+﻿using BookRate.BLL.ViewModels.User;
+
+namespace BookRate.Profile
 {
     using AutoMapper;
     using BookRate.BLL.ViewModels.Book;
@@ -104,6 +106,9 @@
 
             CreateMap<CreateBookEditionDTO, BookEdition>()
                 .ForMember(dest => dest.BookId, opt => opt.Ignore());
+
+            CreateMap<BLL.ViewModels.User.User, User>().ReverseMap();
+
         }
     }
 }
