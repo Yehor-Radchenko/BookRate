@@ -1,6 +1,9 @@
-﻿namespace BookRate.BLL.ViewModels.User
+﻿using BookRate.BLL.ViewModels.Role;
+using Microsoft.AspNetCore.Http;
+
+namespace BookRate.BLL.ViewModels.User
 {
-    public class UserViewModel
+    public class User
     {
         public int Id { get; set; }
 
@@ -16,8 +19,13 @@
 
         public string? Patronymic { get; set; }
 
-        public byte[]? Photo { get; set; }
+        public IFormFile? Photo { get; set; }
 
         public string? Interests { get; set; }
+        
+        
+        public IEnumerable<int> RoleId { get; set; }
+        
+        
     }
 }

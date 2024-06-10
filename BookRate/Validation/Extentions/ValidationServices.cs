@@ -1,4 +1,5 @@
-﻿using BookRate.DAL.DTO.Book;
+﻿using BookRate.BLL.ViewModels.User;
+using BookRate.DAL.DTO.Book;
 using BookRate.DAL.DTO.BookEdition;
 using BookRate.DAL.DTO.Commentary;
 using BookRate.DAL.DTO.Contributor;
@@ -35,8 +36,7 @@ namespace BookRate.Validation.Extentions
             services.AddScoped<IValidator<BaseSettingDTO>, SettingValidator>();
             services.AddScoped<IValidator<BaseShelfDTO>, ShelfValidator>();
             services.AddScoped<IValidator<BaseUserDTO>, UserValidator>();
-            services.AddScoped <IValidator <byte[]>, PhotoValidator>();
-
+            services.AddScoped<IValidator<byte[]>, PhotoValidator>();
             return services;
         }
     }

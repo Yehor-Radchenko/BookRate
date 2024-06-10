@@ -1,4 +1,5 @@
-﻿using BookRate.BLL.Services;
+﻿using BookRate.BLL.HelperServices;
+using BookRate.BLL.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookRate.BLL.Extension
@@ -13,6 +14,8 @@ namespace BookRate.BLL.Extension
             services.AddScoped<RewardService>();
             services.AddScoped<RoleService>();
             services.AddScoped<SettingService>();
+            services.AddScoped<JwtService>();
+            services.AddScoped<UserService>();
             return services;
         }
     }
