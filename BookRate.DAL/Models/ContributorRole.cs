@@ -11,11 +11,11 @@ namespace BookRate.DAL.Models
         public int Id { get; set; }
 
         public int ContributorId { get; set; }
-        public Contributor Contributor { get; set; }
+        public Contributor Contributor { get; set; } = null!;
 
         public int RoleId { get; set; }
-        public Role Role { get; set; }
+        public Role Role { get; set; } = null!;
 
-        public virtual ICollection<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
+        public virtual ICollection<NarrativeContributorRole> NarrativeContributorRoles { get; set; } = null!;
     }
 }
