@@ -31,7 +31,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateRoleDTO dto)
+        public async Task<IActionResult> Post([FromBody] RoleDto dto)
         {
             if (await _service.AddAsync(dto) > 0)
                 return StatusCode(StatusCodes.Status201Created, "Created successfully!");
@@ -39,9 +39,9 @@ namespace BookRate.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateRoleDTO dto)
+        public async Task<IActionResult> Put(int id, [FromBody] RoleDto dto)
         {
-            if (await _service.UpdateAsync(dto))
+            if (await _service.UpdateAsync(id, dto))
                 return StatusCode(StatusCodes.Status200OK, "Updated successfully.");
             return BadRequest();
         }

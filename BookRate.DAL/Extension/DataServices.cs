@@ -19,11 +19,8 @@ namespace BookRate.DAL.Extension
     {
         public static IServiceCollection AddDalServices(this IServiceCollection services,IConfiguration builder)
         {
-            
-            services.AddDbContext<BookRateDbContext>(options =>
-            {
-                options.UseSqlServer(builder.GetConnectionString("Database"));
-            });
+
+            DatabaseConfigurator.Configure(services, builder);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));     

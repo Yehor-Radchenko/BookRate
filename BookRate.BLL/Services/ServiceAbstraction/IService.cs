@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services.ServiceAbstraction
 {
-    public interface IService <CreateDto, UpdateDto, TEntity> 
-        where CreateDto : class
-        where UpdateDto : class
-        where TEntity : class
+    public interface IService <TDto> 
+        where TDto : class
     {
-        Task<int> AddAsync(CreateDto dto);
-        Task<bool> UpdateAsync(UpdateDto expectedEntityValues);
+        Task<int> AddAsync(TDto dto);
+        Task<bool> UpdateAsync(int id, TDto expectedEntityValues);
         Task<bool> Delete(int id);
     }
 }

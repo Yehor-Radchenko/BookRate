@@ -22,7 +22,7 @@ public partial class BookEdition
     [Required(ErrorMessage = "ISBN is required.")]
     [RegularExpression(@"^\d{9}(\d|X)$", ErrorMessage = "Invalid ISBN format.")]
     [StringLength(13, MinimumLength = 10, ErrorMessage = "ISBN must contain 10 or 13 characters.")]
-    public string Ibsn { get; set; } = null!;
+    public string Isbn { get; set; } = null!;
 
     public int BookId { get; set; }
 

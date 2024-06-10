@@ -4,20 +4,30 @@ using BookRate.BLL.ViewModels.Contributor;
 using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
+using System.Linq;
 
 namespace BookRate.BLL.Services
 {
-    public class ContributorService : BaseService, IService<CreateContributorDTO, UpdateContributorDTO, Contributor>
+    public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>
     {
-        public ContributorService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public ContributorService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IValidator<ContributorDto> validator
+            ) : base(unitOfWork, mapper, validator)
         { 
         }
 
-        public async Task<int> AddAsync(CreateContributorDTO dto)
+        public async Task<int> AddAsync(ContributorDto dto)
         {
-            if (dto.RolesId == null || !dto.RolesId.Any())
-                throw new ArgumentException("Contributor must have at least one role.", nameof(dto.RolesId));
+            ValidationResult result = await _validator.ValidateAsync(dto);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);   
 
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
@@ -35,9 +45,22 @@ namespace BookRate.BLL.Services
 
             contributor.Genres = selectedGenreModels.ToList();
 
+            foreach (var role in selectedRoleModels)
+            {
+                contributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributor.Id });
+            }
+
+            if(dto.Photo is not null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await dto.Photo.CopyToAsync(memoryStream);
+                    contributor.Photo = new Photo { Data = memoryStream.ToArray() };
+                }
+            }
+
             await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);
             await _unitOfWork.CommitAsync();
-
             return contributor.Id;
         }
 
@@ -46,10 +69,8 @@ namespace BookRate.BLL.Services
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
             var contributorExists = await contributorRepo.GetAsync(c => c.Id == id);
-            if (contributorExists == null)
-            {
+            if (contributorExists is null)
                 throw new ArgumentException($"Contributor with Id {id} does not exist.", nameof(id));
-            }
 
             await contributorRepo.Delete(contributorExists);
             await _unitOfWork.CommitAsync();
@@ -57,43 +78,65 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async Task<bool> UpdateAsync(UpdateContributorDTO expectedEntityValues)
+        public async Task<bool> UpdateAsync(int id, ContributorDto expectedEntityValues)
         {
-            if (expectedEntityValues.RolesId == null || !expectedEntityValues.RolesId.Any())
-                throw new ArgumentException("Contributor must have at least one role.", nameof(expectedEntityValues.RolesId));
+            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);
+            if (!result.IsValid)
+                throw new ValidationException(result.Errors);
 
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
+            var photoRepo = _unitOfWork.GetRepository<Photo>();
 
-            var contributorModel = await contributorRepo.GetAsync(c => c.Id == expectedEntityValues.Id, "Genres,ContributorRoles");
-
+            var contributorModel = await contributorRepo.GetAsync(c => c.Id == id, "Genres,ContributorRoles,ContributorRoles.NarrativeContributorRoles,Photo");
             if (contributorModel == null)
-                throw new Exception($"Contributor with Id {expectedEntityValues.Id} not found.");
+                throw new Exception($"Contributor with Id {id} not found.");
 
-            contributorModel.ContributorRoles.Clear();
+            foreach(var cr in contributorModel.ContributorRoles.ToList())
+            {
+                if(cr.NarrativeContributorRoles.Count > 0)
+                {
+                    continue;
+                }
+                else contributorModel.ContributorRoles.Remove(cr);
+            }
+
             contributorModel.Genres.Clear();
 
             var selectedRoleModels = await roleRepo.GetAllAsync(r => expectedEntityValues.RolesId.Contains(r.Id));
             var selectedGenreModels = expectedEntityValues.GenresId != null ? await genreRepo.GetAllAsync(g => expectedEntityValues.GenresId.Contains(g.Id)) : new List<Genre>();
 
-            _mapper.Map(expectedEntityValues, contributorModel);
+            if (selectedRoleModels.Count() != expectedEntityValues.RolesId.Count())
+                throw new ArgumentException("One or more specified roles do not exist.");
 
-            foreach (var role in selectedRoleModels)
+            if (expectedEntityValues.GenresId != null && selectedGenreModels.Count() != expectedEntityValues.GenresId.Count())
+                throw new ArgumentException("One or more specified genres do not exist.");
+
+            var updatedContributor = _mapper.Map(expectedEntityValues, contributorModel);
+            updatedContributor.Id = id;
+            updatedContributor.Genres = selectedGenreModels.ToList();
+
+            foreach (var role in selectedRoleModels.Where(role => !updatedContributor.ContributorRoles.Any(cr => cr.RoleId == role.Id)))
             {
-                contributorModel.ContributorRoles.Add(new ContributorRole
+                updatedContributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
+            }
+
+            if (expectedEntityValues.Photo is not null)
+            {
+                if (contributorModel.Photo != null)
                 {
-                    ContributorId = contributorModel.Id,
-                    RoleId = role.Id
-                });
+                    await photoRepo.Delete(contributorModel.Photo);
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await expectedEntityValues.Photo.CopyToAsync(memoryStream);
+                    contributorModel.Photo = new Photo { Data = memoryStream.ToArray() };
+                }
             }
 
-            foreach (var genre in selectedGenreModels)
-            {
-                contributorModel.Genres.Add(genre);
-            }
-
-            await contributorRepo.UpdateAsync(contributorModel);
+            await contributorRepo.UpdateAsync(updatedContributor);
             await _unitOfWork.CommitAsync();
 
             return true;
@@ -108,7 +151,7 @@ namespace BookRate.BLL.Services
 
             var contributorModel = await contributorRepo.GetAsync(
                 filter: c => c.Id == id,
-                includeOptions: "Genres,ContributorRoles.Role"
+                includeOptions: "Genres,ContributorRoles.Role,Photo"
             );
 
             if (contributorModel == null)

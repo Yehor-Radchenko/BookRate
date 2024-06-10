@@ -379,7 +379,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Paperback,
                                 PagesCount = 274 ,
                                 EditionDate = new DateTime(2004,6,4),
-                                Ibsn = "9780007119318",
+                                Isbn = "9780007119318",
                                 Edition = context.Editions.First(e => e.Name == "Pan Books"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1486131451i/853510.jpg"
                             }
@@ -394,7 +394,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Hardcover,
                                 PagesCount = 96,
                                 EditionDate = new DateTime(1996,1,1),
-                                Ibsn = "9780684830490",
+                                Isbn = "9780684830490",
                                 Edition = context.Editions.First(e => e.Name == "Scribner"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1713542603i/11297.jpg"
                             }
@@ -409,7 +409,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Paperback,
                                 PagesCount = 296,
                                 EditionDate = new DateTime(2000,9,12),
-                                Ibsn = "9780375704024",
+                                Isbn = "9780375704024",
                                 Edition = context.Editions.First(e => e.Name == "Pan Books"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1329189714i/2165.jpg"
                             }
@@ -424,7 +424,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Paperback,
                                 PagesCount = 279,
                                 EditionDate = new DateTime(2000,10,10),
-                                Ibsn = "9780375704024",
+                                Isbn = "9780375704024",
                                 Edition = context.Editions.First(e => e.Name == "Plume"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320399351i/1885.jpg"
                             }
@@ -439,7 +439,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Paperback,
                                 PagesCount = 1392,
                                 EditionDate = new DateTime(1998,6,25),
-                                Ibsn = "9780670034697",
+                                Isbn = "9780670034697",
                                 Edition = context.Editions.First(e => e.Name == "Arrow Books"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1579107863i/18241.jpg"
                             }
@@ -454,7 +454,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Paperback,
                                 PagesCount = 189,
                                 EditionDate = new DateTime(2003,1,1),
-                                Ibsn = "9780684800714",
+                                Isbn = "9780684800714",
                                 Edition = context.Editions.First(e => e.Name == "Arrow Books"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1355359043i/46168.jpg"
                             }
@@ -472,7 +472,7 @@ namespace BookRate.DAL.Seed
                                 CoverType = (int)CoverType.Paperback,
                                 PagesCount = 304,
                                 EditionDate = new DateTime(2003,1,1),
-                                Ibsn = "9780684843322",
+                                Isbn = "9780684843322",
                                 Edition = context.Editions.First(e => e.Name == "Arrow Books"),
                                 PhotoUrl = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1523546158i/4625.jpg"
                             }
