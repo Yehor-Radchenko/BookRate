@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookRate.DAL.DTO.User
 {
-    public abstract class BaseUserDTO
+    public abstract class UserDto
     {
         public string Email { get; set; }
 

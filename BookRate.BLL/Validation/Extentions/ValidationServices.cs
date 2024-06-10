@@ -38,7 +38,7 @@ namespace BookRate.Validation.Extentions
             services.AddScoped<IValidator<SerieDto>, SerieValidator>();
             services.AddScoped<IValidator<SettingDto>, SettingValidator>();
             services.AddScoped<IValidator<ShelfDto>, ShelfValidator>();
-            services.AddScoped<IValidator<BaseUserDTO>, UserValidator>();
+            services.AddScoped<IValidator<UserDto>, UserValidator>();
             services.AddScoped <IValidator <IFormFile>, PhotoValidator>();
 
             return services;

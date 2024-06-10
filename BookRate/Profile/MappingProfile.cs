@@ -94,7 +94,7 @@ namespace BookRate.Profile
             CreateMap<BookEditionDto, BookEdition>()
                 .ForMember(dest => dest.BookId, opt => opt.Ignore());
 
-            CreateMap<BLL.ViewModels.User.User, User>().ReverseMap();
+            CreateMap<BLL.ViewModels.User.UserViewModel, User>().ReverseMap();
 
         }
     }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BookRate.BLL.ViewModels.User
 {
-    public class User
+    public class UserViewModel
     {
         public int Id { get; set; }
 

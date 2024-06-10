@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BookRate.Validation
 {
-    public class UserValidator : AbstractValidator<BaseUserDTO>
+    public class UserValidator : AbstractValidator<UserDto>
     {
         public UserValidator()
         {
