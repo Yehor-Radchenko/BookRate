@@ -2,6 +2,7 @@
 using BookRate.DAL.DTO.Contributor;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,7 +40,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ContributorDto dto)
+        public async Task<IActionResult> Post([FromForm] ContributorDto dto)
         {
 
             if (await _service.AddAsync(dto) > 0)
@@ -48,7 +49,7 @@ namespace BookRate.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] ContributorDto dto)
+        public async Task<IActionResult> Put(int id, [FromForm] ContributorDto dto)
         {
 
             if (await _service.UpdateAsync(id, dto))

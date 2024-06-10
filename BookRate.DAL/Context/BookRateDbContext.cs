@@ -102,7 +102,11 @@ public partial class BookRateDbContext : DbContext
         modelBuilder.Entity<User>()
            .HasIndex(u => u.PhotoId)
            .IsUnique();
-
+        modelBuilder.Entity<User>()
+                .HasOne(c => c.Photo)
+                .WithOne()
+                .HasForeignKey<User>(c => c.PhotoId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<NarrativeContributorRole>()
             .HasKey(ncr => new { ncr.NarrativeId, ncr.ContributorRoleId });
@@ -183,5 +187,11 @@ public partial class BookRateDbContext : DbContext
                   .HasForeignKey("SettingId")
                   .OnDelete(DeleteBehavior.Restrict)
           );
+
+        modelBuilder.Entity<Contributor>()
+                .HasOne(c => c.Photo)
+                .WithOne()
+                .HasForeignKey<Contributor>(c => c.PhotoId)
+                .OnDelete(DeleteBehavior.Cascade);
     }
 }

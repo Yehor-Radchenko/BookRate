@@ -8,6 +8,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
+using System.Linq;
 
 namespace BookRate.BLL.Services
 {
@@ -43,9 +45,22 @@ namespace BookRate.BLL.Services
 
             contributor.Genres = selectedGenreModels.ToList();
 
+            foreach (var role in selectedRoleModels)
+            {
+                contributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributor.Id });
+            }
+
+            if(dto.Photo is not null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await dto.Photo.CopyToAsync(memoryStream);
+                    contributor.Photo = new Photo { Data = memoryStream.ToArray() };
+                }
+            }
+
             await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);
             await _unitOfWork.CommitAsync();
-
             return contributor.Id;
         }
 
@@ -74,11 +89,19 @@ namespace BookRate.BLL.Services
             var genreRepo = _unitOfWork.GetRepository<Genre>();
             var photoRepo = _unitOfWork.GetRepository<Photo>();
 
-            var contributorModel = await contributorRepo.GetAsync(c => c.Id == id, "Genres,ContributorRoles,Photo");
+            var contributorModel = await contributorRepo.GetAsync(c => c.Id == id, "Genres,ContributorRoles,ContributorRoles.NarrativeContributorRoles,Photo");
             if (contributorModel == null)
                 throw new Exception($"Contributor with Id {id} not found.");
 
-            contributorModel.ContributorRoles.Clear();
+            foreach(var cr in contributorModel.ContributorRoles.ToList())
+            {
+                if(cr.NarrativeContributorRoles.Count > 0)
+                {
+                    continue;
+                }
+                else contributorModel.ContributorRoles.Remove(cr);
+            }
+
             contributorModel.Genres.Clear();
 
             var selectedRoleModels = await roleRepo.GetAllAsync(r => expectedEntityValues.RolesId.Contains(r.Id));
@@ -93,10 +116,26 @@ namespace BookRate.BLL.Services
             var updatedContributor = _mapper.Map(expectedEntityValues, contributorModel);
             updatedContributor.Id = id;
             updatedContributor.Genres = selectedGenreModels.ToList();
-            foreach (var role in selectedRoleModels)
+
+            foreach (var role in selectedRoleModels.Where(role => !updatedContributor.ContributorRoles.Any(cr => cr.RoleId == role.Id)))
             {
                 updatedContributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
             }
+
+            if (expectedEntityValues.Photo is not null)
+            {
+                if (contributorModel.Photo != null)
+                {
+                    await photoRepo.Delete(contributorModel.Photo);
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await expectedEntityValues.Photo.CopyToAsync(memoryStream);
+                    contributorModel.Photo = new Photo { Data = memoryStream.ToArray() };
+                }
+            }
+
             await contributorRepo.UpdateAsync(updatedContributor);
             await _unitOfWork.CommitAsync();
 
@@ -112,7 +151,7 @@ namespace BookRate.BLL.Services
 
             var contributorModel = await contributorRepo.GetAsync(
                 filter: c => c.Id == id,
-                includeOptions: "Genres,ContributorRoles.Role"
+                includeOptions: "Genres,ContributorRoles.Role,Photo"
             );
 
             if (contributorModel == null)

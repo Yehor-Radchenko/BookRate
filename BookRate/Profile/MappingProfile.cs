@@ -32,11 +32,12 @@
             CreateMap<Genre, GenreViewModel>();
 
             CreateMap<Contributor, ContributorViewModel>()
-                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.Role)));
+                .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.Role)))
+                .ForMember(dest => dest.PhotoBase64, opt => opt.MapFrom(src => src.Photo != null ? Convert.ToBase64String(src.Photo.Data) : null));
             CreateMap<ContributorDto, Contributor>()
                 .ForMember(dest => dest.ContributorRoles, opt => opt.Ignore())
                 .ForMember(dest => dest.Genres, opt => opt.Ignore())
-                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo != null && src.Photo.Length > 0 ? new Photo { Data = src.Photo } : null));
+                .ForMember(dest => dest.Photo, opt => opt.Ignore());
             CreateMap<Contributor, ContributorDto>()
                 .ForMember(dest => dest.RolesId, opt => opt.MapFrom(src => src.ContributorRoles.Select(cr => cr.RoleId)))
                 .ForMember(dest => dest.GenresId, opt => opt.MapFrom(src => src.Genres.Select(g => g.Id)))

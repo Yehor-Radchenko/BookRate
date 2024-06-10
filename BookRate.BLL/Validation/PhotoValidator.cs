@@ -1,13 +1,17 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
 
 namespace BookRate.Validation
 {
-    public class PhotoValidator : AbstractValidator<byte[]>   
+    public class PhotoValidator : AbstractValidator<IFormFile>   
     {
         public PhotoValidator() 
         {
             RuleFor(photo => photo)
-                .NotEmpty().WithMessage("PhotoData missing.");
+                .Must(photo => photo.Length > 0)
+                .WithMessage("Photo must not be empty.")
+                .Must(photo => photo.ContentType.StartsWith("image/"))
+                .WithMessage("Photo must be an image.");
 
             RuleFor(photo => photo.Length)
                 .LessThanOrEqualTo(5 * 1024 * 1024) 

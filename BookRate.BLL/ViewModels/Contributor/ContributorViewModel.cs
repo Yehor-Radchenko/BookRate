@@ -22,9 +22,10 @@ namespace BookRate.BLL.ViewModels.Contributor
 
         public string? BirthPlace { get; set; }
 
-        public byte[]? Photo { get; set; }
-
         public virtual IEnumerable<RoleViewModel> Roles { get; set; }
+
         public virtual IEnumerable<GenreListModel> Genres { get; set; }
+
+        public string? PhotoBase64 { get; set; }
     }
 }

@@ -49,6 +49,7 @@ namespace BookRate.Validation
                 .LessThan(DateTime.Today).WithMessage("Death date must be earlier then today.");
 
             RuleFor(x => x.Biography)
+                .NotEmpty().WithMessage("Biography is required.")
                 .MaximumLength(2000).WithMessage("Biography must be less than 2000 characters long.")
                 .When(x => !string.IsNullOrEmpty(x.Biography));
 

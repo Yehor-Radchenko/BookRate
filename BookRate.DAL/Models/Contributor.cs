@@ -33,9 +33,8 @@ public partial class Contributor
     [Required(ErrorMessage = "Biography is required.")]
     public string Biography { get; set; } = null!;
 
-    [Required(ErrorMessage = "Birth place is required.")]
     [StringLength(100, ErrorMessage = "Birth place cannot exceed 100 characters.")]
-    public string BirthPlace { get; set; } = null!;
+    public string? BirthPlace { get; set; }
 
     public int? PhotoId { get; set; }
 
@@ -43,7 +42,7 @@ public partial class Contributor
 
     [Required(ErrorMessage = "At least one role is required.")]
     [MinLength(1, ErrorMessage = "At least one role is required.")]
-    public virtual ICollection<ContributorRole> ContributorRoles { get; set; }
+    public virtual ICollection<ContributorRole> ContributorRoles { get; set; } = new List<ContributorRole>();
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
     

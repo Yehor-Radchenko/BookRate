@@ -14,6 +14,7 @@ using BookRate.DAL.DTO.Setting;
 using BookRate.DAL.DTO.Shelf;
 using BookRate.DAL.DTO.User;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -38,7 +39,7 @@ namespace BookRate.Validation.Extentions
             services.AddScoped<IValidator<SettingDto>, SettingValidator>();
             services.AddScoped<IValidator<ShelfDto>, ShelfValidator>();
             services.AddScoped<IValidator<BaseUserDTO>, UserValidator>();
-            services.AddScoped <IValidator <byte[]>, PhotoValidator>();
+            services.AddScoped <IValidator <IFormFile>, PhotoValidator>();
 
             return services;
         }

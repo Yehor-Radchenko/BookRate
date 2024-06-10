@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,10 +23,10 @@ namespace BookRate.DAL.DTO.Contributor
 
         public string? BirthPlace { get; set; }
 
-        public byte[]? Photo { get; set; }
-
         public virtual IEnumerable<int> RolesId { get; set; }
 
         public virtual IEnumerable<int>? GenresId { get; set; }
+
+        public IFormFile? Photo { get; set; }
     }
 }
