@@ -72,7 +72,7 @@ namespace BookRate.BLL.Services
             if (contributorExists is null)
                 throw new ArgumentException($"Contributor with Id {id} does not exist.", nameof(id));
 
-            await contributorRepo.Delete(contributorExists);
+            await contributorRepo.DeleteAsync(contributorExists);
             await _unitOfWork.CommitAsync();
 
             return true;
@@ -126,7 +126,7 @@ namespace BookRate.BLL.Services
             {
                 if (contributorModel.Photo != null)
                 {
-                    await photoRepo.Delete(contributorModel.Photo);
+                    await photoRepo.DeleteAsync(contributorModel.Photo);
                 }
 
                 using (var memoryStream = new MemoryStream())

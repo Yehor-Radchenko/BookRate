@@ -46,7 +46,7 @@ namespace BookRate.BLL.Services
             if (settingToDelete is null)
                 throw new ArgumentException($"There is no model with Id {id}", nameof(id));
 
-            await settingRepo.Delete(settingToDelete);
+            await settingRepo.DeleteAsync(settingToDelete);
             await _unitOfWork.CommitAsync();
 
             return true;

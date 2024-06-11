@@ -107,7 +107,7 @@ namespace BookRate.BLL.Services
             if (narrativeToDelete is null)
                 throw new Exception("Narrative can't be found.");
 
-            await narrativeRepo.Delete(narrativeToDelete);
+            await narrativeRepo.DeleteAsync(narrativeToDelete);
             await _unitOfWork.CommitAsync();
 
             return true;
