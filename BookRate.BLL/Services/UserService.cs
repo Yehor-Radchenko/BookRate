@@ -17,18 +17,41 @@ namespace BookRate.BLL.Services
     public class UserService : BaseService<User, UserDto>
     {
         public UserService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<UserDto> validator, JwtService jwtService)
-            :base(unitOfWork, mapper, validator)
+            : base(unitOfWork, mapper, validator)
         {
             _jwtService = jwtService;
         }
 
         private readonly JwtService _jwtService;
 
+        public async Task<InfoViewModel> GetInfoAboutProfileAsync(int id)
+        {
+            var userRepo = _unitOfWork.GetRepository<User>();
+
+            var getUser = await userRepo
+                .GetAsync(e => e.Id == id,
+                includeOptions: "Rates,ReviewLikes,Reviews,Commentaries,CommentaryLikes");
+            
+            var info = new InfoViewModel
+            {
+                Id = getUser!.Id,
+                Email = getUser.Email,
+                Username = getUser.Username,
+                FirstName = getUser.FirstName,
+                LastName = getUser.LastName,
+                Interests = getUser.Interests,
+                Patronymic = getUser.Patronymic,
+                CountCommentaries = getUser.Commentaries.Count(),
+                CountReviews = getUser.Reviews.Count(),
+            };
+            
+            return info;
+        }
+
         public async Task<int> AddAsync(UserDto dto)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
-
 
             var newUser = new User
             {
@@ -64,9 +87,34 @@ namespace BookRate.BLL.Services
             throw new Exception();
         }
 
-        public async Task<bool> UpdateAsync(UserDto expectedEntityValues)
+        public async Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)
         {
-            throw new NotImplementedException();
+            var userRepo = _unitOfWork.GetRepository<User>();
+            var roleRepo = _unitOfWork.GetRepository<Role>();
+            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == email.ToLower(), includeOptions: "Roles");
+
+            if (getUser != null)
+            {
+                getUser.LastName = expectedEntityValues.LastName;
+                getUser.FirstName = expectedEntityValues.FirstName;
+                getUser.Patronymic = expectedEntityValues.Patronymic;
+                getUser.Interests = expectedEntityValues.Interests;
+
+                var roleList = await roleRepo.GetAllAsync();
+
+                roleList = roleList.Where(role => expectedEntityValues.Roles.Contains(role.Id));
+
+                foreach (var role in roleList)
+                {
+                    getUser.Roles.Add(role);
+                }
+
+                await userRepo.UpdateAsync(getUser);
+                await _unitOfWork.CommitAsync();
+
+            }
+
+            return true;
         }
 
         public async Task<bool> Delete(int id)
@@ -77,7 +125,7 @@ namespace BookRate.BLL.Services
         public async Task<string> LoginAsync(LoginDto loginViewModel)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
-            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginViewModel.Email.ToLower(),includeOptions:"Roles");
+            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginViewModel.Email.ToLower(), includeOptions: "Roles");
 
             return _jwtService.GenerateToken(getUser);
 
