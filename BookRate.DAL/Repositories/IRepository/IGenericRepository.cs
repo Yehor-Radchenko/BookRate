@@ -12,7 +12,7 @@ namespace BookRate.DAL.Repositories.IRepository
         IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeOptions = null);
         Task<bool> AddAsync(T entity);
         Task<bool> UpdateAsync(T entity);
-        Task<bool> Delete(T entity);
+        Task<bool> DeleteAsync(T entity);
         bool Exists(Expression<Func<T, bool>> predicate);
     }
 }

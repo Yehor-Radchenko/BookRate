@@ -30,7 +30,7 @@ namespace BookRate.DAL.Repositories
             return true;
         }
 
-        public async Task<bool> Delete(T entity)
+        public async Task<bool> DeleteAsync(T entity)
         {
             try
             {
