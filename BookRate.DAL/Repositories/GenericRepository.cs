@@ -1,15 +1,7 @@
 ﻿using BookRate.DAL.Context;
 using BookRate.DAL.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.Json;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookRate.DAL.Repositories
 {
@@ -118,6 +110,12 @@ namespace BookRate.DAL.Repositories
                 await Console.Out.WriteLineAsync(ex.Message);
                 throw;
             }
+        }
+
+        public void Attach(T entity)
+        {
+            _dbSet.Attach(entity);
+            _bookRateDbContext.Entry(entity).State = EntityState.Unchanged;
         }
     }
 }

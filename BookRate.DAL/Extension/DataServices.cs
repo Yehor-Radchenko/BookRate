@@ -19,7 +19,6 @@ namespace BookRate.DAL.Extension
     {
         public static IServiceCollection AddDalServices(this IServiceCollection services,IConfiguration builder)
         {
-
             DatabaseConfigurator.Configure(services, builder);
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();

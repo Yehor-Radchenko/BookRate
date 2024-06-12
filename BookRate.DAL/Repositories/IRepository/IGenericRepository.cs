@@ -14,5 +14,6 @@ namespace BookRate.DAL.Repositories.IRepository
         Task<bool> UpdateAsync(T entity);
         Task<bool> Delete(T entity);
         bool Exists(Expression<Func<T, bool>> predicate);
+        void Attach(T entity);
     }
 }

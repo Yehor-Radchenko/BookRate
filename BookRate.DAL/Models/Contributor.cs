@@ -45,6 +45,5 @@ public partial class Contributor
     public virtual ICollection<ContributorRole> ContributorRoles { get; set; } = new List<ContributorRole>();
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
-    
 }
 

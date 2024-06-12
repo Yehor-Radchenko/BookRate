@@ -68,11 +68,14 @@ namespace BookRate.BLL.Services
         {
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 
-            var contributorExists = await contributorRepo.GetAsync(c => c.Id == id);
-            if (contributorExists is null)
+            var contributor = await contributorRepo.GetAsync(c => c.Id == id, "ContributorRoles.NarrativeContributorRoles");
+            if (contributor is null)
                 throw new ArgumentException($"Contributor with Id {id} does not exist.", nameof(id));
 
-            await contributorRepo.Delete(contributorExists);
+            if (contributor.ContributorRoles.Any(cr => cr.NarrativeContributorRoles.Any()))
+                throw new InvalidOperationException("Cannot delete contributor with associated narrative roles.");
+
+            await contributorRepo.Delete(contributor);
             await _unitOfWork.CommitAsync();
 
             return true;
@@ -85,6 +88,7 @@ namespace BookRate.BLL.Services
                 throw new ValidationException(result.Errors);
 
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
+            var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
             var photoRepo = _unitOfWork.GetRepository<Photo>();
@@ -93,33 +97,36 @@ namespace BookRate.BLL.Services
             if (contributorModel == null)
                 throw new Exception($"Contributor with Id {id} not found.");
 
-            foreach(var cr in contributorModel.ContributorRoles.ToList())
-            {
-                if(cr.NarrativeContributorRoles.Count > 0)
-                {
-                    continue;
-                }
-                else contributorModel.ContributorRoles.Remove(cr);
-            }
-
+            var selectedGenreModels = expectedEntityValues.GenresId != null
+                ? await genreRepo.GetAllAsync(g => expectedEntityValues.GenresId.Contains(g.Id))
+                : new List<Genre>();
             contributorModel.Genres.Clear();
+            contributorModel.Genres = selectedGenreModels.ToList();
 
             var selectedRoleModels = await roleRepo.GetAllAsync(r => expectedEntityValues.RolesId.Contains(r.Id));
-            var selectedGenreModels = expectedEntityValues.GenresId != null ? await genreRepo.GetAllAsync(g => expectedEntityValues.GenresId.Contains(g.Id)) : new List<Genre>();
-
             if (selectedRoleModels.Count() != expectedEntityValues.RolesId.Count())
                 throw new ArgumentException("One or more specified roles do not exist.");
 
-            if (expectedEntityValues.GenresId != null && selectedGenreModels.Count() != expectedEntityValues.GenresId.Count())
-                throw new ArgumentException("One or more specified genres do not exist.");
+            var rolesToRemove = contributorModel.ContributorRoles
+                .Where(cr => !expectedEntityValues.RolesId.Contains(cr.RoleId) && !cr.NarrativeContributorRoles.Any())
+                .ToList();
 
-            var updatedContributor = _mapper.Map(expectedEntityValues, contributorModel);
-            updatedContributor.Id = id;
-            updatedContributor.Genres = selectedGenreModels.ToList();
-
-            foreach (var role in selectedRoleModels.Where(role => !updatedContributor.ContributorRoles.Any(cr => cr.RoleId == role.Id)))
+            foreach (var roleToRemove in rolesToRemove)
             {
-                updatedContributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
+                contributorModel.ContributorRoles.Remove(roleToRemove);
+            }
+
+            foreach (var cr in contributorModel.ContributorRoles)
+            {
+                contributorRoleRepo.Attach(cr);
+            }
+
+            foreach (var role in selectedRoleModels)
+            {
+                if (!contributorModel.ContributorRoles.Any(cr => cr.RoleId == role.Id))
+                {
+                    contributorModel.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
+                }
             }
 
             if (expectedEntityValues.Photo is not null)
@@ -136,11 +143,15 @@ namespace BookRate.BLL.Services
                 }
             }
 
-            await contributorRepo.UpdateAsync(updatedContributor);
+            contributorModel = _mapper.Map(expectedEntityValues, contributorModel);
+            contributorModel.Id = id;
+
+            await contributorRepo.UpdateAsync(contributorModel);
             await _unitOfWork.CommitAsync();
 
             return true;
         }
+
 
         public async Task<ContributorViewModel?> GetByIdAsync(int? id)
         {

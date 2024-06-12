@@ -1,6 +1,7 @@
 ﻿
 using BookRate.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BookRate.DAL.Context;
 
@@ -54,7 +55,6 @@ public partial class BookRateDbContext : DbContext
 
     public virtual DbSet<Follow> Follows { get; set; }
 
-   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<CommentaryLike>()
