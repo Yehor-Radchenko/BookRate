@@ -10,6 +10,7 @@ using BookRate.Validation.Extentions;
 using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
@@ -50,8 +51,11 @@ builder.Services.AddAuthentication(options =>
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateLifetime = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
+        
     };
 
     options.Events = new JwtBearerEvents
@@ -64,6 +68,16 @@ builder.Services.AddAuthentication(options =>
     };
 
 });
+
+ builder.Services.AddAuthorization(options =>
+ {
+       options.AddPolicy("AdminPolicy", policy =>
+       {
+           policy.RequireRole("Admin");
+       });
+ });
+
+
 
 
 

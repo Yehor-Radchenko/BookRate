@@ -46,7 +46,7 @@ namespace BookRate.BLL.Services
             if (genreExists is null)
                 throw new Exception("Genre can't be found.");
 
-            await genreRepo.Delete(genreExists);
+            await genreRepo.DeleteAsync(genreExists);
             await _unitOfWork.CommitAsync();
 
             return true;

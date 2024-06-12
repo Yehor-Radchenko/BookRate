@@ -132,7 +132,7 @@ namespace BookRate.BLL.Services
             {
                 if (contributorModel.Photo != null)
                 {
-                    await photoRepo.Delete(contributorModel.Photo);
+                    await photoRepo.DeleteAsync(contributorModel.Photo);
                 }
 
                 using (var memoryStream = new MemoryStream())

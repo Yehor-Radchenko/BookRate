@@ -48,7 +48,7 @@ namespace BookRate.BLL.Services
             if (roleToDelete is null)
                 throw new ArgumentException($"There is no model with Id {id}", nameof(id));
 
-            await roleRepo.Delete(roleToDelete);
+            await roleRepo.DeleteAsync(roleToDelete);
             await _unitOfWork.CommitAsync();
 
             return true;

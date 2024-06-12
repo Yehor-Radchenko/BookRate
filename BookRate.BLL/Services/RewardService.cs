@@ -51,7 +51,7 @@ namespace BookRate.BLL.Services
             if (rewardRepo.Exists(g => g.Id == id && g.NarrativeRewards.Any()))
                 throw new Exception("Reward cant be removed because it referenced by at least one narrative.");
 
-            await rewardRepo.Delete(new Reward { Id = id });
+            await rewardRepo.DeleteAsync(new Reward { Id = id });
             await _unitOfWork.CommitAsync();
 
             return true;
