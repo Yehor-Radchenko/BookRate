@@ -16,18 +16,18 @@ namespace BookRate.BLL.Services
     public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>
     {
         public ContributorService(
-            IUnitOfWork unitOfWork, 
-            IMapper mapper, 
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
             IValidator<ContributorDto> validator
             ) : base(unitOfWork, mapper, validator)
-        { 
+        {
         }
 
         public async Task<int> AddAsync(ContributorDto dto)
         {
             ValidationResult result = await _validator.ValidateAsync(dto);
             if (!result.IsValid)
-                throw new ValidationException(result.Errors);   
+                throw new ValidationException(result.Errors);
 
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var genreRepo = _unitOfWork.GetRepository<Genre>();
@@ -50,7 +50,7 @@ namespace BookRate.BLL.Services
                 contributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributor.Id });
             }
 
-            if(dto.Photo is not null)
+            if (dto.Photo is not null)
             {
                 using (var memoryStream = new MemoryStream())
                 {
@@ -121,12 +121,11 @@ namespace BookRate.BLL.Services
                 contributorRoleRepo.Attach(cr);
             }
 
-            foreach (var role in selectedRoleModels)
+            foreach (var role in from role in selectedRoleModels
+                                 where !contributorModel.ContributorRoles.Any(cr => cr.RoleId == role.Id)
+                                 select role)
             {
-                if (!contributorModel.ContributorRoles.Any(cr => cr.RoleId == role.Id))
-                {
-                    contributorModel.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
-                }
+                contributorModel.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });
             }
 
             if (expectedEntityValues.Photo is not null)
@@ -151,7 +150,6 @@ namespace BookRate.BLL.Services
 
             return true;
         }
-
 
         public async Task<ContributorViewModel?> GetByIdAsync(int? id)
         {
