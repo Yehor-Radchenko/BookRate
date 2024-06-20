@@ -9,10 +9,9 @@ namespace BookRate.DAL.Repositories.IRepository
     {
         Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null);
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null);
-        IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeOptions = null);
-        Task<bool> AddAsync(T entity);
+        IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeOptions = null); Task<bool> AddAsync(T entity);
         Task<bool> UpdateAsync(T entity);
         Task<bool> DeleteAsync(T entity);
-        bool Exists(Expression<Func<T, bool>> predicate);
+        bool Exists(Expression<Func<T, bool>> filter);
     }
 }

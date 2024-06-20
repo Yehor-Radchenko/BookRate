@@ -1,16 +1,11 @@
 using BookRate.BLL.Extension;
-using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.DAL.Context;
 using BookRate.DAL.Extension;
 using BookRate.DAL.Seed;
 using BookRate.Middlware;
 using BookRate.Profile;
-using BookRate.Service.Services;
 using BookRate.Validation.Extentions;
-using Mailjet.Client.Resources;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
@@ -38,7 +33,6 @@ builder.Services.AddValidationServices();
 builder.Services.AddTransient(sp => new EmailService(Environment.GetEnvironmentVariable("MAILJET_API_KEY")!,
 Environment.GetEnvironmentVariable("MAILJET_API_SECRET")!));
 
-
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication(options =>
@@ -55,7 +49,6 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = false,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
-        
     };
 
     options.Events = new JwtBearerEvents
@@ -69,22 +62,18 @@ builder.Services.AddAuthentication(options =>
 
 });
 
- builder.Services.AddAuthorization(options =>
- {
-       options.AddPolicy("AdminPolicy", policy =>
-       {
-           policy.RequireRole("Admin");
-       });
- });
-
-
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Host.UseSerilog();
 builder.Services.AddSwaggerGen();
-
 
 Log.Information("Total Services {count}: ", builder.Services.Count());
 
@@ -109,6 +98,9 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+app.UseMiddleware<BanMiddlware>();
+
 app.UseAuthorization();
 
 app.MapControllers();

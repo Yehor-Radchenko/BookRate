@@ -1,4 +1,5 @@
 using AutoMapper;
+using BookRate.BLL.Exceptions;
 using BookRate.BLL.HelperServices;
 using BookRate.BLL.HelperServices.PasswordHash;
 using BookRate.BLL.Services.ServiceAbstraction;
@@ -31,7 +32,7 @@ namespace BookRate.BLL.Services
             var getUser = await userRepo
                 .GetAsync(e => e.Id == id,
                 includeOptions: "Rates,ReviewLikes,Reviews,Commentaries,CommentaryLikes");
-            
+
             var info = new InfoViewModel
             {
                 Id = getUser!.Id,
@@ -44,7 +45,7 @@ namespace BookRate.BLL.Services
                 CountCommentaries = getUser.Commentaries.Count(),
                 CountReviews = getUser.Reviews.Count(),
             };
-            
+
             return info;
         }
 
@@ -68,23 +69,23 @@ namespace BookRate.BLL.Services
             await userRepo.AddAsync(newUser);
             var isSuccess = await _unitOfWork.CommitAsync();
 
-            if (isSuccess)
+            if (!isSuccess)
             {
-                var getUser = await userRepo.GetAsync(e => e.Email == dto.Email);
-                var roles = await roleRepo.GetAllAsync();
-
-                var userRoles = roles.Where(role => dto.RolesId.Contains(role.Id));
-
-                foreach (var role in userRoles)
-                {
-                    getUser.Roles.Add(role);
-                }
-
-                await _unitOfWork.CommitAsync();
-                return getUser.Id;
+                throw new Exception();
             }
 
-            throw new Exception();
+            var getUser = await userRepo.GetAsync(e => e.Email == dto.Email);
+            var roles = await roleRepo.GetAllAsync();
+
+            var userRoles = roles.Where(role => dto.RolesId.Contains(role.Id));
+
+            foreach (var role in userRoles)
+            {
+                getUser.Roles.Add(role);
+            }
+
+            return await _unitOfWork.CommitAsync() ? getUser.Id : throw new Exception();
+            
         }
 
         public async Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)
@@ -111,24 +112,71 @@ namespace BookRate.BLL.Services
 
                 await userRepo.UpdateAsync(getUser);
                 await _unitOfWork.CommitAsync();
-
             }
 
             return true;
         }
-
-        public async Task<bool> Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<string> LoginAsync(LoginDto loginViewModel)
+        
+        public async Task<bool> DeleteAsync(int id)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
-            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginViewModel.Email.ToLower(), includeOptions: "Roles");
+            var user = await userRepo.GetAsync(e => e.Id == id);
+
+            await userRepo.DeleteAsync(user);
+            return await _unitOfWork.CommitAsync();
+        }
+        
+        public async Task<string> LoginAsync(LoginDto loginDto)
+        {
+            var userRepo = _unitOfWork.GetRepository<User>();
+            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginDto.Email.ToLower(), includeOptions: "Roles");
 
             return _jwtService.GenerateToken(getUser);
-
         }
+        
+        public async Task<bool> BanUserAsync(int id)
+        {
+            var userRepo = _unitOfWork.GetRepository<User>();
+            var restrictRepo = _unitOfWork.GetRepository<Restrict>();
+
+            var getUser = await userRepo.GetAsync(e => e.Id == id);
+
+            if (getUser == null)
+            {
+                throw new NotFoundException("Something went wrong", $"{getUser.Email}");
+            }
+            getUser.IsGetBan = true;
+
+            var restrict = new Restrict
+            {
+                UserId = getUser.Id,
+                Description = "",
+                BanRemovalDate = DateTime.Now.AddDays(7)
+            };
+
+            await restrictRepo.AddAsync(restrict);
+            return await _unitOfWork.CommitAsync();
+        }
+
+        public async Task<bool> UnbanUserAsync(int id)
+        {
+            var userRepo = _unitOfWork.GetRepository<User>();
+            var restrictRepo = _unitOfWork.GetRepository<Restrict>();
+
+            var user = await userRepo.GetAsync(e => e.Id == id);
+
+            if (user != null)
+            {
+                var restrict = await restrictRepo.GetAsync(e => e.UserId == user.Id);
+                await restrictRepo.DeleteAsync(restrict);
+                user.IsGetBan = false;
+
+                return await _unitOfWork.CommitAsync();
+            }
+
+            throw new Exception("Something went wrong,try again");
+        }
+
+
     }
 }

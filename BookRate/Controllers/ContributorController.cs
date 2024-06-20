@@ -22,7 +22,6 @@ namespace BookRate.Controllers
         [HttpGet]
         public async Task<IActionResult> GetListModels()
         {
-
             return Ok(await _service.GetContributorListModelsAsync());
         }
 

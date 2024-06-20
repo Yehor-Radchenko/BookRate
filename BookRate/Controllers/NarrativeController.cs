@@ -11,7 +11,6 @@ namespace BookRate.Controllers
     public class NarrativeController : Controller
     {
         private readonly NarrativeService _service;
-
         public NarrativeController(NarrativeService service)
         {
             _service = service;

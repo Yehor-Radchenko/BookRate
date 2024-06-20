@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookRate.DAL.Models;
 
-public partial class Review
+
+public  class Review
 {
     public int Id { get; set; }
 
@@ -16,6 +17,7 @@ public partial class Review
         get => _title;
         set => _title = value?.Trim();
     }
+
     private string _title = null!;
 
     [Required(ErrorMessage = "Text is required.")]
@@ -24,6 +26,7 @@ public partial class Review
         get => _text;
         set => _text = value?.Trim();
     }
+
     private string _text = null!;
 
     [Required]
@@ -45,4 +48,11 @@ public partial class Review
 
     public int RateId { get; set; }
     public virtual Rate Rate { get; set; } = null!;
+
+    public int BookId { get; set; }
+    public Book Book { get; set; }
+
+    public int UserId { get; set; }
+    public User User { get; set; }
+    
 }

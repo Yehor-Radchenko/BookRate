@@ -1,10 +1,8 @@
 ﻿using BookRate.BLL.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using System.Net;
-using System.Text.Json;
 using Exception = System.Exception;
 
 namespace BookRate.Middlware

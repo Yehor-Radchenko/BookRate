@@ -24,5 +24,6 @@ public partial class CommentaryLike
 
     [ForeignKey("CommentaryId")]
     public virtual Commentary Commentary { get; set; } = null!;
+    
 }
 

@@ -1,7 +1,5 @@
 ﻿using BookRate.BLL.Services;
-using BookRate.DAL.DTO.Genre;
 using BookRate.DAL.DTO.Role;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookRate.Controllers
@@ -35,7 +33,8 @@ namespace BookRate.Controllers
         {
             if (await _service.AddAsync(dto) > 0)
                 return StatusCode(StatusCodes.Status201Created, "Created successfully!");
-            else return BadRequest();
+
+            return BadRequest();
         }
 
         [HttpPut]

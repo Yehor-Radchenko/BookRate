@@ -9,5 +9,6 @@ namespace BookRate.DAL.Repositories.IRepository
 {
     public interface IGenreRepository : IGenericRepository<Genre>
     {
+        
     }
 }

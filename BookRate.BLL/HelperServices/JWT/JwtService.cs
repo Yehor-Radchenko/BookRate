@@ -21,19 +21,23 @@ namespace BookRate.BLL.HelperServices
 
         public string GenerateToken(User user)
         {
+
             var claims = new List<Claim>
             {
-                new Claim("Email", user.Email),
-                new Claim("UserName", user.Username),
-                new Claim("LastName", user.LastName),
-                new Claim("FirstName", user.FirstName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Surname, user.LastName),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim("IsGetBan", user.IsGetBan.ToString())
             };
 
-            foreach (var role in user.Roles)
+            if (user.Roles != null)
             {
-                claims.Add(new Claim("Role", role.Name));
+                claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
             }
 
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
 
             var sign = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
