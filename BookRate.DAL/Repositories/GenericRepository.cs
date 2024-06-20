@@ -24,7 +24,7 @@ namespace BookRate.DAL.Repositories
             _dbSet = _bookRateDbContext.Set<T>();
         }
 
-        public async Task<bool> AddAsync(T entity)
+        public  async Task<bool> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
             return true;

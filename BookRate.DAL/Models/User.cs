@@ -53,5 +53,5 @@ public partial class User
     [Column(TypeName = "timestamp")]
     public byte[] Timestamp { get; set; }
 
-    public bool IsGetBan { get; set; }
+    public bool IsGetBan { get; set; } = false;
 }
