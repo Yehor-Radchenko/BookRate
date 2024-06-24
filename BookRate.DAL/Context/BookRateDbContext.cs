@@ -8,10 +8,10 @@ public partial class BookRateDbContext : DbContext
 {
     public BookRateDbContext(DbContextOptions<BookRateDbContext> options)
         : base(options)
-    {}
+    { }
 
     public virtual DbSet<Photo> Photos { get; set; }
-  
+
     public virtual DbSet<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
 
     public virtual DbSet<ContributorRole> ContributorRoles { get; set; }
@@ -44,6 +44,9 @@ public partial class BookRateDbContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
+
+    public virtual DbSet<Restrict> Restricts { get; set; }
+
     public virtual DbSet<Serie> Series { get; set; }
 
     public virtual DbSet<Setting> Settings { get; set; }
@@ -54,9 +57,10 @@ public partial class BookRateDbContext : DbContext
 
     public virtual DbSet<Follow> Follows { get; set; }
 
-   
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+     
         modelBuilder.Entity<CommentaryLike>()
             .HasKey(cl => new { cl.UserId, cl.CommentaryId });
         modelBuilder.Entity<CommentaryLike>()
@@ -154,7 +158,6 @@ public partial class BookRateDbContext : DbContext
                    .OnDelete(DeleteBehavior.Restrict)
            );
 
-
         modelBuilder.Entity<Book>()
             .HasMany(b => b.Narratives)
             .WithMany(n => n.Books)
@@ -193,5 +196,30 @@ public partial class BookRateDbContext : DbContext
                 .WithOne()
                 .HasForeignKey<Contributor>(c => c.PhotoId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.Book)
+            .WithMany(b => b.Reviews)
+            .HasForeignKey(r => r.BookId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.Reviews)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict); 
+
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.Book)
+            .WithMany(b => b.Reviews)
+            .HasForeignKey(r => r.BookId)
+            .OnDelete(DeleteBehavior.Restrict); 
+
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.Rate)
+            .WithMany(rt => rt.Reviews)
+            .HasForeignKey(r => r.RateId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

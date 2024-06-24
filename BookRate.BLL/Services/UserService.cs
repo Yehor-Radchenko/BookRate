@@ -5,9 +5,11 @@ using BookRate.BLL.HelperServices.PasswordHash;
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.User;
 using BookRate.DAL.Context;
+using BookRate.DAL.DTO.Restrict;
 using BookRate.DAL.DTO.User;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
+using BookRate.Validation;
 using FluentValidation;
 using Mailjet.Client.Resources;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +31,14 @@ namespace BookRate.BLL.Services
         {
             var userRepo = _unitOfWork.GetRepository<User>();
 
+
             var getUser = await userRepo
                 .GetAsync(e => e.Id == id,
                 includeOptions: "Rates,ReviewLikes,Reviews,Commentaries,CommentaryLikes");
+
+            if (getUser == null)
+                throw new NotFoundException($"User isn`t find", $"{id}");
+
 
             var info = new InfoViewModel
             {
@@ -54,6 +61,12 @@ namespace BookRate.BLL.Services
             var userRepo = _unitOfWork.GetRepository<User>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
+            var validator = new UserValidator(_unitOfWork);
+            var result = await validator.ValidateAsync(dto);
+
+            if (!result.IsValid)
+                throw new BadRequestException("Something went wrong", result.ToDictionary());
+
             var newUser = new User
             {
                 Email = dto.Email,
@@ -69,10 +82,6 @@ namespace BookRate.BLL.Services
             await userRepo.AddAsync(newUser);
             var isSuccess = await _unitOfWork.CommitAsync();
 
-            if (!isSuccess)
-            {
-                throw new Exception();
-            }
 
             var getUser = await userRepo.GetAsync(e => e.Email == dto.Email);
             var roles = await roleRepo.GetAllAsync();
@@ -85,7 +94,7 @@ namespace BookRate.BLL.Services
             }
 
             return await _unitOfWork.CommitAsync() ? getUser.Id : throw new Exception();
-            
+
         }
 
         public async Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)
@@ -116,7 +125,7 @@ namespace BookRate.BLL.Services
 
             return true;
         }
-        
+
         public async Task<bool> DeleteAsync(int id)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
@@ -125,34 +134,45 @@ namespace BookRate.BLL.Services
             await userRepo.DeleteAsync(user);
             return await _unitOfWork.CommitAsync();
         }
-        
+
         public async Task<string> LoginAsync(LoginDto loginDto)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginDto.Email.ToLower(), includeOptions: "Roles");
 
+            if (getUser == null)
+                throw new ConflictException($"User isn`t find: {loginDto.Email}");
+
             return _jwtService.GenerateToken(getUser);
         }
-        
-        public async Task<bool> BanUserAsync(int id)
+
+        public async Task<bool> BanUserAsync(RestrictDto restrictDto)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var restrictRepo = _unitOfWork.GetRepository<Restrict>();
 
-            var getUser = await userRepo.GetAsync(e => e.Id == id);
+            var getUser = await userRepo.GetAsync(e => e.Id == restrictDto.UserId);
+            var getRestrictToThisUser = await restrictRepo.GetAsync(e => e.UserId == restrictDto.UserId);
 
             if (getUser == null)
-            {
-                throw new NotFoundException("Something went wrong", $"{getUser.Email}");
-            }
+                throw new ConflictException($"User isn`t find: {restrictDto.UserId}");
+
+            if (getUser.IsGetBan)
+                throw new ConflictException($"User: {getUser.Username} already have ban: {getRestrictToThisUser!.BanRemovalDate}");
+
             getUser.IsGetBan = true;
 
             var restrict = new Restrict
             {
                 UserId = getUser.Id,
-                Description = "",
-                BanRemovalDate = DateTime.Now.AddDays(7)
+                Description = restrictDto.Description,
+                BanRemovalDate = restrictDto.BanRemovaleDate,
             };
+
+        
+            if (restrict.BanRemovalDate == DateTime.Now)
+                throw new BadRequestException($"Ban time must be more then by the time now at least 1 min");
+
 
             await restrictRepo.AddAsync(restrict);
             return await _unitOfWork.CommitAsync();
@@ -165,6 +185,12 @@ namespace BookRate.BLL.Services
 
             var user = await userRepo.GetAsync(e => e.Id == id);
 
+            if (user == null)
+                throw new NotFoundException($"User isn`t find: {id}");
+
+            if (!user.IsGetBan)
+                throw new ConflictException($"User: {user.Username},don`t have any resctrict");
+
             if (user != null)
             {
                 var restrict = await restrictRepo.GetAsync(e => e.UserId == user.Id);
@@ -174,7 +200,7 @@ namespace BookRate.BLL.Services
                 return await _unitOfWork.CommitAsync();
             }
 
-            throw new Exception("Something went wrong,try again");
+            throw new BadRequestException("Something went wrong,try again");
         }
 
 

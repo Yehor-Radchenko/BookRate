@@ -10,25 +10,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="67c6acf2-0de5-439e-a285-79cd058683b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/PasswordHash/PasswordHash.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate.BLL/ViewModels/User/LoginViewModel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ReviewService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookRate.DAL/Configuration/ReviewConfigurator.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookRate/Controllers/ReviewController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookRate/Middlware/BanMiddlware.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Extension/BLLServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Extension/BLLServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/ViewModels/User/UserViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/ViewModels/User/User.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/Book.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/Book.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/Review.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/Review.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/User.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.Services/Models/EmailModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/EmailService/Model/EmailModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.Services/Services/EmailService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/EmailService/EmailService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.Services/Services/IEmailService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/EmailService/IEmailService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate/BookRate.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/BookRate.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Profile/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Profile/MappingProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/RoleController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/RoleController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/UserController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Validation/Extentions/ValidationServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Validation/Extentions/ValidationServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Validation/UserValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Validation/UserValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/appsettings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +45,9 @@
   </component>
   <component name="DpaMonitoringSettings">
     <option name="autoShow" value="false" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/../BookRate\exportToHTML" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -59,13 +70,26 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/8486d31e24f30e3fa1809a95699a0adc16f448d7/src/Security/Authentication/JwtBearer/src/JwtBearerEvents.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/8486d31e24f30e3fa1809a95699a0adc16f448d7/src/Security/Authentication/JwtBearer/src/JwtBearerHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/DefaultBuilder/src/WebApplication.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Http/Authentication.Core/src/AuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Mvc/Mvc.Core/src/Infrastructure/ActionMethodExecutor.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Security/Authentication/Core/src/AuthenticationHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/efcore/0e8ece3526ef3575fb85de308b8a4cd5840f928e/src/EFCore/Infrastructure/ModelValidator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/087e15321bb712ef6fe8b0ba6f8bd12facf92629/src/libraries/System.Private.CoreLib/src/System/Runtime/CompilerServices/AsyncTaskMethodBuilderT.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/Microsoft.Extensions.DependencyInjection/src/ServiceLookup/CallSiteFactory.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1fce37416598a5fb677f9b329d52e2e9d64e126621a5229f5a5884d87827b9ad/Mapper.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b5ecf1669949a262bd471c1f745e3bb196b3c7671a557cf039248b2de4c4a9/TokenValidationParameters.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f5adada7bfdf6aaae28b25070c35666f22724825ffbafafcdd3ce1c901356/DbConnectionOptions.Common.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ContributorService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ContributorService.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -78,9 +102,11 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.BookRate | #2.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;implement__auth&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;upd__auth&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -97,6 +123,9 @@
   }
 }</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.BookRate: https">
+    <configuration name="BookRate | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/BookRate/BookRate.http" index="2" requestIdentifier="#2" runType="Run single request">
+      <method v="2" />
+    </configuration>
     <configuration name="BookRate: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/BookRate/BookRate.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
@@ -142,6 +171,11 @@
         <option name="Build" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.BookRate | #2" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -158,14 +192,34 @@
       <workItem from="1717926063189" duration="5958000" />
       <workItem from="1717936195104" duration="3885000" />
       <workItem from="1717945803502" duration="11000" />
-      <workItem from="1718011299321" duration="1430000" />
+      <workItem from="1718011299321" duration="4309000" />
+      <workItem from="1718015881975" duration="1590000" />
+      <workItem from="1718050551738" duration="3874000" />
+      <workItem from="1718100861243" duration="3211000" />
+      <workItem from="1718114028702" duration="3005000" />
+      <workItem from="1718270127024" duration="7104000" />
+      <workItem from="1718283802053" duration="2946000" />
+      <workItem from="1718899232013" duration="779000" />
+      <workItem from="1718900046211" duration="1842000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>

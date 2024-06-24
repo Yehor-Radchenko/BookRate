@@ -19,6 +19,7 @@ namespace BookRate.Profile
     using BookRate.DAL.DTO.Genre;
     using BookRate.DAL.DTO.Narrative;
     using BookRate.DAL.DTO.NarrativeRevard;
+    using BookRate.DAL.DTO.Review;
     using BookRate.DAL.DTO.Reward;
     using BookRate.DAL.DTO.Role;
     using BookRate.DAL.DTO.Serie;
@@ -75,12 +76,14 @@ namespace BookRate.Profile
                 .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
                 .ForMember(dest => dest.Settings, opt => opt.MapFrom(src => src.Settings))
                 .ForMember(dest => dest.Rewards, opt => opt.MapFrom(src => src.NarrativeRewards));
+
             CreateMap<NarrativeDto, Narrative>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Genres, opt => opt.Ignore())
                 .ForMember(dest => dest.Settings, opt => opt.Ignore())
                 .ForMember(dest => dest.NarrativeContributorRoles, opt => opt.Ignore())
                 .ForMember(dest => dest.NarrativeRewards, opt => opt.Ignore());
+
             CreateMap<Narrative, NarrativeListModel>()
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src =>
                     src.NarrativeContributorRoles
@@ -96,6 +99,7 @@ namespace BookRate.Profile
 
             CreateMap<BLL.ViewModels.User.UserViewModel, User>().ReverseMap();
 
+    
         }
     }
 }

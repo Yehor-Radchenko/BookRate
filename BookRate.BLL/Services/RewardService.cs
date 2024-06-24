@@ -34,7 +34,7 @@ namespace BookRate.BLL.Services
 
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
-            if (rewardRepo.Exists(r => r.Name.ToLower() == dto.Name.ToLower()))
+            if (await rewardRepo.ExistsAsync(r => r.Name.ToLower() == dto.Name.ToLower()))
                 throw new InvalidOperationException($"Reward named {dto.Name} is already exists in database.");
 
             var rewardModel = _mapper.Map<Reward>(dto);
@@ -48,7 +48,7 @@ namespace BookRate.BLL.Services
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
-            if (rewardRepo.Exists(g => g.Id == id && g.NarrativeRewards.Any()))
+            if (await rewardRepo.ExistsAsync(g => g.Id == id && g.NarrativeRewards.Any()))
                 throw new Exception("Reward cant be removed because it referenced by at least one narrative.");
 
             await rewardRepo.DeleteAsync(new Reward { Id = id });
@@ -65,7 +65,7 @@ namespace BookRate.BLL.Services
 
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 
-            if (rewardRepo.Exists(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
+            if (await rewardRepo.ExistsAsync(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
                 throw new Exception($"Reward named {expectedEntityValues.Name} is already exists in database.");
 
             var rewardModel = _mapper.Map<Reward>(expectedEntityValues);

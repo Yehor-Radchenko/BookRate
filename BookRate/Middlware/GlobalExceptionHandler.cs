@@ -18,6 +18,7 @@ namespace BookRate.Middlware
             _next = next;
             _problemDetailsFactory = problemDetailsFactory;
         }
+
         public async Task InvokeAsync(HttpContext httpContext)
         {
 
@@ -78,8 +79,6 @@ namespace BookRate.Middlware
             await httpContext.Response.WriteAsync(response);
             
         }
-
-
 
     }
 }

@@ -11,6 +11,11 @@ namespace BookRate.DAL.UoW
     {
         IGenericRepository<TEntity> GetRepository<TEntity>()
             where TEntity : class;
+
+        IRestrictRepository RestrictRepository { get; }
+
         Task<bool> CommitAsync();
+
+
     }
 }
