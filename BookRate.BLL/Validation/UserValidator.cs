@@ -1,16 +1,27 @@
-﻿using BookRate.DAL.DTO.User;
+﻿using BookRate.DAL.Context;
+using BookRate.DAL.DTO.User;
+using BookRate.DAL.Models;
+using BookRate.DAL.UoW;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BookRate.Validation
 {
     public class UserValidator : AbstractValidator<UserDto>
     {
-        public UserValidator()
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public UserValidator(IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
+
+
             RuleFor(user => user.Email)
                 .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.");
+                .EmailAddress().WithMessage("Invalid email format.")
+                .MustAsync(async (email, token) => !await ExisitsAsync(email)).WithMessage("User with this email exist");
 
             RuleFor(user => user.Password)
                 .NotEmpty().WithMessage("Password is required.")
@@ -41,8 +52,18 @@ namespace BookRate.Validation
 
             RuleFor(user => user.RolesId)
                 .NotEmpty().WithMessage("At least one role is required.");
-
-      
+         
         }
+
+
+        private async Task<bool> ExisitsAsync(string email)
+        {
+            var userRepo = _unitOfWork.GetRepository<User>();
+
+            return await userRepo.ExistsAsync(e => e.Email.ToLower() == email.ToLower());
+
+        }
+
+
     }
 }

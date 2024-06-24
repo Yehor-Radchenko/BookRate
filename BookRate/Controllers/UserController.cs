@@ -1,4 +1,5 @@
 using BookRate.BLL.Services;
+using BookRate.DAL.DTO.Restrict;
 using BookRate.DAL.DTO.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,14 +20,14 @@ namespace BookRate.Controllers
             _userService = userService;
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
         [Authorize(policy: "AdminPolicy")]
         [HttpGet("users-list")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok("user:1");
         }
-        
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("profile-info/{id}")]
         public async Task<IActionResult> ProfileInfo(int id)
@@ -51,10 +52,10 @@ namespace BookRate.Controllers
         }
 
         [Authorize(policy: "AdminPolicy", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("ban-user/{id}")]
-        public async Task<IActionResult> BanUser(int id)
+        [HttpPost("ban-user")]
+        public async Task<IActionResult> BanUser(RestrictDto restrictDto)
         {
-            var result = await _userService.BanUserAsync(id);
+            var result = await _userService.BanUserAsync(restrictDto);
             return Ok(result);
         }
 
@@ -72,8 +73,8 @@ namespace BookRate.Controllers
             var result = await _userService.UpdateAsync(email, dto);
             return Ok(result);
         }
-        
-        
+
+
     }
-    
+
 }

@@ -6,7 +6,7 @@ namespace BookRate.BLL.Exceptions
     public class BadRequestException : Exception
     {
         public IDictionary<string, string[]>? Errors;
-        public BadRequestException(string? message, IDictionary<string, string[]>? errors) : base(message)
+        public BadRequestException(string? message, IDictionary<string, string[]>? errors = null) : base(message)
         {
             Errors = errors;
         }

@@ -29,7 +29,7 @@ namespace BookRate.BLL.Services
 
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
-            if (roleRepo.Exists(r => r.Name.Trim().ToLower() == dto.Name.Trim().ToLower()))
+            if (await roleRepo.ExistsAsync(r => r.Name.Trim().ToLower() == dto.Name.Trim().ToLower()))
                 throw new Exception($"Role named {dto.Name} is already exists in database.");
 
             var roleModel = _mapper.Map<Role>(dto);
@@ -62,7 +62,7 @@ namespace BookRate.BLL.Services
 
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
-            if (roleRepo.Exists(r => r.Name.Trim().ToLower() == expectedEntityValues.Name.Trim().ToLower()))
+            if (await roleRepo.ExistsAsync(r => r.Name.Trim().ToLower() == expectedEntityValues.Name.Trim().ToLower()))
                 throw new Exception($"Role named {expectedEntityValues.Name} is already exists in database.");
 
             var roleModel = _mapper.Map<Role>(expectedEntityValues);

@@ -2,21 +2,18 @@
 using BookRate.DAL.Repositories;
 using BookRate.DAL.Repositories.EntityImplementations;
 using BookRate.DAL.Repositories.IRepository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace BookRate.DAL.UoW
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly BookRateDbContext _dbContext;
-        private Dictionary<Type, object>? repos;
+        private Dictionary<Type, object>? _repos;
+
+
+        public IRestrictRepository RestrictRepository =>
+                (IRestrictRepository)GetRepository<RestrictRepository>();
+
         public UnitOfWork(BookRateDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -25,18 +22,18 @@ namespace BookRate.DAL.UoW
         public IGenericRepository<TEntity> GetRepository<TEntity>()
             where TEntity : class
         {
-            if (repos == null)
+            if (_repos == null)
             {
-                repos = new Dictionary<Type, object>();
+                _repos = new Dictionary<Type, object>();
             }
 
             var type = typeof(TEntity);
-            if (!repos.ContainsKey(type))
+            if (!_repos.ContainsKey(type))
             {
-                repos[type] = new GenericRepository<TEntity>(_dbContext);
+                _repos[type] = new GenericRepository<TEntity>(_dbContext);
             }
 
-            return (IGenericRepository<TEntity>)repos[type];
+            return (IGenericRepository<TEntity>)_repos[type];
         }
 
         public async Task<bool> CommitAsync()

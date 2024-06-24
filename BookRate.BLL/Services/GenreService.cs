@@ -28,7 +28,7 @@ namespace BookRate.BLL.Services
 
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
-            if (genreRepo.Exists(g => g.Name.ToLower() == dto.Name.ToLower()))
+            if (await genreRepo.ExistsAsync(g => g.Name.ToLower() == dto.Name.ToLower()))
                 throw new Exception($"Genre named {dto.Name} is already exists in database.");
             
             var genreModel = _mapper.Map<Genre>(dto);
@@ -72,7 +72,7 @@ namespace BookRate.BLL.Services
 
             var genreRepo = _unitOfWork.GetRepository<Genre>();
 
-            if (genreRepo.Exists(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
+            if (await genreRepo.ExistsAsync(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
                 throw new Exception($"Genre named {expectedEntityValues.Name} is already exists in database.");
 
             var genreModel = _mapper.Map<Genre>(expectedEntityValues);

@@ -1,7 +1,9 @@
 using BookRate.BLL.Extension;
+using BookRate.Common.Enums;
 using BookRate.DAL.Context;
 using BookRate.DAL.Extension;
 using BookRate.DAL.Seed;
+using BookRate.Filters;
 using BookRate.Middlware;
 using BookRate.Profile;
 using BookRate.Validation.Extentions;
@@ -21,6 +23,10 @@ Log.Logger = new LoggerConfiguration()
 
 
 Log.Logger.Information("Start Project");
+
+
+
+
 
 builder.Services.AddControllers();
 
@@ -62,6 +68,9 @@ builder.Services.AddAuthentication(options =>
 
 });
 
+builder.Services.AddScoped<CheckApproachFilter>(provide => new CheckApproachFilter("true"));
+
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy =>
@@ -98,8 +107,6 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
-app.UseMiddleware<BanMiddlware>();
 
 app.UseAuthorization();
 

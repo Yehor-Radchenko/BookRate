@@ -26,7 +26,7 @@ namespace BookRate.DAL.Repositories
 
         public  async Task<bool> AddAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity);       
             return true;
         }
 
@@ -44,9 +44,9 @@ namespace BookRate.DAL.Repositories
             }
         }
 
-        public bool Exists(Expression<Func<T, bool>> predicate)
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
-            return _dbSet.Any(predicate);
+            return await _dbSet.AnyAsync(predicate);
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)

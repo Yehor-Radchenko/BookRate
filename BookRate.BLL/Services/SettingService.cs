@@ -27,7 +27,7 @@ namespace BookRate.BLL.Services
 
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
-            if (settingRepo.Exists(s => s.Name.ToLower() == dto.Name.ToLower()))
+            if (await settingRepo.ExistsAsync(s => s.Name.ToLower() == dto.Name.ToLower()))
                 throw new Exception($"Setting named {dto.Name} is already exists in database.");
 
             var settingModel = _mapper.Map<Setting>(dto);
@@ -72,7 +72,7 @@ namespace BookRate.BLL.Services
 
             var settingRepo = _unitOfWork.GetRepository<Setting>();
 
-            if (settingRepo.Exists(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
+            if (await settingRepo.ExistsAsync(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))
                 throw new Exception($"Setting named {expectedEntityValues.Name} is already exists in database.");
 
             var settingModel = _mapper.Map<Setting>(expectedEntityValues);
