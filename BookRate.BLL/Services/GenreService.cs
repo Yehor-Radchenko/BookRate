@@ -38,7 +38,7 @@ namespace BookRate.BLL.Services
             return genreModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var genreRepo = _unitOfWork.GetRepository<Genre>();
             var genreExists = await genreRepo.GetAsync(c => c.Id == id);

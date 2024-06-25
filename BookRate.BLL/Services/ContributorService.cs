@@ -64,7 +64,7 @@ namespace BookRate.BLL.Services
             return contributor.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var contributorRepo = _unitOfWork.GetRepository<Contributor>();
 

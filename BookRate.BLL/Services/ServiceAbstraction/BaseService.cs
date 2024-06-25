@@ -1,16 +1,6 @@
 ﻿using AutoMapper;
-using BookRate.DAL.DTO.Contributor;
-using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services.ServiceAbstraction
 {

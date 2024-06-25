@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookRate.DAL.Models;
 
 
-public  class Review
+public class Review
 {
     public int Id { get; set; }
 
@@ -33,18 +31,20 @@ public  class Review
     [Column(TypeName = "smalldatetime")]
     public DateTime DatePosted { get; set; }
 
+    [Column(TypeName = "smalldatetime")]
+    public DateTime? DateUpdated { get; set; }
+
     [DataType(DataType.Date)]
+    [Column(TypeName = "date")]
     public DateTime? StartReadDate { get; set; }
 
     [DataType(DataType.Date)]
+    [Column(TypeName = "date")]
     public DateTime? EndReadDate { get; set; }
 
     public virtual ICollection<Commentary> Commentaries { get; set; } = new List<Commentary>();
 
     public virtual ICollection<ReviewLike> ReviewLikes { get; set; } = new List<ReviewLike>();
-
-    [Column(TypeName = "timestamp")]
-    public byte[] Timestamp { get; set; }
 
     public int RateId { get; set; }
     public virtual Rate Rate { get; set; } = null!;
@@ -54,5 +54,7 @@ public  class Review
 
     public int UserId { get; set; }
     public User User { get; set; }
-    
+
+    public bool IsChanged { get; set; }
+
 }
