@@ -13,6 +13,6 @@ namespace BookRate.BLL.Services.ServiceAbstraction
     {
         Task<int> AddAsync(TDto dto);
         Task<bool> UpdateAsync(int id, TDto expectedEntityValues);
-        Task<bool> Delete(int id);
+        Task<bool> DeleteAsync(int id);
     }
 }

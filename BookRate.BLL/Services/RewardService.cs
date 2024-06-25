@@ -44,7 +44,7 @@ namespace BookRate.BLL.Services
             return rewardModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
 

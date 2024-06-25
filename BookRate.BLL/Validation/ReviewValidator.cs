@@ -4,6 +4,7 @@ using FluentValidation;
 
 namespace BookRate.Validation
 {
+
     public class ReviewValidator : AbstractValidator<ReviewDto>
     {
         public ReviewValidator()
@@ -36,4 +37,5 @@ namespace BookRate.Validation
                 .NotEmpty().WithMessage("Rate is required.");
         }
     }
+
 }

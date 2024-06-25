@@ -1,25 +1,16 @@
-﻿namespace BookRate.BLL.ViewModels.Review
+﻿
+
+namespace BookRate.BLL.ViewModels.Review
 {
     public class ReviewViewModel
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
+        public string Title { get; init; }
+        public string Text { get; init; }
+        public DateTime DatePosted { get; init; }
+        public string BookTitle { get; init; }
+        public string Username { get; init; }
+        public int NumberOfLikes { get; init; }
 
-        public string Title { get; set; }
-
-        public string Text { get; set; }
-
-        public DateTime DatePosted { get; set; }
-
-        public DateTime? StartReadDate { get; set; }
-
-        public DateTime? EndReadDate { get; set; }
-
-        public int BookId { get; set; }
-
-        public string BookName { get; set; }
-
-        public int UserId { get; set; }
-
-        public string Username { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace BookRate.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            if (await _service.Delete(id))
+            if (await _service.DeleteAsync(id))
                 return StatusCode(StatusCodes.Status200OK, "Deleted successfully.");
             return BadRequest();
         }

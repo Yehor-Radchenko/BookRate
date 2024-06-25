@@ -6,6 +6,7 @@ namespace BookRate.BLL.ViewModels.Rate
     {
         public int UserId { get; set; }
 
+        public string? BookTitle { get; set; }
         public int BookId { get; set; }
 
         public int StarsRate { get; set; }

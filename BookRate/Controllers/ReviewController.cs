@@ -1,17 +1,12 @@
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Review;
 using BookRate.DAL.DTO.Review;
-using BookRate.Filters;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Protocol;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace BookRate.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
     public class ReviewController : ControllerBase
     {
         private readonly ReviewService _reviewService;
@@ -21,19 +16,17 @@ namespace BookRate.Controllers
             _reviewService = reviewService;
         }
 
-
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReviewViewModel>> Get(int id)
+        public async Task<ActionResult<DetailReviewViewModel>> Get(int id)
         {
-            var review = await _reviewService.GetReviewsByUserIdAsync(id);
-
+            var review = await _reviewService.GetReviewAsync(id);
 
             return Ok(review);
         }
 
         [HttpPost]
-        [ServiceFilter(typeof(CheckApproachFilter))]
-        public async Task<ActionResult<ReviewViewModel>> Post(ReviewDto reviewDto)
+        // Don`t touch -  [ServiceFilter(typeof(CheckApproachFilter))]
+        public async Task<ActionResult<int>> Post(ReviewDto reviewDto)
         {
             var review = await _reviewService.PostAsync(reviewDto);
 
@@ -49,19 +42,14 @@ namespace BookRate.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ReviewViewModel>> GetAll()
+        public async Task<ActionResult<List<ReviewViewModel>>> GetReviews(int id)
         {
+            var result = await _reviewService.GetReviewsAsync(id);
 
-            var getToken = HttpContext.Request.Cookies["Token"];
-
-            var convertToken = JwtSecurityTokenConverter.Convert(new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(getToken));
-
-            var id = Convert.ToInt32(convertToken.Claims.FirstOrDefault().Value);
-
-            var reviews = await _reviewService.GetReviewsAsync(id);
-
-            return Ok(reviews);
+            return Ok(result);
         }
+
+     
 
     }
 }

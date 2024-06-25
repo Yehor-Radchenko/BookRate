@@ -98,7 +98,7 @@ namespace BookRate.BLL.Services
             return narrative.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
 

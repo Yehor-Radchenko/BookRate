@@ -1,0 +1,19 @@
+Index: BookRate.BLL/Services/SettingService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using AutoMapper;\r\nusing BookRate.BLL.Services.ServiceAbstraction;\r\nusing BookRate.BLL.ViewModels.Setting;\r\nusing BookRate.DAL.DTO.Setting;\r\nusing BookRate.DAL.Models;\r\nusing BookRate.DAL.UoW;\r\n\r\nnamespace BookRate.BLL.Services\r\n{\r\n    public class SettingService : BaseService, IService<CreateSettingDTO, UpdateSettingDTO, Setting>\r\n    {\r\n        public SettingService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)\r\n        {\r\n        }\r\n\r\n        public async Task<int> AddAsync(CreateSettingDTO dto)\r\n        {\r\n            var settingRepo = _unitOfWork.GetRepository<Setting>();\r\n\r\n            if (settingRepo.Exists(s => s.Name.ToLower() == dto.Name.ToLower()))\r\n                throw new Exception($\"Setting named {dto.Name} is already exists in database.\");\r\n\r\n            var settingModel = _mapper.Map<Setting>(dto);\r\n\r\n            await settingRepo.AddAsync(settingModel);\r\n            await _unitOfWork.CommitAsync();\r\n            return settingModel.Id;\r\n        }\r\n\r\n        public async Task<bool> Delete(int id)\r\n        {\r\n            var settingRepo = _unitOfWork.GetRepository<Setting>();\r\n\r\n            if (settingRepo.Exists(s => s.Id == id && s.Narratives.Any()))\r\n                throw new Exception(\"Setting cant be removed because it referenced by at least one narrative.\");\r\n\r\n            await settingRepo.Delete(new Setting { Id = id });\r\n            await _unitOfWork.CommitAsync();\r\n\r\n            return true;\r\n        }\r\n\r\n        public async Task<SettingViewModel?> GetByIdAsync(int? id)\r\n        {\r\n            var settingRepo = _unitOfWork.GetRepository<Setting>();\r\n\r\n            Setting? settingModel = await settingRepo.GetAsync(g => g.Id == id);\r\n\r\n            if (settingModel is null)\r\n                throw new Exception($\"There is no model with Id {id}\");\r\n\r\n            return _mapper.Map<SettingViewModel>(settingModel);\r\n        }\r\n\r\n        public async Task<bool> UpdateAsync(UpdateSettingDTO expectedEntityValues)\r\n        {\r\n            var settingRepo = _unitOfWork.GetRepository<Setting>();\r\n\r\n            if (settingRepo.Exists(g => g.Name.ToLower() == expectedEntityValues.Name.ToLower()))\r\n                throw new Exception($\"Setting named {expectedEntityValues.Name} is already exists in database.\");\r\n\r\n            var settingModel = _mapper.Map<Setting>(expectedEntityValues);\r\n\r\n            await settingRepo.UpdateAsync(settingModel);\r\n            await _unitOfWork.CommitAsync();\r\n\r\n            return true;\r\n        }\r\n\r\n        public async Task<IEnumerable<SettingListModel>> GetSettingListModelsAsync()\r\n        {\r\n            var settingRepository = _unitOfWork.GetRepository<Setting>();\r\n\r\n            var list = await settingRepository.GetAllAsync();\r\n\r\n            var getMappedList = _mapper.Map<IEnumerable<SettingListModel>>(list);\r\n\r\n            return getMappedList;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.BLL/Services/SettingService.cs b/BookRate.BLL/Services/SettingService.cs
+--- a/BookRate.BLL/Services/SettingService.cs	
++++ b/BookRate.BLL/Services/SettingService.cs	
+@@ -34,7 +34,7 @@
+             if (settingRepo.Exists(s => s.Id == id && s.Narratives.Any()))
+                 throw new Exception("Setting cant be removed because it referenced by at least one narrative.");
+ 
+-            await settingRepo.Delete(new Setting { Id = id });
++            await settingRepo.DeleteAsync(new Setting { Id = id });
+             await _unitOfWork.CommitAsync();
+ 
+             return true;

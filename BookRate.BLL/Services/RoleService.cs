@@ -39,7 +39,7 @@ namespace BookRate.BLL.Services
             return roleModel.Id;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var roleRepo = _unitOfWork.GetRepository<Role>();
 
