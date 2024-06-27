@@ -11,14 +11,14 @@ namespace BookRate.BLL.ViewModels.Book
 
         public DateTime FirstPublished { get; set; }
 
-        public BookEditionViewModel BookEdition { get; set; }
+        public BookEditionViewModel? BookEdition { get; set; }
 
-        public double AverageRate { get; set; }
+        public double? AverageRate { get; set; }
 
         public int? SerieId { get; set; }
 
         public string? SerieName { get; set; }
 
-        public IEnumerable<NarrativeViewModel> Narratives { get; set; }
+        public IEnumerable<NarrativeViewModel> Narratives { get; set; }   
     }
 }

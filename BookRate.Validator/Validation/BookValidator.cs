@@ -20,12 +20,11 @@ namespace BookRate.Validation
                 .Must(title => !ValidationHelper.HasMultipleSpaces(title))
                 .WithMessage("Title must not contain multiple consecutive spaces.");
 
+
             RuleFor(x => x.FirstPublished)
                 .NotEmpty().WithMessage("FirstPublished date is required.")
                 .LessThanOrEqualTo(DateTime.Today).WithMessage("FirstPublished date must be in the past or today.");
 
-            RuleFor(x => x.NarrativesId)
-                .NotEmpty().WithMessage("At least one narrative ID is required.");
 
             RuleFor(x => x.BookEditionDTO)
                 .NotNull().WithMessage("BookEditionDTO is required.")

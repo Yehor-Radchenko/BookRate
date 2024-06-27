@@ -1,12 +1,15 @@
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Review;
 using BookRate.DAL.DTO.Review;
+using BookRate.Filters;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BookRate.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    //[Authorize]
     public class ReviewController : ControllerBase
     {
         private readonly ReviewService _reviewService;
@@ -17,16 +20,18 @@ namespace BookRate.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<DetailReviewViewModel>> Get(int id)
+        public async Task<ActionResult<ReviewViewModel>> Get(int id)
         {
             var review = await _reviewService.GetReviewAsync(id);
 
             return Ok(review);
         }
 
+
+
         [HttpPost]
-        // Don`t touch -  [ServiceFilter(typeof(CheckApproachFilter))]
-        public async Task<ActionResult<int>> Post(ReviewDto reviewDto)
+        [ServiceFilter(typeof(CheckApproachFilter))]
+        public async Task<ActionResult<ReviewViewModel>> Post(ReviewDto reviewDto)
         {
             var review = await _reviewService.PostAsync(reviewDto);
 
@@ -41,15 +46,20 @@ namespace BookRate.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<ReviewViewModel>>> GetReviews(int id)
-        {
-            var result = await _reviewService.GetReviewsAsync(id);
+        //[HttpGet]
+        //public async Task<ActionResult<ReviewViewModel>> GetAll()
+        //{
 
-            return Ok(result);
-        }
+        //    var getToken = HttpContext.Request.Cookies["Token"];
 
-     
+        //    var convertToken = JwtSecurityTokenConverter.Convert(new Microsoft.IdentityModel.JsonWebTokens.JsonWebToken(getToken));
+
+        //    var id = Convert.ToInt32(convertToken.Claims.FirstOrDefault().Value);
+
+        //    var reviews = await _reviewService.GetReviewsAsync();
+
+        //    return Ok(reviews);
+        //}
 
     }
 }

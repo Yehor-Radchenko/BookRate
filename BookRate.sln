@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookRate.BLL", "BookRate.BL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookRate.Common", "BookRate.Common\BookRate.Common.csproj", "{03E2923C-4F93-46A5-A88C-A317135012A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookRate.Validator", "BookRate.Validator\BookRate.Validator.csproj", "{43F4D665-BE21-44C7-B510-1AD88DCBD7BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{03E2923C-4F93-46A5-A88C-A317135012A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03E2923C-4F93-46A5-A88C-A317135012A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03E2923C-4F93-46A5-A88C-A317135012A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F4D665-BE21-44C7-B510-1AD88DCBD7BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F4D665-BE21-44C7-B510-1AD88DCBD7BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F4D665-BE21-44C7-B510-1AD88DCBD7BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F4D665-BE21-44C7-B510-1AD88DCBD7BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 ﻿using BookRate.DAL.DTO.BookEdition;
+using BookRate.DAL.DTO.Narrative;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace BookRate.DAL.DTO.Book
 
         public DateTime FirstPublished { get; set; }
 
-        public virtual IEnumerable<int> NarrativesId { get; set; }
+        public NarrativeDto Narrative { get; set; }
 
         public BookEditionDto BookEditionDTO { get; set; }
     }
