@@ -54,4 +54,6 @@ public partial class User
     public byte[] Timestamp { get; set; }
 
     public bool IsGetBan { get; set; } = false;
+
+  
 }

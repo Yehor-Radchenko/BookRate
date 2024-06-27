@@ -2,7 +2,6 @@
 using BookRate.BLL.ViewModels.Genre;
 using BookRate.BLL.ViewModels.Reward;
 using BookRate.BLL.ViewModels.Setting;
-using BookRate.DAL.Models;
 
 namespace BookRate.BLL.ViewModels.Narrative
 {
@@ -10,20 +9,20 @@ namespace BookRate.BLL.ViewModels.Narrative
     {
         public int Id { get; set; }
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public string? OriginalTitle { get; set; }
 
-        public string ThreeLetterIsolanguageName { get; set; }
+        public string? ThreeLetterIsolanguageName { get; set; }
 
-        public IEnumerable<ContributorListModel> Contributors { get; set; }
+        public ICollection<ContributorListModel> Contributors { get; set; } = new List<ContributorListModel>();
 
-        public IEnumerable<GenreListModel> Genres { get; set; }
+        public ICollection<GenreListModel> Genres { get; set; } = new List<GenreListModel>();
 
-        public IEnumerable<SettingViewModel> Settings { get; set; }
+        public ICollection<SettingViewModel> Settings { get; set; } = new List<SettingViewModel>();
 
-        public IEnumerable<NarrativeRewardViewModel> Rewards { get; set; }
+        public ICollection<NarrativeRewardViewModel> Rewards { get; set; } = new List<NarrativeRewardViewModel>();
     }
 }

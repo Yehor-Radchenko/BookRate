@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
 
 namespace BookRate.DAL.Models;
@@ -28,7 +27,7 @@ public class Narrative
 
     [Required(ErrorMessage = "At least one narrative contributor is required.")]
     [MinLength(1, ErrorMessage = "At least one narrative contributor is required.")]
-    public virtual ICollection<NarrativeContributorRole> NarrativeContributorRoles { get; set; }
+    public virtual ICollection<NarrativeContributorRole> NarrativeContributorRoles { get; set; } = new List<NarrativeContributorRole>();
 
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
 

@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookRate.BLL\BookRate.BLL.csproj" />
+    <ProjectReference Include="..\BookRate.Validator\BookRate.Validator.csproj" />
   </ItemGroup>
 
 </Project>

@@ -18,11 +18,11 @@ public partial class Book
 
     [Required(ErrorMessage = "At least one book edition is required.")]
     [MinLength(1, ErrorMessage = "At least one book edition is required.")]
-    public virtual ICollection<BookEdition> BookEditions { get; set; } = new List <BookEdition>();
+    public virtual ICollection<BookEdition> BookEditions { get; set; } = new List<BookEdition>();
 
-    public virtual ICollection<Rate>? Rates { get; set; } = new List <Rate>();
+    public virtual ICollection<Rate>? Rates { get; set; } = new List<Rate>();
 
-    public virtual ICollection<Review>? Reviews { get; set; } = new List <Review>();
+    public virtual ICollection<Review>? Reviews { get; set; } = new List<Review>();
 
     public virtual Serie? Serie { get; set; }
 
@@ -30,5 +30,8 @@ public partial class Book
     [MinLength(1, ErrorMessage = "At least one narrative is required.")]
     public virtual ICollection<Narrative> Narratives { get; set; } = new List <Narrative>();
 
-    public virtual ICollection<Shelf> Shelves { get; set; } = new List <Shelf>();
+    public virtual ICollection<Shelf>? Shelves { get; set; } = new List<Shelf>();
+
+
+
 }

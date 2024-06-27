@@ -2,9 +2,11 @@
 {
     public class BookEditionViewModel
     {
+      
+
         public int Id { get; set; }
 
-        public int CoverType { get; set; }
+        public string CoverType { get; set; }
 
         public int PagesCount { get; set; }
 

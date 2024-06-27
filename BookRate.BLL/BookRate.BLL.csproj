@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookRate.DAL\BookRate.DAL.csproj" />
+    <ProjectReference Include="..\BookRate.Validator\BookRate.Validator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

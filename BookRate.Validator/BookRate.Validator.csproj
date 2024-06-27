@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookRate.DAL\BookRate.DAL.csproj" />
+    <PackageReference Include="FluentValidation" Version="11.9.1" />
+  </ItemGroup>
+
 </Project>

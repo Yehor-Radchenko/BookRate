@@ -376,7 +376,7 @@ namespace BookRate.DAL.Seed
                         Narratives = new List<Narrative> { context.Narratives.First(n=> n.Title == "Murder on the Orient Express") },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Paperback,
+                                CoverType = CoverType.Paperback,
                                 PagesCount = 274 ,
                                 EditionDate = new DateTime(2004,6,4),
                                 Isbn = "9780007119318",
@@ -391,7 +391,7 @@ namespace BookRate.DAL.Seed
                         Narratives = new List<Narrative> { context.Narratives.First(n=> n.Title == "The Old Man and the Sea") },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Hardcover,
+                                CoverType = CoverType.Hardcover,
                                 PagesCount = 96,
                                 EditionDate = new DateTime(1996,1,1),
                                 Isbn = "9780684830490",
@@ -406,7 +406,7 @@ namespace BookRate.DAL.Seed
                         Narratives = new List<Narrative> { context.Narratives.First(n=> n.Title == "Norwegian Wood") },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Paperback,
+                                CoverType = CoverType.Paperback,
                                 PagesCount = 296,
                                 EditionDate = new DateTime(2000,9,12),
                                 Isbn = "9780375704024",
@@ -421,7 +421,7 @@ namespace BookRate.DAL.Seed
                         Narratives = new List<Narrative> { context.Narratives.First(n=> n.Title == "Pride and Prejudice") },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Paperback,
+                                CoverType = CoverType.Paperback,
                                 PagesCount = 279,
                                 EditionDate = new DateTime(2000,10,10),
                                 Isbn = "9780375704024",
@@ -436,7 +436,7 @@ namespace BookRate.DAL.Seed
                         Narratives = new List<Narrative> { context.Narratives.First(n=> n.Title == "War and Peace") },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Paperback,
+                                CoverType = CoverType.Paperback,
                                 PagesCount = 1392,
                                 EditionDate = new DateTime(1998,6,25),
                                 Isbn = "9780670034697",
@@ -451,7 +451,7 @@ namespace BookRate.DAL.Seed
                         Narratives = new List<Narrative> { context.Narratives.First(n=> n.Title == "The Sun Also Rises") },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Paperback,
+                                CoverType = CoverType.Paperback,
                                 PagesCount = 189,
                                 EditionDate = new DateTime(2003,1,1),
                                 Isbn = "9780684800714",
@@ -469,7 +469,7 @@ namespace BookRate.DAL.Seed
                         },
                         BookEditions = new List<BookEdition> {
                             new BookEdition {
-                                CoverType = (int)CoverType.Paperback,
+                                CoverType = CoverType.Paperback,
                                 PagesCount = 304,
                                 EditionDate = new DateTime(2003,1,1),
                                 Isbn = "9780684843322",

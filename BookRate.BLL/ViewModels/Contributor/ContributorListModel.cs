@@ -12,6 +12,6 @@ namespace BookRate.BLL.ViewModels.Contributor
 
         public string? Patronymic { get; set; }
 
-        public List<RoleViewModel> Roles { get; set; }
+        public HashSet<RoleViewModel> Roles { get; set; } = new HashSet<RoleViewModel>();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookRate.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,7 +10,7 @@ public partial class BookEdition
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Cover type is required.")]
-    public int CoverType { get; set; }
+    public CoverType CoverType { get; set; }
 
     [Required(ErrorMessage = "Pages count is required.")]
     [Range(1, int.MaxValue, ErrorMessage = "Pages count must be a positive number.")]
@@ -29,7 +30,7 @@ public partial class BookEdition
     public int EditionId { get; set; }
 
     [Url(ErrorMessage = "Invalid website URL.")]
-    public string PhotoUrl { get; set; }
+    public string? PhotoUrl { get; set; }
 
     public virtual Book Book { get; set; } = null!;
 

@@ -58,9 +58,11 @@ public partial class BookRateDbContext : DbContext
     public virtual DbSet<Follow> Follows { get; set; }
 
 
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-     
+
         modelBuilder.Entity<CommentaryLike>()
             .HasKey(cl => new { cl.UserId, cl.CommentaryId });
         modelBuilder.Entity<CommentaryLike>()
@@ -208,18 +210,22 @@ public partial class BookRateDbContext : DbContext
             .HasOne(r => r.User)
             .WithMany(u => u.Reviews)
             .HasForeignKey(r => r.UserId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Review>()
             .HasOne(r => r.Book)
             .WithMany(b => b.Reviews)
             .HasForeignKey(r => r.BookId)
-            .OnDelete(DeleteBehavior.Restrict); 
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Review>()
             .HasOne(r => r.Rate)
             .WithMany(rt => rt.Reviews)
             .HasForeignKey(r => r.RateId)
             .OnDelete(DeleteBehavior.Restrict);
+
+
+
+      
     }
 }
