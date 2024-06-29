@@ -4,14 +4,12 @@ using BookRate.BLL.HelperServices;
 using BookRate.BLL.HelperServices.PasswordHash;
 using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.User;
-using BookRate.DAL.Context;
 using BookRate.DAL.DTO.Restrict;
 using BookRate.DAL.DTO.User;
 using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using BookRate.Validation;
 using FluentValidation;
-using Mailjet.Client.Resources;
 using Microsoft.EntityFrameworkCore;
 using User = BookRate.DAL.Models.User;
 
@@ -25,7 +23,9 @@ namespace BookRate.BLL.Services
             _jwtService = jwtService;
         }
 
+
         private readonly JwtService _jwtService;
+
 
         public async Task<InfoViewModel> GetInfoAboutProfileAsync(int id)
         {
@@ -54,6 +54,17 @@ namespace BookRate.BLL.Services
             };
 
             return info;
+        }
+
+        public async Task<List<InfoViewModel>> GetUsersAsync()
+        {
+            var userRepo =  _unitOfWork.GetRepository<User>();
+
+            var users = await userRepo.GetAllAsync(includeOptions: "Commentaries,Rates");
+
+            var map = _mapper.Map<List<InfoViewModel>>(users);
+           
+            return map;
         }
 
         public async Task<int> AddAsync(UserDto dto)

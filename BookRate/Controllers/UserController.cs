@@ -1,3 +1,4 @@
+
 using BookRate.BLL.Services;
 using BookRate.DAL.DTO.Restrict;
 using BookRate.DAL.DTO.User;
@@ -14,6 +15,7 @@ namespace BookRate.Controllers
     {
         private readonly UserService _userService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
         public UserController(UserService userService,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -21,11 +23,13 @@ namespace BookRate.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+
         [Authorize(policy: "AdminPolicy")]
         [HttpGet("users-list")]
         public async Task<IActionResult> GetUsers()
         {
-            return Ok("user:1");
+            var result = await _userService.GetUsersAsync();
+            return Ok(result);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -73,7 +77,6 @@ namespace BookRate.Controllers
             var result = await _userService.UpdateAsync(email, dto);
             return Ok(result);
         }
-
 
     }
 
