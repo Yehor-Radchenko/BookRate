@@ -260,6 +260,7 @@ namespace BookRate.DAL.Seed
                 };
 
                 context.Rewards.AddRange(rewards);
+                context.SaveChanges();
             }
 
             if (!context.Narratives.Any())
@@ -277,7 +278,12 @@ namespace BookRate.DAL.Seed
                             new NarrativeContributorRole { ContributorRoleId = context.ContributorRoles.First(c => c.Contributor.LastName == "Christie" && c.Role.Name == "Author").Id }
                         },
                         Genres = new List<Genre> { context.Genres.First(g => g.Name == "Mystery"), context.Genres.First(g => g.Name == "Detective Fiction") },
-                        Settings = new List<Setting> { context.Settings.First(s=>s.Name== "Victorian England"), context.Settings.First(s => s.Name == "Contemporary Tokyo") }
+                        Settings = new List<Setting> { context.Settings.First(s=>s.Name== "Victorian England"), context.Settings.First(s => s.Name == "Contemporary Tokyo") },
+                        NarrativeRewards = new List<NarrativeReward>
+                        {
+                            new NarrativeReward { RewardId = context.Rewards.First(r => r.Name == "BookBrowse Fiction Award").Id, DateRewarded = new DateTime(2010, 2, 5) },
+                            new NarrativeReward { RewardId = context.Rewards.First(r => r.Name == "Pulitzer Prize for Fiction").Id, DateRewarded = new DateTime(2004, 10, 12) },
+                        },
                     },
                     new Narrative
                     {
@@ -286,11 +292,16 @@ namespace BookRate.DAL.Seed
                         OriginalTitle = "The Old Man and the Sea",
                         ThreeLetterIsolanguageName = "eng",
                         NarrativeContributorRoles = new List<NarrativeContributorRole>
-                            {
-                                new NarrativeContributorRole { ContributorRoleId = context.ContributorRoles.First(c => c.Contributor.LastName == "Hemingway" && c.Role.Name == "Author").Id }
-                            },
+                        {
+                            new NarrativeContributorRole { ContributorRoleId = context.ContributorRoles.First(c => c.Contributor.LastName == "Hemingway" && c.Role.Name == "Author").Id }
+                        },
                         Genres = new List<Genre> { context.Genres.First(g => g.Name == "Literary Fiction"), context.Genres.First(g => g.Name == "Adventure") },
-                        Settings = new List<Setting> { context.Settings.First(s=>s.Name== "Post-War America") }
+                        Settings = new List<Setting> { context.Settings.First(s=>s.Name== "Post-War America") },
+                        NarrativeRewards = new List<NarrativeReward>
+                        {
+                            new NarrativeReward { RewardId = context.Rewards.First(r => r.Name == "Booker Prize").Id, DateRewarded = new DateTime(2012, 2, 5) },
+                            new NarrativeReward { RewardId = context.Rewards.First(r => r.Name == "Michael Printz Award").Id, DateRewarded = new DateTime(2003, 10, 12) },
+                        },
                     },
                     new Narrative
                     {

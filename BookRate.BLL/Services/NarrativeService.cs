@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookRate.BLL.Services.ServiceAbstraction;
+using BookRate.BLL.ViewModels.Contributor;
 using BookRate.BLL.ViewModels.Narrative;
 using BookRate.DAL.DTO.Genre;
 using BookRate.DAL.DTO.Narrative;
@@ -32,7 +33,6 @@ namespace BookRate.BLL.Services
             var genreRepo = _unitOfWork.GetRepository<Genre>();
             var settingRepo = _unitOfWork.GetRepository<Setting>();
             var rewardRepo = _unitOfWork.GetRepository<Reward>();
-            var roleRepo = _unitOfWork.GetRepository<Role>();
 
             await EnsureContributorWithAuthorRoleExists(dto.ContributorRoleIds);
 
@@ -195,15 +195,26 @@ namespace BookRate.BLL.Services
         {
             var narrativeRepo = _unitOfWork.GetRepository<Narrative>();
 
-            var narrativesQuery = narrativeRepo.GetAll()
-                .Include(n => n.NarrativeContributorRoles)
-                    .ThenInclude(ncr => ncr.ContributorRole)
-                        .ThenInclude(cr => cr.Contributor)
-                .Where(n => n.NarrativeContributorRoles.Any(ncr => ncr.ContributorRole.Role.Name == "Author"));
+            var narrativesQuery = narrativeRepo.GetAll(
+                n => n.NarrativeContributorRoles.Any(ncr => ncr.ContributorRole.Role.Name == "Author"),
+                "NarrativeContributorRoles.ContributorRole.Contributor")
+             .Select(n => new NarrativeListModel
+             {
+                 Id = n.Id,
+                 Title = n.Title,
+                 Author = n.NarrativeContributorRoles
+                     .Where(ncr => ncr.ContributorRole.Role.Name == "Author")
+                     .Select(ncr => new AuthorListModel
+                     {
+                         Id = ncr.ContributorRole.Contributor.Id,
+                         LastName = ncr.ContributorRole.Contributor.LastName,
+                         FirstName = ncr.ContributorRole.Contributor.FirstName,
+                         Patronymic = ncr.ContributorRole.Contributor.Patronymic,
+                     })
+                     .FirstOrDefault()
+             });
 
-            var list = await _mapper.ProjectTo<NarrativeListModel>(narrativesQuery).ToListAsync();
-
-            return list;
+            return await narrativesQuery.ToListAsync();
         }
 
         public async Task<NarrativeViewModel?> GetByIdAsync(int? id)
@@ -227,7 +238,7 @@ namespace BookRate.BLL.Services
             var roleRepo = _unitOfWork.GetRepository<Role>();
             var contributorRoleRepo = _unitOfWork.GetRepository<ContributorRole>();
 
-            var authorRole = await roleRepo.GetAsync(r => r.Name == "Author");
+            var authorRole = await roleRepo.GetAsync(r => r.Name == "Author"); 
             if (authorRole == null)
                 throw new Exception("Role 'Author' does not exist.");
 

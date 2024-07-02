@@ -24,7 +24,7 @@ namespace BookRate.BLL.Services
 
         private readonly JwtService _jwtService;
 
-        public async Task<InfoViewModel> GetInfoAboutProfileAsync(int id)
+        public async Task<UserViewModel> GetInfoAboutProfileAsync(int id)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
 
@@ -32,7 +32,7 @@ namespace BookRate.BLL.Services
                 .GetAsync(e => e.Id == id,
                 includeOptions: "Rates,ReviewLikes,Reviews,Commentaries,CommentaryLikes");
             
-            var info = new InfoViewModel
+            var info = new UserViewModel
             {
                 Id = getUser!.Id,
                 Email = getUser.Email,
@@ -87,7 +87,7 @@ namespace BookRate.BLL.Services
             throw new Exception();
         }
 
-        public async Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)
+        public async Task<bool> UpdateAsync(string email, UserDto expectedEntityValues)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
@@ -102,7 +102,7 @@ namespace BookRate.BLL.Services
 
                 var roleList = await roleRepo.GetAllAsync();
 
-                roleList = roleList.Where(role => expectedEntityValues.Roles.Contains(role.Id));
+                roleList = roleList.Where(role => expectedEntityValues.RolesId.Contains(role.Id));
 
                 foreach (var role in roleList)
                 {

@@ -9,8 +9,6 @@ namespace BookRate.BLL.ViewModels.User
 
         public string Email { get; set; }
 
-        public string Password { get; set; }
-
         public string Username { get; set; }
 
         public string LastName { get; set; }
@@ -22,10 +20,11 @@ namespace BookRate.BLL.ViewModels.User
         public IFormFile? Photo { get; set; }
 
         public string? Interests { get; set; }
-        
-        
-        public IEnumerable<int> RoleId { get; set; }
-        
-        
+
+        public IEnumerable<int> RolesId { get; set; } = null!;
+
+        public int CountCommentaries { get; set; }
+
+        public int CountReviews { get; set; }
     }
 }

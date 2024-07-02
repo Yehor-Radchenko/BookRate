@@ -6,10 +6,7 @@ using BookRate.DAL.Models;
 using BookRate.DAL.UoW;
 using FluentValidation;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Update;
-using System.Linq;
 
 namespace BookRate.BLL.Services
 {
@@ -75,7 +72,7 @@ namespace BookRate.BLL.Services
             if (contributor.ContributorRoles.Any(cr => cr.NarrativeContributorRoles.Any()))
                 throw new InvalidOperationException("Cannot delete contributor with associated narrative roles.");
 
-            await contributorRepo.Delete(contributor);
+            await contributorRepo.DeleteAsync(contributor);
             await _unitOfWork.CommitAsync();
 
             return true;

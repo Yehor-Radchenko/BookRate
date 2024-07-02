@@ -2,7 +2,6 @@
 using BookRate.BLL.ViewModels.Genre;
 using BookRate.BLL.ViewModels.Reward;
 using BookRate.BLL.ViewModels.Setting;
-using BookRate.DAL.Models;
 
 namespace BookRate.BLL.ViewModels.Narrative
 {

@@ -88,6 +88,11 @@ namespace BookRate.Profile
                         .Select(ncr => ncr.ContributorRole.Contributor)
                         .FirstOrDefault()));
 
+            CreateMap<Reward, NarrativeRewardViewModel>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+            CreateMap<NarrativeReward, NarrativeRewardViewModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Reward.Name));
+
             CreateMap<Book, BookViewModel>();
             CreateMap<BookDto, Book>();
 
@@ -95,7 +100,6 @@ namespace BookRate.Profile
                 .ForMember(dest => dest.BookId, opt => opt.Ignore());
 
             CreateMap<BLL.ViewModels.User.UserViewModel, User>().ReverseMap();
-
         }
     }
 }

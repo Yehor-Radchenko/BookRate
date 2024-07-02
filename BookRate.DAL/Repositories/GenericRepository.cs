@@ -62,7 +62,7 @@ namespace BookRate.DAL.Repositories
 
         public virtual IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsQueryable();
 
             if (filter != null)
                 query = query.Where(filter);
