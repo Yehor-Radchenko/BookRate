@@ -25,12 +25,15 @@ Log.Logger = new LoggerConfiguration()
 Log.Logger.Information("Start Project");
 
 
+
+
+
 builder.Services.AddControllers();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddDalServices(builder.Configuration);
-builder.Services.AddBllServices(builder.Configuration);
+builder.Services.AddBllServices();
 builder.Services.AddValidationServices();
 
 builder.Services.AddTransient(sp => new EmailService(Environment.GetEnvironmentVariable("MAILJET_API_KEY")!,

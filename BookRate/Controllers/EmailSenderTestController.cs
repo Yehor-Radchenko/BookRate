@@ -1,4 +1,5 @@
-﻿using BookRate.Service.Models;
+﻿using BookRate.BLL.Services;
+using BookRate.Service.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookRate.Controllers

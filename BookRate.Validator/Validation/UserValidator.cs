@@ -51,7 +51,7 @@ namespace BookRate.Validation
                 .MaximumLength(500).WithMessage("Interests must be less than 500 characters long.");
 
             RuleFor(user => user.RolesId)
-                .NotNull().WithMessage("At least one role is required.");
+                .NotEmpty().WithMessage("At least one role is required.");
          
         }
 

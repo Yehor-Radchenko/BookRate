@@ -58,7 +58,8 @@ public partial class BookRateDbContext : DbContext
     public virtual DbSet<Follow> Follows { get; set; }
 
 
-    
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 

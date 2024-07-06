@@ -1,9 +1,9 @@
-﻿
+﻿using BookRate.BLL.ViewModels.User;
+
 namespace BookRate.Profile
 {
     using AutoMapper;
     using BookRate.BLL.ViewModels.Book;
-    using BookRate.BLL.ViewModels.BookEdition;
     using BookRate.BLL.ViewModels.Contributor;
     using BookRate.BLL.ViewModels.Edition;
     using BookRate.BLL.ViewModels.Genre;
@@ -25,7 +25,6 @@ namespace BookRate.Profile
     using BookRate.DAL.DTO.Serie;
     using BookRate.DAL.DTO.Setting;
     using BookRate.DAL.Models;
-    using BookRate.BLL.ViewModels.User;
 
     public class MappingProfile : Profile
     {
@@ -98,17 +97,9 @@ namespace BookRate.Profile
             CreateMap<BookEditionDto, BookEdition>()
                 .ForMember(dest => dest.BookId, opt => opt.Ignore());
 
-            CreateMap<BookEditionViewModel, BookEdition>()
-                .ForPath(dest => dest.Edition.Name, opt => opt.MapFrom(src => src.EditionName))
-                .ReverseMap();
-
-            CreateMap<BookCardViewModel,Book>().ReverseMap();    
-           
             CreateMap<BLL.ViewModels.User.UserViewModel, User>().ReverseMap();
 
-            CreateMap<InfoViewModel,User>().ReverseMap(); 
-
-
+    
         }
     }
 }

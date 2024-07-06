@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace BookRate.BLL.Services.ServiceAbstraction
 {
-    public interface IService<TDto> where TDto : class
+    public interface IService <TDto> 
+        where TDto : class
     {
         Task<int> AddAsync(TDto dto);
         Task<bool> UpdateAsync(int id, TDto expectedEntityValues);
