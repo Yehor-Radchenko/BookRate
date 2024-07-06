@@ -1,0 +1,497 @@
+Index: BookRate.BLL/Services/UserService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using AutoMapper;\r\nusing BookRate.BLL.Exceptions;\r\nusing BookRate.BLL.HelperServices;\r\nusing BookRate.BLL.HelperServices.PasswordHash;\r\nusing BookRate.BLL.Services.ServiceAbstraction;\r\nusing BookRate.BLL.ViewModels.User;\r\nusing BookRate.DAL.DTO.Restrict;\r\nusing BookRate.DAL.DTO.User;\r\nusing BookRate.DAL.Models;\r\nusing BookRate.DAL.UoW;\r\nusing BookRate.Validation;\r\nusing FluentValidation;\r\nusing Microsoft.EntityFrameworkCore;\r\nusing User = BookRate.DAL.Models.User;\r\n\r\nnamespace BookRate.BLL.Services\r\n{\r\n    public class UserService : BaseService<User, UserDto>\r\n    {\r\n        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<UserDto> validator, JwtService jwtService)\r\n            : base(unitOfWork, mapper, validator)\r\n        {\r\n            _jwtService = jwtService;\r\n        }\r\n\r\n\r\n        public UserService()\r\n        {\r\n            \r\n        }\r\n\r\n        private readonly JwtService _jwtService;\r\n\r\n\r\n        public async virtual Task<InfoViewModel> GetInfoAboutProfileAsync(int id)\r\n        {\r\n\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var getUser = await userRepo\r\n                .GetAsync(e => e.Id == id,\r\n                includeOptions: \"Rates,ReviewLikes,Reviews,Commentaries,CommentaryLikes\");\r\n\r\n            if (getUser == null)\r\n                throw new NotFoundException($\"User isn`t find\", $\"{id}\");\r\n\r\n\r\n            var info = new InfoViewModel\r\n            {\r\n                Id = getUser!.Id,\r\n                Email = getUser.Email,\r\n                Username = getUser.Username,\r\n                FirstName = getUser.FirstName,\r\n                LastName = getUser.LastName,\r\n                Interests = getUser.Interests,\r\n                Patronymic = getUser.Patronymic,\r\n                CountCommentaries = getUser.Commentaries.Count(),\r\n                CountReviews = getUser.Reviews.Count(),\r\n            };\r\n\r\n            return info;\r\n        }\r\n\r\n        public async virtual Task<List<UserViewModel>> GetUsersAsync()\r\n        {\r\n            var userRepo =  _unitOfWork.GetRepository<User>();\r\n\r\n            var users = await userRepo.GetAllAsync(includeOptions: \"Commentaries,Rates\");\r\n\r\n            var map = _mapper.Map<List<UserViewModel>>(users);\r\n           \r\n            return map;\r\n        }\r\n\r\n        public async virtual Task<bool> AddAsync(UserDto dto)\r\n        {\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var roleRepo = _unitOfWork.GetRepository<Role>();\r\n\r\n            var validator = new UserValidator(_unitOfWork);\r\n            var result = await validator.ValidateAsync(dto);\r\n\r\n            if (!result.IsValid)\r\n                throw new BadRequestException(\"Something went wrong\", result.ToDictionary());\r\n\r\n            var newUser = new User\r\n            {\r\n                Email = dto.Email,\r\n                FirstName = dto.FirstName,\r\n                LastName = dto.LastName,\r\n                Username = dto.Username,\r\n                Patronymic = dto.Patronymic,\r\n                Password = PasswordHash.Hash(dto.Password),\r\n                Interests = dto.Interests,\r\n                Roles = new HashSet<Role>(),\r\n            };\r\n\r\n            await userRepo.AddAsync(newUser);\r\n            var isSuccess = await _unitOfWork.CommitAsync();\r\n\r\n\r\n            var getUser = await userRepo.GetAsync(e => e.Email == dto.Email);\r\n            var roles = await roleRepo.GetAllAsync();\r\n\r\n            var userRoles = roles.Where(role => dto.RolesId.Contains(role.Id));\r\n\r\n            foreach (var role in userRoles)\r\n            {\r\n                getUser.Roles.Add(role);\r\n            }\r\n\r\n            return await _unitOfWork.CommitAsync() ? true : throw new Exception();\r\n\r\n        }\r\n\r\n        public async virtual Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)\r\n        {\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var roleRepo = _unitOfWork.GetRepository<Role>();\r\n            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == email.ToLower(), includeOptions: \"Roles\");\r\n\r\n            if (getUser != null)\r\n            {\r\n                getUser.LastName = expectedEntityValues.LastName;\r\n                getUser.FirstName = expectedEntityValues.FirstName;\r\n                getUser.Patronymic = expectedEntityValues.Patronymic;\r\n                getUser.Interests = expectedEntityValues.Interests;\r\n\r\n                var roleList = await roleRepo.GetAllAsync();\r\n\r\n                roleList = roleList.Where(role => expectedEntityValues.Roles.Contains(role.Id));\r\n\r\n                foreach (var role in roleList)\r\n                {\r\n                    getUser.Roles.Add(role);\r\n                }\r\n\r\n                await userRepo.UpdateAsync(getUser);\r\n                await _unitOfWork.CommitAsync();\r\n            }\r\n\r\n            return true;\r\n        }\r\n\r\n        public async virtual Task<bool> DeleteAsync(int id)\r\n        {\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var user = await userRepo.GetAsync(e => e.Id == id);\r\n\r\n            await userRepo.DeleteAsync(user);\r\n            return await _unitOfWork.CommitAsync();\r\n        }\r\n\r\n        public async virtual Task<string> LoginAsync(LoginDto loginDto)\r\n        {\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginDto.Email.ToLower(), \r\n                                                                                includeOptions: \"Roles\");\r\n\r\n            if (getUser == null)\r\n                throw new ConflictException($\"User isn`t find: {loginDto.Email}\");\r\n\r\n            return _jwtService.GenerateToken(getUser);\r\n        }\r\n\r\n        public async virtual Task<bool> BanUserAsync(RestrictDto restrictDto)\r\n        {\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var restrictRepo = _unitOfWork.GetRepository<Restrict>();\r\n\r\n            var getUser = await userRepo.GetAsync(e => e.Id == restrictDto.UserId);\r\n            var getRestrictToThisUser = await restrictRepo.GetAsync(e => e.UserId == restrictDto.UserId);\r\n\r\n            if (getUser == null)\r\n                throw new ConflictException($\"User isn`t find: {restrictDto.UserId}\");\r\n\r\n            if (getUser.IsGetBan)\r\n                throw new ConflictException($\"User: {getUser.Username} already have ban: {getRestrictToThisUser!.BanRemovalDate}\");\r\n\r\n            getUser.IsGetBan = true;\r\n\r\n            var restrict = new Restrict\r\n            {\r\n                UserId = getUser.Id,\r\n                Description = restrictDto.Description,\r\n                BanRemovalDate = restrictDto.BanRemovaleDate,\r\n            };\r\n\r\n        \r\n            if (restrict.BanRemovalDate == DateTime.Now)\r\n                throw new BadRequestException($\"Ban time must be more then by the time now at least 1 min\");\r\n\r\n\r\n            await restrictRepo.AddAsync(restrict);\r\n            return await _unitOfWork.CommitAsync();\r\n        }\r\n\r\n        public async virtual Task<bool> UnbanUserAsync(int id)\r\n        {\r\n            var userRepo = _unitOfWork.GetRepository<User>();\r\n            var restrictRepo = _unitOfWork.GetRepository<Restrict>();\r\n\r\n            var user = await userRepo.GetAsync(e => e.Id == id);\r\n\r\n            if (user == null)\r\n                throw new NotFoundException($\"User isn`t find: {id}\");\r\n\r\n            if (!user.IsGetBan)\r\n                throw new ConflictException($\"User: {user.Username},don`t have any resctrict\");\r\n\r\n            if (user != null)\r\n            {\r\n                var restrict = await restrictRepo.GetAsync(e => e.UserId == user.Id);\r\n                await restrictRepo.DeleteAsync(restrict);\r\n                user.IsGetBan = false;\r\n\r\n                return await _unitOfWork.CommitAsync();\r\n            }\r\n\r\n            throw new BadRequestException(\"Something went wrong,try again\");\r\n        }\r\n\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.BLL/Services/UserService.cs b/BookRate.BLL/Services/UserService.cs
+--- a/BookRate.BLL/Services/UserService.cs	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.BLL/Services/UserService.cs	(date 1720261621973)
+@@ -7,6 +7,8 @@
+ using BookRate.DAL.DTO.Restrict;
+ using BookRate.DAL.DTO.User;
+ using BookRate.DAL.Models;
++using BookRate.DAL.Repositories;
++using BookRate.DAL.Repositories.IRepository;
+ using BookRate.DAL.UoW;
+ using BookRate.Validation;
+ using FluentValidation;
+@@ -15,10 +17,10 @@
+ 
+ namespace BookRate.BLL.Services
+ {
+-    public class UserService : BaseService<User, UserDto>
++    public class UserService : BaseService<User,UserDto>
+     {
+-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<UserDto> validator, JwtService jwtService)
+-            : base(unitOfWork, mapper, validator)
++        public UserService( IMapper mapper, IValidator<UserDto> validator, JwtService jwtService)
++            : base( mapper, validator)
+         {
+             _jwtService = jwtService;
+         }
+Index: BookRate.BLL/Services/ContributorService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using AutoMapper;\r\nusing BookRate.BLL.Services.ServiceAbstraction;\r\nusing BookRate.BLL.ViewModels.Contributor;\r\nusing BookRate.DAL.DTO.Contributor;\r\nusing BookRate.DAL.Models;\r\nusing BookRate.DAL.UoW;\r\nusing FluentValidation;\r\nusing FluentValidation.Results;\r\nusing Microsoft.AspNetCore.JsonPatch;\r\nusing Microsoft.EntityFrameworkCore;\r\nusing Microsoft.EntityFrameworkCore.Update;\r\nusing System.Linq;\r\n\r\nnamespace BookRate.BLL.Services\r\n{\r\n    public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>\r\n    {\r\n        public ContributorService(\r\n            IUnitOfWork unitOfWork, \r\n            IMapper mapper, \r\n            IValidator<ContributorDto> validator\r\n            ) : base(unitOfWork, mapper, validator)\r\n        { \r\n        }\r\n\r\n        public async Task<int> AddAsync(ContributorDto dto)\r\n        {\r\n            ValidationResult result = await _validator.ValidateAsync(dto);\r\n            if (!result.IsValid)\r\n                throw new ValidationException(result.Errors);   \r\n\r\n            var roleRepo = _unitOfWork.GetRepository<Role>();\r\n            var genreRepo = _unitOfWork.GetRepository<Genre>();\r\n\r\n            var selectedRoleModels = await roleRepo.GetAllAsync(r => dto.RolesId.Contains(r.Id));\r\n            var selectedGenreModels = dto.GenresId != null ? await genreRepo.GetAllAsync(g => dto.GenresId.Contains(g.Id)) : new List<Genre>();\r\n\r\n            if (selectedRoleModels.Count() != dto.RolesId.Count())\r\n                throw new ArgumentException(\"One or more specified roles do not exist.\");\r\n\r\n            if (dto.GenresId != null && selectedGenreModels.Count() != dto.GenresId.Count())\r\n                throw new ArgumentException(\"One or more specified genres do not exist.\");\r\n\r\n            var contributor = _mapper.Map<Contributor>(dto);\r\n\r\n            contributor.Genres = selectedGenreModels.ToList();\r\n\r\n            foreach (var role in selectedRoleModels)\r\n            {\r\n                contributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributor.Id });\r\n            }\r\n\r\n            if(dto.Photo is not null)\r\n            {\r\n                using (var memoryStream = new MemoryStream())\r\n                {\r\n                    await dto.Photo.CopyToAsync(memoryStream);\r\n                    contributor.Photo = new Photo { Data = memoryStream.ToArray() };\r\n                }\r\n            }\r\n\r\n            await _unitOfWork.GetRepository<Contributor>().AddAsync(contributor);\r\n            await _unitOfWork.CommitAsync();\r\n            return contributor.Id;\r\n        }\r\n\r\n        public async Task<bool> DeleteAsync(int id)\r\n        {\r\n            var contributorRepo = _unitOfWork.GetRepository<Contributor>();\r\n\r\n            var contributorExists = await contributorRepo.GetAsync(c => c.Id == id);\r\n            if (contributorExists is null)\r\n                throw new ArgumentException($\"Contributor with Id {id} does not exist.\", nameof(id));\r\n\r\n            await contributorRepo.DeleteAsync(contributorExists);\r\n            await _unitOfWork.CommitAsync();\r\n\r\n            return true;\r\n        }\r\n\r\n        public async Task<bool> UpdateAsync(int id, ContributorDto expectedEntityValues)\r\n        {\r\n            ValidationResult result = await _validator.ValidateAsync(expectedEntityValues);\r\n            if (!result.IsValid)\r\n                throw new ValidationException(result.Errors);\r\n\r\n            var contributorRepo = _unitOfWork.GetRepository<Contributor>();\r\n            var roleRepo = _unitOfWork.GetRepository<Role>();\r\n            var genreRepo = _unitOfWork.GetRepository<Genre>();\r\n            var photoRepo = _unitOfWork.GetRepository<Photo>();\r\n\r\n            var contributorModel = await contributorRepo.GetAsync(c => c.Id == id, \"Genres,ContributorRoles,ContributorRoles.NarrativeContributorRoles,Photo\");\r\n            if (contributorModel == null)\r\n                throw new Exception($\"Contributor with Id {id} not found.\");\r\n\r\n            foreach(var cr in contributorModel.ContributorRoles.ToList())\r\n            {\r\n                if(cr.NarrativeContributorRoles.Count > 0)\r\n                {\r\n                    continue;\r\n                }\r\n                else contributorModel.ContributorRoles.Remove(cr);\r\n            }\r\n\r\n            contributorModel.Genres.Clear();\r\n\r\n            var selectedRoleModels = await roleRepo.GetAllAsync(r => expectedEntityValues.RolesId.Contains(r.Id));\r\n            var selectedGenreModels = expectedEntityValues.GenresId != null ? await genreRepo.GetAllAsync(g => expectedEntityValues.GenresId.Contains(g.Id)) : new List<Genre>();\r\n\r\n            if (selectedRoleModels.Count() != expectedEntityValues.RolesId.Count())\r\n                throw new ArgumentException(\"One or more specified roles do not exist.\");\r\n\r\n            if (expectedEntityValues.GenresId != null && selectedGenreModels.Count() != expectedEntityValues.GenresId.Count())\r\n                throw new ArgumentException(\"One or more specified genres do not exist.\");\r\n\r\n            var updatedContributor = _mapper.Map(expectedEntityValues, contributorModel);\r\n            updatedContributor.Id = id;\r\n            updatedContributor.Genres = selectedGenreModels.ToList();\r\n\r\n            foreach (var role in selectedRoleModels.Where(role => !updatedContributor.ContributorRoles.Any(cr => cr.RoleId == role.Id)))\r\n            {\r\n                updatedContributor.ContributorRoles.Add(new ContributorRole { RoleId = role.Id, ContributorId = contributorModel.Id });\r\n            }\r\n\r\n            if (expectedEntityValues.Photo is not null)\r\n            {\r\n                if (contributorModel.Photo != null)\r\n                {\r\n                    await photoRepo.DeleteAsync(contributorModel.Photo);\r\n                }\r\n\r\n                using (var memoryStream = new MemoryStream())\r\n                {\r\n                    await expectedEntityValues.Photo.CopyToAsync(memoryStream);\r\n                    contributorModel.Photo = new Photo { Data = memoryStream.ToArray() };\r\n                }\r\n            }\r\n\r\n            await contributorRepo.UpdateAsync(updatedContributor);\r\n            await _unitOfWork.CommitAsync();\r\n\r\n            return true;\r\n        }\r\n\r\n        public async Task<ContributorViewModel?> GetByIdAsync(int? id)\r\n        {\r\n            if (id == null)\r\n                return null;\r\n\r\n            var contributorRepo = _unitOfWork.GetRepository<Contributor>();\r\n\r\n            var contributorModel = await contributorRepo.GetAsync(\r\n                filter: c => c.Id == id,\r\n                includeOptions: \"Genres,ContributorRoles.Role,Photo\"\r\n            );\r\n\r\n            if (contributorModel == null)\r\n                return null;\r\n\r\n            return _mapper.Map<ContributorViewModel>(contributorModel);\r\n        }\r\n\r\n        public async Task<IEnumerable<ContributorListModel>> GetContributorListModelsAsync()\r\n        {\r\n            var contributorRepo = _unitOfWork.GetRepository<Contributor>();\r\n\r\n            var contributors = contributorRepo.GetAll()\r\n                .Include(c => c.ContributorRoles)\r\n                .ThenInclude(cr => cr.Role);\r\n\r\n            var list = await _mapper.ProjectTo<ContributorListModel>(contributors).ToListAsync();\r\n\r\n            return list;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.BLL/Services/ContributorService.cs b/BookRate.BLL/Services/ContributorService.cs
+--- a/BookRate.BLL/Services/ContributorService.cs	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.BLL/Services/ContributorService.cs	(date 1720261578058)
+@@ -3,7 +3,6 @@
+ using BookRate.BLL.ViewModels.Contributor;
+ using BookRate.DAL.DTO.Contributor;
+ using BookRate.DAL.Models;
+-using BookRate.DAL.UoW;
+ using FluentValidation;
+ using FluentValidation.Results;
+ using Microsoft.AspNetCore.JsonPatch;
+@@ -16,11 +15,11 @@
+     public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>
+     {
+         public ContributorService(
+-            IUnitOfWork unitOfWork, 
+             IMapper mapper, 
+             IValidator<ContributorDto> validator
+-            ) : base(unitOfWork, mapper, validator)
++            ) : base( mapper, validator)
+         { 
++            
+         }
+ 
+         public async Task<int> AddAsync(ContributorDto dto)
+Index: BookRate.BLL/Services/ServiceAbstraction/BaseService.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using AutoMapper;\r\nusing BookRate.DAL.UoW;\r\nusing FluentValidation;\r\n\r\nnamespace BookRate.BLL.Services.ServiceAbstraction\r\n{\r\n    public abstract class BaseService<TEntity, TDto>\r\n     where TEntity : class\r\n     where TDto : class\r\n    {\r\n        protected readonly IUnitOfWork _unitOfWork;\r\n        protected readonly IMapper _mapper;\r\n        protected readonly IValidator<TDto> _validator;\r\n\r\n        protected BaseService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<TDto> validator)\r\n        {\r\n            _unitOfWork = unitOfWork;\r\n            _mapper = mapper;\r\n            _validator = validator;\r\n        }\r\n\r\n        protected BaseService()\r\n        {\r\n            \r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs b/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs
+--- a/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs	(date 1720261578059)
+@@ -8,13 +8,11 @@
+      where TEntity : class
+      where TDto : class
+     {
+-        protected readonly IUnitOfWork _unitOfWork;
+         protected readonly IMapper _mapper;
+         protected readonly IValidator<TDto> _validator;
+ 
+-        protected BaseService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<TDto> validator)
++        protected BaseService( IMapper mapper, IValidator<TDto> validator)
+         {
+-            _unitOfWork = unitOfWork;
+             _mapper = mapper;
+             _validator = validator;
+         }
+Index: .dockerignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.dockerignore b/.dockerignore
+new file mode 100644
+--- /dev/null	(date 1720261578057)
++++ b/.dockerignore	(date 1720261578057)
+@@ -0,0 +1,30 @@
++**/.classpath
++**/.dockerignore
++**/.env
++**/.git
++**/.gitignore
++**/.project
++**/.settings
++**/.toolstarget
++**/.vs
++**/.vscode
++**/*.*proj.user
++**/*.dbmdl
++**/*.jfm
++**/azds.yaml
++**/bin
++**/charts
++**/docker-compose*
++**/Dockerfile*
++**/node_modules
++**/npm-debug.log
++**/obj
++**/secrets.dev.yaml
++**/values.dev.yaml
++LICENSE
++README.md
++!**/.gitignore
++!.git/HEAD
++!.git/config
++!.git/packed-refs
++!.git/refs/heads/**
+\ No newline at end of file
+Index: docker-compose.override.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docker-compose.override.yml b/docker-compose.override.yml
+new file mode 100644
+--- /dev/null	(date 1720261578076)
++++ b/docker-compose.override.yml	(date 1720261578076)
+@@ -0,0 +1,14 @@
++version: '3.4'
++
++services:
++  bookrate:
++    environment:
++      - ASPNETCORE_ENVIRONMENT=Development
++      - ASPNETCORE_HTTP_PORTS=8080
++      - ASPNETCORE_HTTPS_PORTS=8081
++    ports:
++      - "8080"
++      - "8081"
++    volumes:
++      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
++      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+\ No newline at end of file
+Index: docker-compose.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+--- /dev/null	(date 1720261578076)
++++ b/docker-compose.yml	(date 1720261578076)
+@@ -0,0 +1,8 @@
++version: '3.4'
++
++services:
++  bookrate:
++    image: ${DOCKER_REGISTRY-}bookrate
++    build:
++      context: .
++      dockerfile: BookRate/Dockerfile
+Index: launchSettings.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/launchSettings.json b/launchSettings.json
+new file mode 100644
+--- /dev/null	(date 1720261578076)
++++ b/launchSettings.json	(date 1720261578076)
+@@ -0,0 +1,12 @@
++
++{
++  "profiles": {
++    "Docker Compose": {
++      "commandName": "DockerCompose",
++      "commandVersion": "1.0",
++      "serviceActions": {
++        "bookrate": "StartDebugging"
++      }
++    }
++  }
++}
+\ No newline at end of file
+Index: docker-compose.dcproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/docker-compose.dcproj b/docker-compose.dcproj
+new file mode 100644
+--- /dev/null	(date 1720261578076)
++++ b/docker-compose.dcproj	(date 1720261578076)
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="utf-8"?>
++<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
++  <PropertyGroup Label="Globals">
++    <ProjectVersion>2.1</ProjectVersion>
++    <DockerTargetOS>Linux</DockerTargetOS>
++    <DockerPublishLocally>False</DockerPublishLocally>
++    <ProjectGuid>948e8334-9c14-45a4-a493-e4e5a659129d</ProjectGuid>
++    <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
++    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
++    <DockerServiceName>bookrate</DockerServiceName>
++  </PropertyGroup>
++  <ItemGroup>
++    <None Include="docker-compose.override.yml">
++      <DependentUpon>docker-compose.yml</DependentUpon>
++    </None>
++    <None Include="docker-compose.yml" />
++    <None Include=".dockerignore" />
++  </ItemGroup>
++</Project>
+\ No newline at end of file
+Index: BookRate.BLL/BookRate.BLL.csproj
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><Project Sdk=\"Microsoft.NET.Sdk\">\r\n\r\n  <PropertyGroup>\r\n    <TargetFramework>net8.0</TargetFramework>\r\n    <ImplicitUsings>enable</ImplicitUsings>\r\n    <Nullable>enable</Nullable>\r\n  </PropertyGroup>\r\n\r\n  <ItemGroup>\r\n    <PackageReference Include=\"AutoMapper\" Version=\"13.0.1\" />\r\n    <PackageReference Include=\"FluentValidation\" Version=\"11.9.1\" />\r\n    <PackageReference Include=\"Microsoft.AspNetCore.JsonPatch\" Version=\"8.0.6\" />\r\n    <PackageReference Include=\"BCrypt.Net-Next\" Version=\"4.0.3\" />\r\n    <PackageReference Include=\"Mailjet.Api\" Version=\"3.0.0\" />\r\n    <PackageReference Include=\"Microsoft.IdentityModel.JsonWebTokens\" Version=\"7.6.0\" />\r\n    <PackageReference Include=\"System.IdentityModel.Tokens.Jwt\" Version=\"7.6.0\" />\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <ProjectReference Include=\"..\\BookRate.DAL\\BookRate.DAL.csproj\" />\r\n    <ProjectReference Include=\"..\\BookRate.Validator\\BookRate.Validator.csproj\" />\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <Reference Include=\"Microsoft.AspNetCore.Http.Features\">\r\n      <HintPath>C:\\Program Files\\dotnet\\shared\\Microsoft.AspNetCore.App\\8.0.5\\Microsoft.AspNetCore.Http.Features.dll</HintPath>\r\n    </Reference>\r\n  </ItemGroup>\r\n\r\n  <ItemGroup>\r\n    <Folder Include=\"ViewModels\\Restrict\\\" />\r\n  </ItemGroup>\r\n\r\n</Project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.BLL/BookRate.BLL.csproj b/BookRate.BLL/BookRate.BLL.csproj
+--- a/BookRate.BLL/BookRate.BLL.csproj	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.BLL/BookRate.BLL.csproj	(date 1720261578058)
+@@ -14,6 +14,7 @@
+     <PackageReference Include="Mailjet.Api" Version="3.0.0" />
+     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.6.0" />
+     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
++    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+   </ItemGroup>
+ 
+   <ItemGroup>
+Index: BookRate.DAL/Repositories/GenericRepository.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using BookRate.DAL.Context;\r\nusing BookRate.DAL.Repositories.IRepository;\r\nusing Microsoft.EntityFrameworkCore;\r\nusing Microsoft.EntityFrameworkCore.Storage.Json;\r\nusing Microsoft.Extensions.Logging;\r\nusing System;\r\nusing System.Collections.Generic;\r\nusing System.Linq;\r\nusing System.Linq.Expressions;\r\nusing System.Numerics;\r\nusing System.Text;\r\nusing System.Threading.Tasks;\r\n\r\nnamespace BookRate.DAL.Repositories\r\n{\r\n    public class GenericRepository<T> : IGenericRepository<T> where T : class\r\n    {\r\n        protected BookRateDbContext _bookRateDbContext;\r\n        protected DbSet<T> _dbSet;\r\n\r\n        public GenericRepository(BookRateDbContext bookRateDbContext)\r\n        {\r\n            _bookRateDbContext = bookRateDbContext;\r\n            _dbSet = _bookRateDbContext.Set<T>();\r\n        }\r\n\r\n        public  async Task<bool> AddAsync(T entity)\r\n        {\r\n            await _dbSet.AddAsync(entity);       \r\n            return true;\r\n        }\r\n\r\n        public async Task<bool> DeleteAsync(T entity)\r\n        {\r\n            try\r\n            {\r\n                _dbSet.Remove(entity);\r\n                return true;\r\n            }\r\n            catch (Exception ex)\r\n            {\r\n                await Console.Out.WriteLineAsync(ex.Message);\r\n                return false;\r\n            }\r\n        }\r\n\r\n        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)\r\n        {\r\n            return await _dbSet.AnyAsync(predicate);\r\n        }\r\n\r\n        public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)\r\n        {\r\n\r\n            IQueryable<T> query = _dbSet;\r\n\r\n            if (filter != null)\r\n                query = query.Where(filter);\r\n\r\n            if (includeOptions != null)\r\n            {\r\n                foreach (var entity in includeOptions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))\r\n                {\r\n                    query = query.Include(entity);\r\n                }\r\n            }\r\n\r\n            return await Task.FromResult(query);\r\n        }\r\n\r\n        public virtual IQueryable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)\r\n        {\r\n            IQueryable<T> query = _dbSet;\r\n\r\n            if (filter != null)\r\n                query = query.Where(filter);\r\n\r\n            if (includeOptions != null)\r\n            {\r\n                foreach (var entity in includeOptions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))\r\n                {\r\n                    query = query.Include(entity);\r\n                }\r\n            }\r\n\r\n            return query;\r\n        }\r\n\r\n        public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)\r\n        {\r\n            IQueryable<T> query = _dbSet;\r\n\r\n            if (filter != null)\r\n            {\r\n                query = query.Where(filter);\r\n            }\r\n\r\n            if (includeOptions != null)\r\n            {\r\n                foreach (var entity in includeOptions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))\r\n                {\r\n                    query = query.Include(entity);\r\n                }\r\n            }\r\n\r\n            return await query.FirstOrDefaultAsync();\r\n        }\r\n\r\n        public async Task<bool> UpdateAsync(T entity)\r\n        {\r\n            try\r\n            {\r\n                _dbSet.Update(entity);\r\n                return true;\r\n            }\r\n            catch (Exception ex)\r\n            {\r\n                await Console.Out.WriteLineAsync(ex.Message);\r\n                throw;\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.DAL/Repositories/GenericRepository.cs b/BookRate.DAL/Repositories/GenericRepository.cs
+--- a/BookRate.DAL/Repositories/GenericRepository.cs	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.DAL/Repositories/GenericRepository.cs	(date 1720261578060)
+@@ -24,13 +24,13 @@
+             _dbSet = _bookRateDbContext.Set<T>();
+         }
+ 
+-        public  async Task<bool> AddAsync(T entity)
++        public  async virtual Task<bool> AddAsync(T entity)
+         {
+             await _dbSet.AddAsync(entity);       
+             return true;
+         }
+ 
+-        public async Task<bool> DeleteAsync(T entity)
++        public virtual async  Task<bool> DeleteAsync(T entity)
+         {
+             try
+             {
+@@ -44,7 +44,7 @@
+             }
+         }
+ 
+-        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
++        public virtual async  Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+         {
+             return await _dbSet.AnyAsync(predicate);
+         }
+@@ -86,7 +86,7 @@
+             return query;
+         }
+ 
+-        public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
++        public virtual async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
+         {
+             IQueryable<T> query = _dbSet;
+ 
+@@ -106,7 +106,7 @@
+             return await query.FirstOrDefaultAsync();
+         }
+ 
+-        public async Task<bool> UpdateAsync(T entity)
++        public virtual async Task<bool> UpdateAsync(T entity)
+         {
+             try
+             {
+Index: .idea/.idea.BookRate/.idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoGeneratedRunConfigurationManager\">\r\n    <projectFile profileName=\"IIS Express\">BookRate/BookRate.csproj</projectFile>\r\n    <projectFile profileName=\"http\">BookRate/BookRate.csproj</projectFile>\r\n    <projectFile profileName=\"https\">BookRate/BookRate.csproj</projectFile>\r\n  </component>\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"67c6acf2-0de5-439e-a285-79cd058683b7\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/BookRate.BLL/Services/ReviewService.cs\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/BookRate.DAL/Configuration/ReviewConfigurator.cs\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/BookRate/Controllers/ReviewController.cs\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/BookRate/Middlware/BanMiddlware.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Models/Book.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Models/Book.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Models/Review.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Models/Review.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Models/User.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Models/User.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/BookRate.csproj\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/BookRate.csproj\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/Controllers/RoleController.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/Controllers/RoleController.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/Controllers/UserController.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/Controllers/UserController.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/BookRate/Program.cs\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/BookRate/Program.cs\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"DpaMonitoringSettings\">\r\n    <option name=\"autoShow\" value=\"false\" />\r\n  </component>\r\n  <component name=\"ExportToHTMLSettings\">\r\n    <option name=\"OUTPUT_DIRECTORY\" value=\"$PROJECT_DIR$/../BookRate\\exportToHTML\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"main\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;43r63w&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/Yehor-Radchenko/BookRate.git&quot;,\r\n    &quot;accountId&quot;: &quot;cfbe9e6b-cc7e-4b2c-889f-25b0ac12cfe5&quot;\r\n  }\r\n}</component>\r\n  <component name=\"HighlightingSettingsPerFile\">\r\n    <setting file=\"mock:///Dummy.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"mock:///Dummy.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/8486d31e24f30e3fa1809a95699a0adc16f448d7/src/Security/Authentication/JwtBearer/src/JwtBearerEvents.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/8486d31e24f30e3fa1809a95699a0adc16f448d7/src/Security/Authentication/JwtBearer/src/JwtBearerHandler.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/DefaultBuilder/src/WebApplication.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Http/Authentication.Core/src/AuthenticationService.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Mvc/Mvc.Core/src/Infrastructure/ActionMethodExecutor.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Security/Authentication/Core/src/AuthenticationHandler.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/efcore/0e8ece3526ef3575fb85de308b8a4cd5840f928e/src/EFCore/Infrastructure/ModelValidator.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/087e15321bb712ef6fe8b0ba6f8bd12facf92629/src/libraries/System.Private.CoreLib/src/System/Runtime/CompilerServices/AsyncTaskMethodBuilderT.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/Microsoft.Extensions.DependencyInjection/src/ServiceLookup/CallSiteFactory.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1fce37416598a5fb677f9b329d52e2e9d64e126621a5229f5a5884d87827b9ad/Mapper.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b5ecf1669949a262bd471c1f745e3bb196b3c7671a557cf039248b2de4c4a9/TokenValidationParameters.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f5adada7bfdf6aaae28b25070c35666f22724825ffbafafcdd3ce1c901356/DbConnectionOptions.Common.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"mock://D:/Repositories/BookRate/BookRate.BLL/Services/ContributorService.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n    <setting file=\"mock://D:/Repositories/BookRate/BookRate.BLL/Services/ContributorService.cs\" root0=\"SKIP_HIGHLIGHTING\" />\r\n  </component>\r\n  <component name=\"MetaFilesCheckinStateConfiguration\" checkMetaFiles=\"true\" />\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;customColor&quot;: &quot;&quot;,\r\n  &quot;associatedIndex&quot;: 1\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2hKQVWXCDpC3M0isvYBsWWQ7uUV\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Run&quot;,\r\n    &quot;HTTP Request.BookRate | #2.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;upd__auth&quot;,\r\n    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  },\r\n  &quot;keyToStringList&quot;: {\r\n    &quot;rider.external.source.directories&quot;: [\r\n      &quot;C:\\\\Users\\\\vt709\\\\AppData\\\\Roaming\\\\JetBrains\\\\Rider2024.1\\\\resharper-host\\\\DecompilerCache&quot;,\r\n      &quot;C:\\\\Users\\\\vt709\\\\AppData\\\\Roaming\\\\JetBrains\\\\Rider2024.1\\\\resharper-host\\\\SourcesCache&quot;,\r\n      &quot;C:\\\\Users\\\\vt709\\\\AppData\\\\Local\\\\Symbols\\\\src&quot;\r\n    ]\r\n  }\r\n}</component>\r\n  <component name=\"RunManager\" selected=\".NET Launch Settings Profile.BookRate: https\">\r\n    <configuration name=\"BookRate | #2\" type=\"HttpClient.HttpRequestRunConfigurationType\" factoryName=\"HTTP Request\" temporary=\"true\" nameIsGenerated=\"true\" path=\"$PROJECT_DIR$/BookRate/BookRate.http\" index=\"2\" requestIdentifier=\"#2\" runType=\"Run single request\">\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"BookRate: IIS Express\" type=\"LaunchSettings\" factoryName=\".NET Launch Settings Profile\">\r\n      <option name=\"LAUNCH_PROFILE_PROJECT_FILE_PATH\" value=\"$PROJECT_DIR$/BookRate/BookRate.csproj\" />\r\n      <option name=\"LAUNCH_PROFILE_TFM\" value=\"net8.0\" />\r\n      <option name=\"LAUNCH_PROFILE_NAME\" value=\"IIS Express\" />\r\n      <option name=\"USE_EXTERNAL_CONSOLE\" value=\"0\" />\r\n      <option name=\"USE_MONO\" value=\"0\" />\r\n      <option name=\"RUNTIME_ARGUMENTS\" value=\"\" />\r\n      <option name=\"GENERATE_APPLICATIONHOST_CONFIG\" value=\"1\" />\r\n      <option name=\"SHOW_IIS_EXPRESS_OUTPUT\" value=\"0\" />\r\n      <option name=\"SEND_DEBUG_REQUEST\" value=\"1\" />\r\n      <option name=\"ADDITIONAL_IIS_EXPRESS_ARGUMENTS\" value=\"\" />\r\n      <method v=\"2\">\r\n        <option name=\"Build\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"BookRate: http\" type=\"LaunchSettings\" factoryName=\".NET Launch Settings Profile\">\r\n      <option name=\"LAUNCH_PROFILE_PROJECT_FILE_PATH\" value=\"$PROJECT_DIR$/BookRate/BookRate.csproj\" />\r\n      <option name=\"LAUNCH_PROFILE_TFM\" value=\"net8.0\" />\r\n      <option name=\"LAUNCH_PROFILE_NAME\" value=\"http\" />\r\n      <option name=\"USE_EXTERNAL_CONSOLE\" value=\"0\" />\r\n      <option name=\"USE_MONO\" value=\"0\" />\r\n      <option name=\"RUNTIME_ARGUMENTS\" value=\"\" />\r\n      <option name=\"GENERATE_APPLICATIONHOST_CONFIG\" value=\"1\" />\r\n      <option name=\"SHOW_IIS_EXPRESS_OUTPUT\" value=\"0\" />\r\n      <option name=\"SEND_DEBUG_REQUEST\" value=\"1\" />\r\n      <option name=\"ADDITIONAL_IIS_EXPRESS_ARGUMENTS\" value=\"\" />\r\n      <method v=\"2\">\r\n        <option name=\"Build\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"BookRate: https\" type=\"LaunchSettings\" factoryName=\".NET Launch Settings Profile\">\r\n      <option name=\"LAUNCH_PROFILE_PROJECT_FILE_PATH\" value=\"$PROJECT_DIR$/BookRate/BookRate.csproj\" />\r\n      <option name=\"LAUNCH_PROFILE_TFM\" value=\"net8.0\" />\r\n      <option name=\"LAUNCH_PROFILE_NAME\" value=\"https\" />\r\n      <option name=\"USE_EXTERNAL_CONSOLE\" value=\"0\" />\r\n      <option name=\"USE_MONO\" value=\"0\" />\r\n      <option name=\"RUNTIME_ARGUMENTS\" value=\"\" />\r\n      <option name=\"GENERATE_APPLICATIONHOST_CONFIG\" value=\"1\" />\r\n      <option name=\"SHOW_IIS_EXPRESS_OUTPUT\" value=\"0\" />\r\n      <option name=\"SEND_DEBUG_REQUEST\" value=\"1\" />\r\n      <option name=\"ADDITIONAL_IIS_EXPRESS_ARGUMENTS\" value=\"\" />\r\n      <method v=\"2\">\r\n        <option name=\"Build\" />\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"HTTP Request.BookRate | #2\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"67c6acf2-0de5-439e-a285-79cd058683b7\" name=\"Changes\" comment=\"\" />\r\n      <created>1717340312323</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1717340312323</updated>\r\n      <workItem from=\"1717340313461\" duration=\"32000\" />\r\n      <workItem from=\"1717767900114\" duration=\"4455000\" />\r\n      <workItem from=\"1717772447497\" duration=\"6044000\" />\r\n      <workItem from=\"1717877953966\" duration=\"3176000\" />\r\n      <workItem from=\"1717926063189\" duration=\"5958000\" />\r\n      <workItem from=\"1717936195104\" duration=\"3885000\" />\r\n      <workItem from=\"1717945803502\" duration=\"11000\" />\r\n      <workItem from=\"1718011299321\" duration=\"4309000\" />\r\n      <workItem from=\"1718015881975\" duration=\"1590000\" />\r\n      <workItem from=\"1718050551738\" duration=\"3874000\" />\r\n      <workItem from=\"1718100861243\" duration=\"3211000\" />\r\n      <workItem from=\"1718114028702\" duration=\"3005000\" />\r\n      <workItem from=\"1718270127024\" duration=\"7104000\" />\r\n      <workItem from=\"1718283802053\" duration=\"2946000\" />\r\n      <workItem from=\"1718899232013\" duration=\"779000\" />\r\n      <workItem from=\"1718900046211\" duration=\"1842000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"UnityCheckinConfiguration\" checkUnsavedScenes=\"true\" />\r\n  <component name=\"UnityProjectConfiguration\" hasMinimizedUI=\"false\" />\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"CLEAR_INITIAL_COMMIT_MESSAGE\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.idea.BookRate/.idea/workspace.xml b/.idea/.idea.BookRate/.idea/workspace.xml
+--- a/.idea/.idea.BookRate/.idea/workspace.xml	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/.idea/.idea.BookRate/.idea/workspace.xml	(date 1720261622293)
+@@ -10,33 +10,20 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="67c6acf2-0de5-439e-a285-79cd058683b7" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ReviewService.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/BookRate.DAL/Configuration/ReviewConfigurator.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/BookRate/Controllers/ReviewController.cs" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/BookRate/Middlware/BanMiddlware.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/BookRate.Test/System/Services/UserServiceTest.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/docker-compose.dcproj" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/docker-compose.override.yml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/launchSettings.json" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/ContributorService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ContributorService.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/Book.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/Book.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/Review.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/Review.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/User.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/BookRate.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/BookRate.csproj" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/RoleController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/RoleController.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/UserController.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/BookRate/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Program.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/IUnitOfWork.cs" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/UnitOfWork.cs" beforeDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -89,7 +76,7 @@
+   </component>
+   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+   <component name="ProblemsViewState">
+-    <option name="selectedTabId" value="CurrentFile" />
++    <option name="selectedTabId" value="SWEA" />
+   </component>
+   <component name="ProjectColorInfo">{
+   &quot;customColor&quot;: &quot;&quot;,
+@@ -105,7 +92,7 @@
+     &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Run&quot;,
+     &quot;HTTP Request.BookRate | #2.executor&quot;: &quot;Run&quot;,
+     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;upd__auth&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;rebuild__app__architecture&quot;,
+     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+@@ -201,6 +188,7 @@
+       <workItem from="1718283802053" duration="2946000" />
+       <workItem from="1718899232013" duration="779000" />
+       <workItem from="1718900046211" duration="1842000" />
++      <workItem from="1720260126295" duration="1430000" />
+     </task>
+     <servers />
+   </component>
+Index: BookRate.Test/System/Services/UserServiceTest.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.Test/System/Services/UserServiceTest.cs b/BookRate.Test/System/Services/UserServiceTest.cs
+new file mode 100644
+--- /dev/null	(date 1720261578060)
++++ b/BookRate.Test/System/Services/UserServiceTest.cs	(date 1720261578060)
+@@ -0,0 +1,61 @@
++using AutoMapper;
++using BookRate.BLL.HelperServices;
++using BookRate.BLL.Services;
++using BookRate.DAL.DTO.User;
++using BookRate.DAL.Models;
++using BookRate.DAL.Repositories.EntityImplementations;
++using BookRate.DAL.Repositories.IRepository;
++using BookRate.DAL.UoW;
++using BookRate.Test.Fixtures;
++using FluentAssertions;
++using FluentValidation;
++using Moq;
++using System.Linq.Expressions;
++
++
++namespace BookRate.Test.System.Services
++{
++    public class UserServiceTest
++    {
++        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
++        private readonly Mock<IMapper> _mapperMock;
++        private readonly Mock<IValidator<UserDto>> _validatorMock;
++        private readonly Mock<JwtService> _jwtServiceMock;
++        private readonly UserService _userService;
++
++
++        public UserServiceTest()
++        {
++            _unitOfWorkMock = new Mock<IUnitOfWork>();
++            _mapperMock = new Mock<IMapper>();
++            _validatorMock = new Mock<IValidator<UserDto>>();
++            _jwtServiceMock = new Mock<JwtService>();
++
++            _userService = new UserService(
++                _unitOfWorkMock.Object, 
++                _mapperMock.Object, 
++                _validatorMock.Object, 
++                _jwtServiceMock.Object
++                );
++        }
++
++        [Fact]
++        public async Task OnSuccess_LoginAsync_ShoudGivenToken()
++        {
++                       
++            _jwtServiceMock.Setup(fn => fn.GenerateToken(UserData.UserForMock))
++                                            .Returns(UserData.MockToken);
++
++            var result = await _userService.LoginAsync(UserData.LoginInfo);
++
++            result.Should().NotBeNull();
++            result.Should().Be(UserData.MockToken);
++
++
++            _unitOfWorkMock.Verify(repository => repository.UserRepository, Times.Once);
++            _jwtServiceMock.Verify(fn => fn.GenerateToken(UserData.UserForMock), Times.Once);
++        }
++
++
++    }
++}
+Index: BookRate.DAL/UoW/UnitOfWork.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using BookRate.DAL.Context;\r\nusing BookRate.DAL.Repositories;\r\nusing BookRate.DAL.Repositories.EntityImplementations;\r\nusing BookRate.DAL.Repositories.IRepository;\r\n\r\nnamespace BookRate.DAL.UoW\r\n{\r\n    public class UnitOfWork : IUnitOfWork\r\n    {\r\n        private readonly BookRateDbContext _dbContext;\r\n        private Dictionary<Type, object>? _repos;\r\n\r\n\r\n        public IRestrictRepository RestrictRepository =>\r\n                (IRestrictRepository)GetRepository<RestrictRepository>();\r\n\r\n        public IUserRepository UserRepository => \r\n            (IUserRepository)GetRepository<UserRepository>();\r\n   \r\n\r\n        public UnitOfWork(BookRateDbContext dbContext)\r\n        {\r\n            _dbContext = dbContext;\r\n        }\r\n\r\n        public IGenericRepository<TEntity> GetRepository<TEntity>()\r\n            where TEntity : class\r\n        {\r\n            if (_repos == null)\r\n            {\r\n                _repos = new Dictionary<Type, object>();\r\n            }\r\n\r\n            var type = typeof(TEntity);\r\n            if (!_repos.ContainsKey(type))\r\n            {\r\n                _repos[type] = new GenericRepository<TEntity>(_dbContext);\r\n            }\r\n\r\n            return (IGenericRepository<TEntity>)_repos[type];\r\n        }\r\n\r\n        public async Task<bool> CommitAsync()\r\n        {\r\n            var result = await _dbContext.SaveChangesAsync();\r\n            if (result == 0)\r\n                return false;\r\n\r\n            return true;\r\n        }\r\n\r\n        public void Dispose()\r\n        {\r\n            _dbContext.Dispose();\r\n            GC.SuppressFinalize(obj: this);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.DAL/UoW/UnitOfWork.cs b/BookRate.DAL/UoW/UnitOfWork.cs
+--- a/BookRate.DAL/UoW/UnitOfWork.cs	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.DAL/UoW/UnitOfWork.cs	(date 1720261605403)
+@@ -9,15 +9,9 @@
+     {
+         private readonly BookRateDbContext _dbContext;
+         private Dictionary<Type, object>? _repos;
+-
+-
++        
+         public IRestrictRepository RestrictRepository =>
+                 (IRestrictRepository)GetRepository<RestrictRepository>();
+-
+-        public IUserRepository UserRepository => 
+-            (IUserRepository)GetRepository<UserRepository>();
+-   
+-
+         public UnitOfWork(BookRateDbContext dbContext)
+         {
+             _dbContext = dbContext;
+Index: BookRate.DAL/UoW/IUnitOfWork.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System;\r\nusing System.Collections.Generic;\r\nusing System.Linq;\r\nusing System.Text;\r\nusing System.Threading.Tasks;\r\nusing BookRate.DAL.Repositories.IRepository;\r\n\r\nnamespace BookRate.DAL.UoW\r\n{\r\n    public interface IUnitOfWork : IDisposable\r\n    {\r\n        IGenericRepository<TEntity> GetRepository<TEntity>()\r\n            where TEntity : class;\r\n\r\n        IRestrictRepository RestrictRepository { get; }\r\n\r\n        IUserRepository UserRepository { get; }\r\n\r\n        Task<bool> CommitAsync();\r\n\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BookRate.DAL/UoW/IUnitOfWork.cs b/BookRate.DAL/UoW/IUnitOfWork.cs
+--- a/BookRate.DAL/UoW/IUnitOfWork.cs	(revision 20c5f07152eca85cff1ff717f714fe145fe37f34)
++++ b/BookRate.DAL/UoW/IUnitOfWork.cs	(date 1720261605404)
+@@ -14,10 +14,6 @@
+ 
+         IRestrictRepository RestrictRepository { get; }
+ 
+-        IUserRepository UserRepository { get; }
+-
+         Task<bool> CommitAsync();
+-
+-
+     }
+ }

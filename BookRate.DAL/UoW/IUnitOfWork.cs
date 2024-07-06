@@ -15,7 +15,5 @@ namespace BookRate.DAL.UoW
         IRestrictRepository RestrictRepository { get; }
 
         Task<bool> CommitAsync();
-
-
     }
 }

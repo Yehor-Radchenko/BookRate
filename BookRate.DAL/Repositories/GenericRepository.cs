@@ -24,13 +24,13 @@ namespace BookRate.DAL.Repositories
             _dbSet = _bookRateDbContext.Set<T>();
         }
 
-        public  async Task<bool> AddAsync(T entity)
+        public  async virtual Task<bool> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);       
             return true;
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        public virtual async  Task<bool> DeleteAsync(T entity)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace BookRate.DAL.Repositories
             }
         }
 
-        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+        public virtual async  Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
             return await _dbSet.AnyAsync(predicate);
         }
@@ -86,7 +86,7 @@ namespace BookRate.DAL.Repositories
             return query;
         }
 
-        public async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
+        public virtual async Task<T?> GetAsync(Expression<Func<T, bool>>? filter = null, string? includeOptions = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -106,7 +106,7 @@ namespace BookRate.DAL.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateAsync(T entity)
+        public virtual async Task<bool> UpdateAsync(T entity)
         {
             try
             {

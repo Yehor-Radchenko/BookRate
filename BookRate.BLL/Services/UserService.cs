@@ -7,6 +7,8 @@ using BookRate.BLL.ViewModels.User;
 using BookRate.DAL.DTO.Restrict;
 using BookRate.DAL.DTO.User;
 using BookRate.DAL.Models;
+using BookRate.DAL.Repositories;
+using BookRate.DAL.Repositories.IRepository;
 using BookRate.DAL.UoW;
 using BookRate.Validation;
 using FluentValidation;
@@ -15,10 +17,10 @@ using User = BookRate.DAL.Models.User;
 
 namespace BookRate.BLL.Services
 {
-    public class UserService : BaseService<User, UserDto>
+    public class UserService : BaseService<User,UserDto>
     {
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<UserDto> validator, JwtService jwtService)
-            : base(unitOfWork, mapper, validator)
+        public UserService( IMapper mapper, IValidator<UserDto> validator, JwtService jwtService)
+            : base( mapper, validator)
         {
             _jwtService = jwtService;
         }

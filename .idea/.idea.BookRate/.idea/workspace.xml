@@ -10,33 +10,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="67c6acf2-0de5-439e-a285-79cd058683b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ReviewService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate.DAL/Configuration/ReviewConfigurator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate/Controllers/ReviewController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate/Middlware/BanMiddlware.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookRate.Test/System/Services/UserServiceTest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.dcproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.override.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/launchSettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Exceptions/BadRequestException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/ContributorService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ContributorService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/ViewModels/Rate/RateViewModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Context/BookRateDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/DTO/User/UserDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Extension/DataServices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/Book.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/Book.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/CommentaryLike.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/Review.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/Review.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Models/User.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenericRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/IRepository/IGenreRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/BookRate.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/BookRate.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/ContributorController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/NarrativeController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/RoleController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/RoleController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Controllers/UserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Middlware/GlobalExceptionHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/IUnitOfWork.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/UnitOfWork.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +76,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="SWEA" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -105,7 +92,7 @@
     &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Run&quot;,
     &quot;HTTP Request.BookRate | #2.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;upd__auth&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;rebuild__app__architecture&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -201,6 +188,7 @@
       <workItem from="1718283802053" duration="2946000" />
       <workItem from="1718899232013" duration="779000" />
       <workItem from="1718900046211" duration="1842000" />
+      <workItem from="1720260126295" duration="1430000" />
     </task>
     <servers />
   </component>

@@ -3,7 +3,6 @@ using BookRate.BLL.Services.ServiceAbstraction;
 using BookRate.BLL.ViewModels.Contributor;
 using BookRate.DAL.DTO.Contributor;
 using BookRate.DAL.Models;
-using BookRate.DAL.UoW;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.JsonPatch;
@@ -16,11 +15,11 @@ namespace BookRate.BLL.Services
     public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>
     {
         public ContributorService(
-            IUnitOfWork unitOfWork, 
             IMapper mapper, 
             IValidator<ContributorDto> validator
-            ) : base(unitOfWork, mapper, validator)
+            ) : base( mapper, validator)
         { 
+            
         }
 
         public async Task<int> AddAsync(ContributorDto dto)
