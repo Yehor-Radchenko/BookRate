@@ -1,7 +1,5 @@
 ﻿using BookRate.BLL.Services;
 using BookRate.DAL.DTO.Narrative;
-using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookRate.Controllers

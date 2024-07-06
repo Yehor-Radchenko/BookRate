@@ -14,6 +14,10 @@ namespace BookRate.DAL.UoW
         public IRestrictRepository RestrictRepository =>
                 (IRestrictRepository)GetRepository<RestrictRepository>();
 
+        public IUserRepository UserRepository => 
+            (IUserRepository)GetRepository<UserRepository>();
+   
+
         public UnitOfWork(BookRateDbContext dbContext)
         {
             _dbContext = dbContext;
