@@ -14,13 +14,7 @@ namespace BookRate.BLL.Services
 {
     public class ContributorService : BaseService<Contributor, ContributorDto>, IService<ContributorDto>
     {
-        public ContributorService(
-            IMapper mapper, 
-            IValidator<ContributorDto> validator
-            ) : base( mapper, validator)
-        { 
-            
-        }
+     
 
         public async Task<int> AddAsync(ContributorDto dto)
         {
