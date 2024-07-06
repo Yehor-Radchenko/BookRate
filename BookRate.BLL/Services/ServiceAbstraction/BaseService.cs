@@ -16,5 +16,10 @@ namespace BookRate.BLL.Services.ServiceAbstraction
             _mapper = mapper;
             _validator = validator;
         }
+
+        protected BaseService()
+        {
+            
+        }
     }
 }

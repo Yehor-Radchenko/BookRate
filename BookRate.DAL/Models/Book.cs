@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace BookRate.DAL.Models;
 
@@ -28,10 +29,8 @@ public partial class Book
 
     [Required(ErrorMessage = "At least one narrative is required.")]
     [MinLength(1, ErrorMessage = "At least one narrative is required.")]
-    public virtual ICollection<Narrative> Narratives { get; set; } = new List <Narrative>();
+    public virtual ICollection<Narrative> Narratives { get; set; } = new List<Narrative>();
 
     public virtual ICollection<Shelf>? Shelves { get; set; } = new List<Shelf>();
-
-
 
 }
