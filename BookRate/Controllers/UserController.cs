@@ -24,9 +24,14 @@ namespace BookRate.Controllers
         }
 
 
+        public UserController()
+        {
+
+        }
+
         [Authorize(policy: "AdminPolicy")]
         [HttpGet("users-list")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsersAsync()
         {
             var result = await _userService.GetUsersAsync();
             return Ok(result);
@@ -34,24 +39,35 @@ namespace BookRate.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("profile-info/{id}")]
-        public async Task<IActionResult> ProfileInfo(int id)
+        public async Task<IActionResult> ProfileInfoAsync(int id)
         {
+            if (id <= 0)
+                return BadRequest();
+
             var result = await _userService.GetInfoAboutProfileAsync(id);
             return Ok(result);
         }
 
         [HttpPost("register-user")]
-        public async Task<IActionResult> RegisterUser(UserDto user)
+        public async Task<IActionResult> RegisterUserAsync(UserDto user)
         {
             var result = await _userService.AddAsync(user);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
             return Ok(result);
         }
 
         [HttpPost("login-user")]
-        public async Task<IActionResult> LoginUser(LoginDto loginDto)
+        public async Task<IActionResult> LoginUserAsync(LoginDto loginDto)
         {
+         
             var result = await _userService.LoginAsync(loginDto);
-            _httpContextAccessor.HttpContext.Response.Cookies.Append("Token", result);
+            // _httpContextAccessor.HttpContext.Response.Cookies.Append("Token", result);
+
             return Ok(result);
         }
 

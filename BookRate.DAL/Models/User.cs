@@ -7,6 +7,7 @@ namespace BookRate.DAL.Models;
 
 public partial class User
 {
+    
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Email is required.")]

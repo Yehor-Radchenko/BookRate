@@ -19,6 +19,11 @@ namespace BookRate.BLL.HelperServices
             _configuration = configuration;
         }
 
+        public JwtService()
+        {
+                
+        }
+
         public string GenerateToken(User user)
         {
 
