@@ -24,7 +24,7 @@ namespace BookRate.BLL.HelperServices
                 
         }
 
-        public string GenerateToken(User user)
+        public virtual string GenerateToken(User user)
         {
 
             var claims = new List<Claim>

@@ -23,7 +23,7 @@ namespace BookRate.DAL.UoW
             _dbContext = dbContext;
         }
 
-        public IGenericRepository<TEntity> GetRepository<TEntity>()
+        public virtual IGenericRepository<TEntity> GetRepository<TEntity>()
             where TEntity : class
         {
             if (_repos == null)

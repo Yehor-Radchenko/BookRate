@@ -23,13 +23,13 @@ namespace BookRate.BLL.Services
         { }
 
         private readonly JwtService _jwtService;
-
-
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<UserDto> validator, JwtService jwtService) : base(unitOfWork, mapper, validator)
+        
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IValidator<UserDto> validator, JwtService jwtService) 
+            : base(unitOfWork, mapper, validator)
         {
             _jwtService = jwtService;
         }
-        public async Task<InfoViewModel> GetInfoAboutProfileAsync(int id)
+        public virtual async Task<InfoViewModel> GetInfoAboutProfileAsync(int id)
         {
 
             var userRepo = _unitOfWork.GetRepository<User>();
@@ -57,7 +57,7 @@ namespace BookRate.BLL.Services
             return info;
         }
 
-        public async Task<List<UserViewModel>> GetUsersAsync()
+        public virtual async Task<List<UserViewModel>> GetUsersAsync()
         {
             var userRepo =  _unitOfWork.GetRepository<User>();
 
@@ -68,7 +68,7 @@ namespace BookRate.BLL.Services
             return map;
         }
 
-        public async Task<bool> AddAsync(UserDto dto)
+        public virtual async Task<bool> AddAsync(UserDto dto)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
@@ -109,7 +109,7 @@ namespace BookRate.BLL.Services
 
         }
 
-        public async Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)
+        public virtual async Task<bool> UpdateAsync(string email, UpdateUserDto expectedEntityValues)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var roleRepo = _unitOfWork.GetRepository<Role>();
@@ -138,7 +138,7 @@ namespace BookRate.BLL.Services
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public virtual async Task<bool> DeleteAsync(int id)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var user = await userRepo.GetAsync(e => e.Id == id);
@@ -147,7 +147,7 @@ namespace BookRate.BLL.Services
             return await _unitOfWork.CommitAsync();
         }
 
-        public async Task<string> LoginAsync(LoginDto loginDto)
+        public virtual async Task<string> LoginAsync(LoginDto loginDto)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var getUser = await userRepo.GetAsync(e => e.Email.ToLower() == loginDto.Email.ToLower(), 
@@ -159,7 +159,7 @@ namespace BookRate.BLL.Services
             return _jwtService.GenerateToken(getUser);
         }
 
-        public async Task<bool> BanUserAsync(RestrictDto restrictDto)
+        public virtual async Task<bool> BanUserAsync(RestrictDto restrictDto)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var restrictRepo = _unitOfWork.GetRepository<Restrict>();
@@ -191,7 +191,7 @@ namespace BookRate.BLL.Services
             return await _unitOfWork.CommitAsync();
         }
 
-        public async Task<bool> UnbanUserAsync(int id)
+        public virtual async Task<bool> UnbanUserAsync(int id)
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             var restrictRepo = _unitOfWork.GetRepository<Restrict>();

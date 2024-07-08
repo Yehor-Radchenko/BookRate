@@ -13,11 +13,11 @@ namespace BookRate.Test.Fixtures
     public class UserData
     {
 
-        public static readonly int NegativeId = -1;
+        public readonly static int NegativeId = -1;
 
-        public static readonly string MockToken = "expectedToken";
+        public  static string MockToken => "expectedToken";
 
-        public static readonly User UserForMock = new User
+        public  static User UserForMock => new User
         {
             Id = 1,
             Email = "Test",
@@ -27,13 +27,13 @@ namespace BookRate.Test.Fixtures
             IsGetBan = false,
         };
 
-        public static readonly LoginDto LoginInfo = new LoginDto
+        public readonly static LoginDto LoginInfo = new LoginDto
         {
             Email = "test@gmail.com",
             Password = "12345"
         };
 
-        public static readonly UserDto MockUserDto = new UserDto
+        public readonly static UserDto MockUserDto = new UserDto
         {
             Email = "test@gmail.com",
             Password = "password",
@@ -45,7 +45,7 @@ namespace BookRate.Test.Fixtures
             Interests = "Read books",
         };
 
-        public static readonly InfoViewModel ProfileInfo = new InfoViewModel
+        public readonly static InfoViewModel ProfileInfo = new InfoViewModel
         {
             Id = 1,
             Email = "Test",
@@ -61,9 +61,8 @@ namespace BookRate.Test.Fixtures
 
         public static List<UserViewModel> GetUsers()
         {
-            return new List<UserViewModel>
-            {
-
+            return
+            [
                 new UserViewModel
                 {
                     Id = 1,
@@ -75,6 +74,7 @@ namespace BookRate.Test.Fixtures
                     Interests = "Test",
                     Username = "Test",
                 },
+
 
 
                 new UserViewModel
@@ -90,6 +90,7 @@ namespace BookRate.Test.Fixtures
                 },
 
 
+
                 new UserViewModel
                 {
                     Id = 3,
@@ -101,6 +102,7 @@ namespace BookRate.Test.Fixtures
                     Interests = "Test",
                     Username = "Test",
                 },
+
 
 
                 new UserViewModel
@@ -116,6 +118,7 @@ namespace BookRate.Test.Fixtures
                 },
 
 
+
                 new UserViewModel
                 {
                     Id = 5,
@@ -126,8 +129,9 @@ namespace BookRate.Test.Fixtures
                     Email = "Test@gmail.com",
                     Interests = "Test",
                     Username = "Test",
-                },
-            };
+                }
+
+            ];
         }
 
         public static bool AddAsync()

@@ -1,6 +1,7 @@
 ﻿using BookRate.DAL.Context;
 using BookRate.DAL.Repositories.IRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,13 +19,19 @@ namespace BookRate.DAL.Repositories
         protected BookRateDbContext _bookRateDbContext;
         protected DbSet<T> _dbSet;
 
-        public GenericRepository(BookRateDbContext bookRateDbContext)
+         public GenericRepository(BookRateDbContext bookRateDbContext)
         {
             _bookRateDbContext = bookRateDbContext;
             _dbSet = _bookRateDbContext.Set<T>();
         }
 
-        public  async virtual Task<bool> AddAsync(T entity)
+
+        public GenericRepository()
+        {
+            
+        }
+         
+        public virtual async  Task<bool> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);       
             return true;

@@ -14,6 +14,7 @@ namespace BookRate.BLL.Services.ServiceAbstraction
             _mapper = mapper;
             _validator = validator;
         }
+        
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
         protected readonly IValidator<TDto> _validator;
