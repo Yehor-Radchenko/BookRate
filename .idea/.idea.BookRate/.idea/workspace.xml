@@ -10,20 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="67c6acf2-0de5-439e-a285-79cd058683b7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BookRate.Test/System/Services/UserServiceTest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.dcproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.override.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/launchSettings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BookRate.Test/System/Controllers/BookTestController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.BookRate/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/BookRate.BLL.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/ContributorService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ContributorService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/HelperServices/JWT/JwtService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/EntityImplementations/UserRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/EntityImplementations/UserRepository.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/Repositories/GenericRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/IUnitOfWork.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/UnitOfWork.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.DAL/UoW/UnitOfWork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.DAL/UoW/UnitOfWork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.Test/Fixtures/UserData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.Test/Fixtures/UserData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.Test/System/Services/UserServiceTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.Test/System/Services/UserServiceTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BookRate.sln" beforeDir="false" afterPath="$PROJECT_DIR$/BookRate.sln" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,8 +54,6 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/8486d31e24f30e3fa1809a95699a0adc16f448d7/src/Security/Authentication/JwtBearer/src/JwtBearerEvents.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/8486d31e24f30e3fa1809a95699a0adc16f448d7/src/Security/Authentication/JwtBearer/src/JwtBearerHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/DefaultBuilder/src/WebApplication.cs" root0="SKIP_HIGHLIGHTING" />
@@ -66,13 +61,42 @@
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Mvc/Mvc.Core/src/Infrastructure/ActionMethodExecutor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/aspnetcore/c9e3996173cec136bc2e9f3b4ec45f2a323b1d63/src/Security/Authentication/Core/src/AuthenticationHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/efcore/0e8ece3526ef3575fb85de308b8a4cd5840f928e/src/EFCore/Infrastructure/ModelValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/087e15321bb712ef6fe8b0ba6f8bd12facf92629/src/libraries/System.Private.CoreLib/src/System/NullReferenceException.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/087e15321bb712ef6fe8b0ba6f8bd12facf92629/src/libraries/System.Private.CoreLib/src/System/Runtime/CompilerServices/AsyncTaskMethodBuilderT.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/5535e31a712343a63f5d7d796cd874e563e5ac14/src/libraries/Microsoft.Extensions.DependencyInjection/src/ServiceLookup/CallSiteFactory.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1fce37416598a5fb677f9b329d52e2e9d64e126621a5229f5a5884d87827b9ad/Mapper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/38284ca4f4afe378f96fccac3e179f4bceda7a74eb151623b66d2dc3634d9b/ExceptionAggregator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3b92f859131bde25d0f7a63de08963e995d1e1426e584dfd4b8e833d2d3dba/ExecutionTimer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3d39b7365ca42b2d8c4e732f62ab42f8e55276a28f58835d74b42ccc2bc1/XunitTestRunner.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/688dbce4f433a52e2291fa092af648d81dc75562e42e95781a964b5e92328/XunitTestCaseRunner.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a53b6656d53296976cb3cae7c3f3c3797af4d1063d91228a4f1dabbd5398890/XunitTestInvoker.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b5ecf1669949a262bd471c1f745e3bb196b3c7671a557cf039248b2de4c4a9/TokenValidationParameters.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c3ec25c53b94f51fa21da479c513e551efee2b5ae49a79934686d2bb714d46/TestInvoker.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d5bbff7f0797f8a5eac558803fc11ee7d94c9e84440dc58bc674915efec8/TestRunner.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f5adada7bfdf6aaae28b25070c35666f22724825ffbafafcdd3ce1c901356/DbConnectionOptions.Common.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ContributorService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ContributorService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Repositories/BookRate/BookRate.BLL/Services/ServiceAbstraction/BaseService.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -89,10 +113,12 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.BookRate: https.executor&quot;: &quot;Debug&quot;,
+    &quot;030c81c8-01db-4d44-ad4d-2bc5eaa3c3aa.executor&quot;: &quot;Debug&quot;,
     &quot;HTTP Request.BookRate | #2.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;rebuild__app__architecture&quot;,
+    &quot;ced83fa5-c0da-4448-af49-b63d3e364ad3.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;architecture__upd&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -189,6 +215,7 @@
       <workItem from="1718899232013" duration="779000" />
       <workItem from="1718900046211" duration="1842000" />
       <workItem from="1720260126295" duration="1430000" />
+      <workItem from="1720430420767" duration="35000" />
     </task>
     <servers />
   </component>
@@ -197,6 +224,17 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="GitHub.CommitStatus" />
+      </list>
+    </option>
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -210,5 +248,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/BookRate.BLL/Services/UserService.cs</url>
+          <line>35</line>
+          <properties documentPath="D:\Repositories\BookRate\BookRate.BLL\Services\UserService.cs" containingFunctionPresentation="Method 'GetInfoAboutProfileAsync'">
+            <startOffsets>
+              <option value="1130" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1292" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

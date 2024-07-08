@@ -9,13 +9,17 @@ using System.Threading.Tasks;
 
 namespace BookRate.DAL.Repositories.EntityImplementations
 {
-    public class UserRepository : GenericRepository<User>, IUserRepository
+    public  class UserRepository : GenericRepository<User>, IUserRepository
     {
         public UserRepository(BookRateDbContext bookRateDbContext) 
             : base(bookRateDbContext)
         {
         }
 
-
+        public UserRepository()
+        {
+            
+        }
+        
     }
 }
